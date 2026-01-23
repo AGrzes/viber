@@ -4,6 +4,7 @@
 **Created**: [DATE]  
 **Status**: Draft  
 **Input**: User description: "$ARGUMENTS"
+**Constitution Guardrails**: Keep scope to primary use cases; reuse proven OSS; define clear module contracts; plan only tests that mitigate real risk.
 
 ## User Scenarios & Testing *(mandatory)*
 

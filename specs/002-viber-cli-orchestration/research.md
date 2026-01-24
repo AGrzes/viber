@@ -21,9 +21,9 @@
 - **Alternatives considered**: Fallback to default or auto-create (rejected to prevent surprise behavior).
 
 ## Decision 5: CLI dependencies
-- **Decision**: commander (commands), prompts (lightweight input), zod (schema validation), debug (scoped logging), typescript, tsx (TypeScript runtime).
-- **Rationale**: Proven OSS with minimal footprint; keeps logic readable and testable while enabling controlled debugging.
-- **Alternatives considered**: inquirer (heavier), custom arg parsing (reinventing), bespoke logging (unnecessary).
+- **Decision**: commander (commands), prompts (lightweight input), zod (schema validation), debug (scoped logging), typescript, tsx (TypeScript runtime), vitest (unit tests).
+- **Rationale**: Proven OSS with minimal footprint; keeps logic readable and testable while enabling controlled debugging and fast unit tests.
+- **Alternatives considered**: inquirer (heavier), custom arg parsing (reinventing), bespoke logging (unnecessary), node:test (less ergonomic for TypeScript unit tests).
 
 ## Decision 6: Package manager
 - **Decision**: pnpm.

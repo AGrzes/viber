@@ -10,6 +10,12 @@
 pnpm install
 ```
 
+## Run Tests
+
+```bash
+pnpm vitest
+```
+
 ## Run the CLI (development)
 
 ```bash

@@ -12,9 +12,9 @@ Deliver a single-user CLI that orchestrates agent sessions inside Podman contain
 ## Technical Context
 
 **Language/Version**: Node.js 25 (TypeScript 5.x)  
-**Primary Dependencies**: commander (CLI command parsing), prompts (lightweight interactive inputs), zod (config validation), debug (scoped logging), typescript, tsx  
+**Primary Dependencies**: commander (CLI command parsing), prompts (lightweight interactive inputs), zod (config validation), debug (scoped logging), typescript, tsx, vitest  
 **Storage**: Local filesystem JSON files for project and global config  
-**Testing**: node:test with lightweight integration tests for command flows  
+**Testing**: vitest for unit tests; lightweight integration tests for command flows  
 **Target Platform**: Local developer machines with Podman installed (Linux/macOS; Windows via WSL if Podman is available)  
 **Project Type**: single  
 **Performance Goals**: Config commands complete in <1s; session start aligns with spec (<2 minutes)  

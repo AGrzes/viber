@@ -27,7 +27,18 @@ export async function writeProjectConfig(
   configPath: string,
   config: ProjectConfig
 ): Promise<void> {
-  await writeJson(configPath, ProjectConfigSchema.parse(config));
+  const normalized: ProjectConfig = {
+    ...config,
+    imageProfile: config.imageProfile || undefined,
+    imageReference: config.imageReference || undefined,
+    mappings: config.mappings?.map((mapping) => ({
+      ...mapping,
+      targetPath: mapping.targetPath || mapping.sourcePath,
+      label: mapping.label || undefined,
+    })),
+  };
+
+  await writeJson(configPath, ProjectConfigSchema.parse(normalized));
 }
 
 export async function readGlobalConfig(): Promise<GlobalConfig | null> {

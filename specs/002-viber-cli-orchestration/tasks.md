@@ -72,10 +72,10 @@ description: "Task list for Viber CLI Private Orchestration Framework"
 
 ### Implementation for User Story 2
 
-- [ ] T018 [US2] Implement interactive config prompt flow in /workdir/cli/src/services/configWizard.ts
-- [ ] T019 [US2] Implement CLI config init/update command in /workdir/cli/src/cli/commands/config.ts
-- [ ] T020 [US2] Wire config command into CLI entrypoint in /workdir/cli/src/cli/index.ts
-- [ ] T021 [US2] Add mapping/image selection normalization for config writes in /workdir/cli/src/lib/config/store.ts
+- [x] T018 [US2] Implement interactive config prompt flow in /workdir/cli/src/services/configWizard.ts
+- [x] T019 [US2] Implement CLI config init/update command in /workdir/cli/src/cli/commands/config.ts
+- [x] T020 [US2] Wire config command into CLI entrypoint in /workdir/cli/src/cli/index.ts
+- [x] T021 [US2] Add mapping/image selection normalization for config writes in /workdir/cli/src/lib/config/store.ts
 
 **Checkpoint**: User Stories 1 and 2 both work independently
 

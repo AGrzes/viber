@@ -4,6 +4,7 @@ import { z } from "zod";
 
 export const PROJECT_CONFIG_NAME = ".viber.json";
 export const GLOBAL_CONFIG_PATH = path.join(os.homedir(), ".viber", "config.json");
+export const DEFAULT_PROFILE_NAME = "default";
 
 export const FolderMappingSchema = z.object({
   sourcePath: z.string().min(1),
@@ -47,9 +48,12 @@ export const GlobalConfigSchema = z.object({
 export const ResolvedConfigSchema = z.object({
   project: ProjectConfigSchema.optional(),
   global: GlobalConfigSchema.optional(),
+  projectConfigPath: z.string().optional(),
+  globalConfigPath: z.string().optional(),
   effectiveMappings: z.array(FolderMappingSchema),
-  imageSource: z.string().optional(),
-  imageSourceType: z.enum(["profile", "reference"]).optional(),
+  imageProfile: z.string().optional(),
+  imageReference: z.string().optional(),
+  defaultProfileName: z.string().optional(),
 });
 
 export type FolderMapping = z.infer<typeof FolderMappingSchema>;

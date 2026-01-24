@@ -5,6 +5,7 @@ export const log = {
   config: debug("viber:config"),
   podman: debug("viber:podman"),
   session: debug("viber:session"),
+  env: debug("viber:env"),
 };
 
 export function enableDebug(namespaces: string): void {

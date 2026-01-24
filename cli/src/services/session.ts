@@ -3,6 +3,20 @@ import { validateMappings } from "../lib/config/validation.js";
 import { runPodman } from "../lib/podman/runner.js";
 import { CliError } from "../lib/utils/errors.js";
 import { log } from "../lib/utils/log.js";
+import { getHostIdentity } from "../lib/utils/identity.js";
+import {
+  CODEX_AUTH_TARGET,
+  CODEX_DIR,
+  WORKDIR,
+  getCodexAuthSource,
+  hasCodexAuth,
+} from "../lib/utils/paths.js";
+import {
+  ENV_CODEX_HOME,
+  ENV_GLOBAL_CONFIG,
+  ENV_PROJECT_CONFIG,
+} from "../lib/utils/env.js";
+import { type FolderMapping } from "../lib/config/schema.js";
 import { getProfileOrThrow } from "./profiles.js";
 
 export type SessionMode = "interactive" | "one-off";
@@ -13,6 +27,7 @@ export type SessionOptions = {
   command?: string[];
   imageProfile?: string;
   imageReference?: string;
+  dryRun?: boolean;
 };
 
 async function resolveImageRef(
@@ -28,19 +43,23 @@ async function resolveImageRef(
     return profile.baseImageRef;
   }
 
-  if (!resolved.imageSource) {
-    throw new CliError("No image selected. Set imageProfile, imageReference, or a global default.");
+  if (resolved.imageReference) {
+    return resolved.imageReference;
   }
 
-  if (resolved.imageSourceType === "reference") {
-    return resolved.imageSource;
+  if (resolved.imageProfile) {
+    const profile = await getProfileOrThrow(resolved.imageProfile);
+    return profile.baseImageRef;
   }
 
-  const profile = await getProfileOrThrow(resolved.imageSource);
-  return profile.baseImageRef;
+  throw new CliError("No image selected. Set imageProfile, imageReference, or a default profile.");
 }
 
 export async function runSession(options: SessionOptions): Promise<number> {
+  if (options.imageProfile && options.imageReference) {
+    throw new CliError("image profile and image reference cannot both be set.");
+  }
+
   const resolved = await resolveConfig(options.cwd);
   log.config("resolved config", resolved);
 
@@ -56,10 +75,54 @@ export async function runSession(options: SessionOptions): Promise<number> {
   });
   log.podman("using image", imageRef);
 
+  const identity = getHostIdentity();
+  if (!identity) {
+    throw new CliError("Host identity is unavailable; cannot determine UID/GID.");
+  }
+
+  const extraMounts: FolderMapping[] = [];
+  const env: Record<string, string> = {};
+
+  if (hasCodexAuth()) {
+    extraMounts.push({
+      sourcePath: getCodexAuthSource(),
+      targetPath: CODEX_AUTH_TARGET,
+      mode: "ro",
+    });
+    env[ENV_CODEX_HOME] = CODEX_DIR;
+  }
+
+  if (resolved.projectConfigPath) {
+    env[ENV_PROJECT_CONFIG] = resolved.projectConfigPath;
+  }
+  if (resolved.globalConfigPath) {
+    env[ENV_GLOBAL_CONFIG] = resolved.globalConfigPath;
+  }
+
+  const fallbackMapping: FolderMapping = {
+    sourcePath: options.cwd,
+    targetPath: WORKDIR,
+    mode: "rw",
+  };
+  const mappings =
+    resolved.effectiveMappings.length > 0
+      ? resolved.effectiveMappings
+      : [fallbackMapping];
+
+  log.session("workdir", WORKDIR);
+  log.env("env", env);
+
   return runPodman({
     imageRef,
     interactive: options.mode === "interactive",
-    mappings: resolved.effectiveMappings,
+    mappings,
+    extraMounts,
+    workdir: WORKDIR,
+    env,
+    uid: identity.uid,
+    gid: identity.gid,
+    usernsMode: "keep-id",
+    dryRun: options.dryRun,
     command: options.command,
   });
 }

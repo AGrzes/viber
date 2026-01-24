@@ -7,6 +7,7 @@ import {
   type GlobalConfig,
   type ProjectConfig,
 } from "./schema.js";
+import { findProjectConfig } from "./discovery.js";
 
 async function readJson(filePath: string): Promise<unknown> {
   const raw = await fs.readFile(filePath, "utf-8");
@@ -53,4 +54,12 @@ export async function readGlobalConfig(): Promise<GlobalConfig | null> {
 
 export async function writeGlobalConfig(config: GlobalConfig): Promise<void> {
   await writeJson(GLOBAL_CONFIG_PATH, GlobalConfigSchema.parse(config));
+}
+
+export function getGlobalConfigPath(): string {
+  return GLOBAL_CONFIG_PATH;
+}
+
+export function getProjectConfigPath(startDir: string): string | null {
+  return findProjectConfig(startDir);
 }

@@ -1,0 +1,105 @@
+openapi: 3.0.3
+info:
+  title: Wrapper CLI Refactor Contract
+  version: 0.1.0
+  description: Command-level contract for session resolution and execution.
+servers:
+  - url: http://localhost
+paths:
+  /config/resolve:
+    get:
+      summary: Resolve effective configuration for current directory
+      responses:
+        '200':
+          description: Resolved configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResolvedConfig'
+  /sessions/start:
+    post:
+      summary: Start an interactive session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionRequest'
+      responses:
+        '200':
+          description: Session started
+  /sessions/run:
+    post:
+      summary: Run a one-off session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionRequest'
+      responses:
+        '200':
+          description: Session completed
+components:
+  schemas:
+    WorkspaceMapping:
+      type: object
+      required: [sourcePath, targetPath, mode]
+      properties:
+        sourcePath:
+          type: string
+        targetPath:
+          type: string
+        mode:
+          type: string
+          enum: [rw, ro]
+    SessionRequest:
+      type: object
+      required: [mode]
+      properties:
+        mode:
+          type: string
+          enum: [interactive, one-off]
+        imageProfile:
+          type: string
+        imageReference:
+          type: string
+        mappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkspaceMapping'
+        uid:
+          type: integer
+        gid:
+          type: integer
+        usernsMode:
+          type: string
+        workdir:
+          type: string
+        env:
+          type: object
+          additionalProperties:
+            type: string
+        authMountPath:
+          type: string
+    ResolvedConfig:
+      type: object
+      properties:
+        imageProfile:
+          type: string
+        imageReference:
+          type: string
+        defaultProfileName:
+          type: string
+        effectiveMappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkspaceMapping'
+        workdir:
+          type: string
+        env:
+          type: object
+          additionalProperties:
+            type: string
+        authMountPath:
+          type: string

@@ -22,9 +22,9 @@ description: "Task list for Wrapper CLI Refactor for Viber Orchestration"
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Ensure pnpm scripts for build/test/dev are defined in /workdir/cli/package.json
-- [ ] T002 Add vitest config for TypeScript in /workdir/cli/vitest.config.ts
-- [ ] T003 [P] Add test folder placeholders in /workdir/cli/tests/unit/.gitkeep and /workdir/cli/tests/integration/.gitkeep
+- [x] T001 Ensure pnpm scripts for build/test/dev are defined in /workdir/cli/package.json
+- [x] T002 Add vitest config for TypeScript in /workdir/cli/vitest.config.ts
+- [x] T003 [P] Add test folder placeholders in /workdir/cli/tests/unit/.gitkeep and /workdir/cli/tests/integration/.gitkeep
 
 ---
 

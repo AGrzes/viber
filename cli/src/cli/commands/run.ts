@@ -14,38 +14,14 @@ export function registerRunCommand(program: Command): void {
     .passThroughOptions()
     .action(async (options, command) => {
       try {
-        const rawArgs = command.args ?? [];
-        const passthrough: string[] = [];
-        let fallbackImage: string | undefined;
-        let fallbackProfile: string | undefined;
-        let fallbackDryRun = false;
-
-        for (let i = 0; i < rawArgs.length; i += 1) {
-          const arg = rawArgs[i];
-          if (arg === "--") continue;
-          if (arg === "--image") {
-            fallbackImage = rawArgs[i + 1];
-            i += 1;
-            continue;
-          }
-          if (arg === "--profile") {
-            fallbackProfile = rawArgs[i + 1];
-            i += 1;
-            continue;
-          }
-          if (arg === "--dry-run") {
-            fallbackDryRun = true;
-            continue;
-          }
-          passthrough.push(arg);
-        }
+        const passthrough = (command.args ?? []).filter((arg: string) => arg !== "--");
 
         const exitCode = await runSession({
           cwd: options.cwd,
           mode: "one-off",
-          imageReference: options.image ?? fallbackImage,
-          imageProfile: options.profile ?? fallbackProfile,
-          dryRun: Boolean(options.dryRun) || fallbackDryRun,
+          imageReference: options.image,
+          imageProfile: options.profile,
+          dryRun: Boolean(options.dryRun),
           command: passthrough.length > 0 ? passthrough : undefined,
         });
         process.exitCode = exitCode;

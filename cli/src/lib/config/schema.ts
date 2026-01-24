@@ -58,6 +58,8 @@ export const ResolvedConfigSchema = z.object({
   global: GlobalConfigSchema.optional(),
   projectConfigPath: z.string().optional(),
   globalConfigPath: z.string().optional(),
+  projectEnvMappings: z.array(EnvMappingEntrySchema).optional(),
+  globalEnvMappings: z.array(EnvMappingEntrySchema).optional(),
   effectiveMappings: z.array(FolderMappingSchema),
   imageProfile: z.string().optional(),
   imageReference: z.string().optional(),

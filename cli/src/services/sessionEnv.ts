@@ -35,8 +35,8 @@ export function buildSessionEnv(
   }
 
   const envMappings = buildEnvMappings(
-    resolved.global?.envMappings,
-    resolved.project?.envMappings,
+    resolved.globalEnvMappings ?? resolved.global?.envMappings,
+    resolved.projectEnvMappings ?? resolved.project?.envMappings,
     hostEnv
   );
 

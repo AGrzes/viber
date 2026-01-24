@@ -27,6 +27,8 @@ export async function resolveConfig(cwd: string): Promise<ResolvedConfig> {
   const global = await readGlobalConfig();
   const globalConfig = global ?? undefined;
   const globalConfigPath = getGlobalConfigPath();
+  const projectEnvMappings = project?.envMappings;
+  const globalEnvMappings = globalConfig?.envMappings;
 
   const effectiveMappings =
     project?.mappings && project.mappings.length > 0
@@ -48,6 +50,8 @@ export async function resolveConfig(cwd: string): Promise<ResolvedConfig> {
     global: globalConfig,
     projectConfigPath: projectConfigPath ?? undefined,
     globalConfigPath,
+    projectEnvMappings,
+    globalEnvMappings,
     effectiveMappings,
     imageProfile,
     imageReference,

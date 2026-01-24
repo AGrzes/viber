@@ -13,13 +13,13 @@ pnpm install
 ## Run Tests
 
 ```bash
-pnpm vitest
+pnpm --filter viber-cli vitest
 ```
 
 ## Run the CLI (development)
 
 ```bash
-pnpm exec tsx src/cli/index.ts --help
+pnpm --filter viber-cli dev -- --help
 ```
 
 ## Example Flows
@@ -27,26 +27,26 @@ pnpm exec tsx src/cli/index.ts --help
 ### Initialize a project config
 
 ```bash
-pnpm exec tsx src/cli/index.ts init
+pnpm --filter viber-cli dev -- config
 ```
 
 ### Start an interactive session
 
 ```bash
-pnpm exec tsx src/cli/index.ts start
+pnpm --filter viber-cli dev -- start
 ```
 
 ### Run a one-off session with a direct image reference
 
 ```bash
-pnpm exec tsx src/cli/index.ts run --image docker.io/library/node:25
+pnpm --filter viber-cli dev -- run --image docker.io/library/node:25
 ```
 
 ### Manage image profiles
 
 ```bash
-pnpm exec tsx src/cli/index.ts profiles list
-pnpm exec tsx src/cli/index.ts profiles add
+pnpm --filter viber-cli dev -- profiles list
+pnpm --filter viber-cli dev -- profiles add
 ```
 
 ## Notes

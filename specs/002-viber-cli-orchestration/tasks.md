@@ -104,9 +104,9 @@ description: "Task list for Viber CLI Private Orchestration Framework"
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T028 [P] Document CLI usage and examples in /workdir/README.md
-- [ ] T029 [P] Align quickstart commands with final CLI usage in /workdir/specs/002-viber-cli-orchestration/quickstart.md
-- [ ] T030 Add final pass on error messages and debug namespaces in /workdir/cli/src/lib/utils/log.ts
+- [x] T028 [P] Document CLI usage and examples in /workdir/README.md
+- [x] T029 [P] Align quickstart commands with final CLI usage in /workdir/specs/002-viber-cli-orchestration/quickstart.md
+- [x] T030 Add final pass on error messages and debug namespaces in /workdir/cli/src/lib/utils/log.ts
 
 ---
 

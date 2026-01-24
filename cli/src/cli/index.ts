@@ -9,7 +9,8 @@ const program = new Command();
 program
   .name("viber")
   .description("Private orchestration CLI")
-  .version("0.1.0");
+  .version("0.1.0")
+  .enablePositionalOptions();
 
 registerStartCommand(program);
 registerConfigCommand(program);

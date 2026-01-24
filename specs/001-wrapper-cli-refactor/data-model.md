@@ -11,7 +11,9 @@
   - `mappings` (list of Workspace Mapping)
   - `uid` / `gid` (host identity)
   - `usernsMode` (keep-id)
+  - `workdir` (`/workdir`)
   - `authMount` (optional Auth File Mount)
+  - `env` (includes config path env vars and CODEX_HOME when applicable)
 - **Validation rules**:
   - Exactly one of `imageProfile` or `imageReference` may be set (or neither if default profile applies).
 
@@ -33,6 +35,10 @@
 - **Represents**: Optional auth file in the workspace.
 - **Fields**: `sourcePath` (`${HOME}/.codex/auth.json`), `targetPath` (`/workdir/.codex/auth.json`).
 
+### Config Path Env
+- **Represents**: Environment values for config discovery.
+- **Fields**: `VIBER_PROJECT_CONFIG`, `VIBER_GLOBAL_CONFIG`, `CODEX_HOME` (when auth.json mounted).
+
 ### Host Identity
 - **Represents**: Current user identity for file ownership.
 - **Fields**: `uid`, `gid`, `usernsMode`.
@@ -41,3 +47,4 @@
 - Session uses Image Profile or Image Reference.
 - Session includes one or more Workspace Mappings.
 - Session may include an Auth File Mount if present.
+- Session exports config path env vars.

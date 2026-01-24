@@ -74,6 +74,12 @@ components:
           type: integer
         usernsMode:
           type: string
+        workdir:
+          type: string
+        env:
+          type: object
+          additionalProperties:
+            type: string
         authMountPath:
           type: string
     ResolvedConfig:
@@ -89,5 +95,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WorkspaceMapping'
+        workdir:
+          type: string
+        env:
+          type: object
+          additionalProperties:
+            type: string
         authMountPath:
           type: string

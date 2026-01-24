@@ -7,12 +7,12 @@
 
 ## Summary
 
-Deliver a single-user CLI that orchestrates agent sessions inside Podman containers, with project and global configuration resolution, folder mappings (RW/RO), named image profiles or direct image references, and a minimal config-init flow to avoid manual file edits. The technical approach is a Node.js CLI that reads/writes local JSON config files, resolves configuration precedence, uses scoped debug logging, and shells out to Podman for session lifecycle.
+Deliver a single-user CLI that orchestrates agent sessions inside Podman containers, with project and global configuration resolution, folder mappings (RW/RO), named image profiles or direct image references, and a minimal config-init flow to avoid manual file edits. The technical approach is a Node.js 25 + TypeScript CLI that reads/writes local JSON config files, resolves configuration precedence, uses scoped debug logging, and shells out to Podman for session lifecycle.
 
 ## Technical Context
 
-**Language/Version**: Node.js 20 LTS (JavaScript)  
-**Primary Dependencies**: commander (CLI command parsing), prompts (lightweight interactive inputs), zod (config validation), debug (scoped logging)  
+**Language/Version**: Node.js 25 (TypeScript 5.x)  
+**Primary Dependencies**: commander (CLI command parsing), prompts (lightweight interactive inputs), zod (config validation), debug (scoped logging), typescript, tsx  
 **Storage**: Local filesystem JSON files for project and global config  
 **Testing**: node:test with lightweight integration tests for command flows  
 **Target Platform**: Local developer machines with Podman installed (Linux/macOS; Windows via WSL if Podman is available)  
@@ -51,7 +51,7 @@ specs/002-viber-cli-orchestration/
 ```text
 src/
 ├── cli/
-│   ├── index.js
+│   ├── index.ts
 │   └── commands/
 ├── lib/
 │   ├── config/

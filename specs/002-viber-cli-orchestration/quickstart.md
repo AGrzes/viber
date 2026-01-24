@@ -1,7 +1,7 @@
 # Quickstart: Viber CLI Private Orchestration Framework
 
 ## Prerequisites
-- Node.js 20 LTS
+- Node.js 25
 - Podman installed and available on PATH
 
 ## Local Setup
@@ -13,7 +13,7 @@ pnpm install
 ## Run the CLI (development)
 
 ```bash
-node src/cli/index.js --help
+pnpm exec tsx src/cli/index.ts --help
 ```
 
 ## Example Flows
@@ -21,26 +21,26 @@ node src/cli/index.js --help
 ### Initialize a project config
 
 ```bash
-node src/cli/index.js init
+pnpm exec tsx src/cli/index.ts init
 ```
 
 ### Start an interactive session
 
 ```bash
-node src/cli/index.js start
+pnpm exec tsx src/cli/index.ts start
 ```
 
 ### Run a one-off session with a direct image reference
 
 ```bash
-node src/cli/index.js run --image docker.io/library/node:20
+pnpm exec tsx src/cli/index.ts run --image docker.io/library/node:25
 ```
 
 ### Manage image profiles
 
 ```bash
-node src/cli/index.js profiles list
-node src/cli/index.js profiles add
+pnpm exec tsx src/cli/index.ts profiles list
+pnpm exec tsx src/cli/index.ts profiles add
 ```
 
 ## Notes

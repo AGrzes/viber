@@ -1,9 +1,9 @@
 # Research Notes: Viber CLI Private Orchestration Framework
 
 ## Decision 1: Runtime language and packaging
-- **Decision**: Node.js 20 LTS (JavaScript), single CLI package
-- **Rationale**: Matches the user's explicit preference for a Node.js CLI and avoids build complexity.
-- **Alternatives considered**: TypeScript (adds build step), Python (not aligned with stated preference).
+- **Decision**: Node.js 25 (TypeScript), single CLI package
+- **Rationale**: Matches the current runtime, keeps a Node.js CLI workflow, and adds type safety for config and command contracts.
+- **Alternatives considered**: JavaScript (fewer build steps but less safety), Python (not aligned with stated preference).
 
 ## Decision 2: Configuration format and locations
 - **Decision**: JSON config files; project config `.viber.json` in project root; global config `~/.viber/config.json` (local only, no sync).
@@ -21,7 +21,7 @@
 - **Alternatives considered**: Fallback to default or auto-create (rejected to prevent surprise behavior).
 
 ## Decision 5: CLI dependencies
-- **Decision**: commander (commands), prompts (lightweight input), zod (schema validation), debug (scoped logging).
+- **Decision**: commander (commands), prompts (lightweight input), zod (schema validation), debug (scoped logging), typescript, tsx (TypeScript runtime).
 - **Rationale**: Proven OSS with minimal footprint; keeps logic readable and testable while enabling controlled debugging.
 - **Alternatives considered**: inquirer (heavier), custom arg parsing (reinventing), bespoke logging (unnecessary).
 

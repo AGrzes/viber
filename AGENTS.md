@@ -7,8 +7,8 @@ You are in container so this mean
 Before and after any change do git commit - try to explain changes but the fact of committing history is most important
 
 ## Active Technologies
-- Node.js 20 LTS (JavaScript) + commander (CLI command parsing), prompts (lightweight interactive inputs), zod (config validation) (002-viber-cli-orchestration)
 - Local filesystem JSON files for project and global config (002-viber-cli-orchestration)
+- Node.js 25 (TypeScript 5.x) + commander (CLI command parsing), prompts (lightweight interactive inputs), zod (config validation), debug (scoped logging), typescript, tsx (002-viber-cli-orchestration)
 
 ## Recent Changes
-- 002-viber-cli-orchestration: Added Node.js 20 LTS (JavaScript) + commander (CLI command parsing), prompts (lightweight interactive inputs), zod (config validation)
+- 002-viber-cli-orchestration: Added Node.js 25 (TypeScript 5.x) + commander (CLI command parsing), prompts (lightweight interactive inputs), zod (config validation), debug (scoped logging), typescript, tsx

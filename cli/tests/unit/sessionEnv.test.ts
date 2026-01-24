@@ -35,7 +35,6 @@ describe("buildSessionEnv", () => {
     const { env } = buildSessionEnv(resolved, { HOST: "three" }, false);
 
     expect(env).toMatchObject({
-      VIBER_PROJECT_CONFIG: "/tmp/project/.viber.json",
       FOO: "three",
       BAR: "two",
     });

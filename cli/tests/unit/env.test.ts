@@ -1,9 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { ENV_CODEX_HOME, ENV_PROJECT_CONFIG } from "../../src/lib/utils/env.js";
+import { ENV_CODEX_HOME } from "../../src/lib/utils/env.js";
 
 describe("env constants", () => {
   it("exports expected config env names", () => {
-    expect(ENV_PROJECT_CONFIG).toBe("VIBER_PROJECT_CONFIG");
     expect(ENV_CODEX_HOME).toBe("CODEX_HOME");
   });
 });

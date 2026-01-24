@@ -1,6 +1,6 @@
 import { buildEnvMappings } from "../lib/utils/envMappings.js";
 import { type FolderMapping, type ResolvedConfig } from "../lib/config/schema.js";
-import { ENV_CODEX_HOME, ENV_PROJECT_CONFIG } from "../lib/utils/env.js";
+import { ENV_CODEX_HOME } from "../lib/utils/env.js";
 import {
   CODEX_AUTH_TARGET,
   CODEX_DIR,
@@ -28,10 +28,6 @@ export function buildSessionEnv(
       mode: "ro",
     });
     env[ENV_CODEX_HOME] = CODEX_DIR;
-  }
-
-  if (resolved.projectConfigPath) {
-    env[ENV_PROJECT_CONFIG] = resolved.projectConfigPath;
   }
 
   const envMappings = buildEnvMappings(

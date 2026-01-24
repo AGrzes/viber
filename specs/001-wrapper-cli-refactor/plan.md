@@ -7,7 +7,7 @@
 
 ## Summary
 
-Refactor the existing wrapper CLI so session execution preserves host identity, mounts the workspace at `/workdir`, supports default image profile resolution without extra flags, and mounts `${HOME}/.codex/auth.json` when present. The technical approach is to update the current Node.js TypeScript CLI in `/workdir/cli` to adjust image resolution logic, Podman invocation options, and deterministic install/build/test commands.
+Refactor the existing wrapper CLI so sessions preserve host identity, mount the workspace at `/workdir`, set the container working directory to `/workdir`, support default image profile resolution without extra flags, mount `${HOME}/.codex/auth.json` when present, and export environment values for resolved config paths. The technical approach is to update the current Node.js TypeScript CLI in `/workdir/cli` to adjust image resolution logic, Podman invocation options, environment injection, and deterministic install/build/test commands.
 
 ## Technical Context
 
@@ -82,12 +82,14 @@ No constitution violations anticipated.
 - Confirm default image profile naming (`default`) and how it is resolved.
 - Confirm Podman flags required for keep-id and UID:GID mapping.
 - Confirm mount target for `${HOME}/.codex/auth.json` relative to `/workdir`.
+- Confirm env variable names for project/global config paths and CODEX_HOME behavior.
 
 ### Research Tasks
 
 1. Validate Podman run flags for `--userns=keep-id` and `--user UID:GID` usage.
 2. Confirm existing config format and where default image profile is stored.
 3. Decide mount target path for `auth.json` inside the container working directory.
+4. Decide env variable names for config paths and CODEX_HOME.
 
 ### Outputs
 
@@ -124,8 +126,9 @@ No constitution violations anticipated.
 ## Phase 2: Implementation Plan
 
 1. Update image resolution to use `imageProfile` or `imageReference` (mutually exclusive) with default profile fallback.
-2. Add default mapping of current directory to `/workdir` when mappings missing.
+2. Add default mapping of current directory to `/workdir` when mappings missing and set container working directory to `/workdir`.
 3. Add Podman run options: `--userns=keep-id` and explicit UID:GID.
-4. Mount `${HOME}/.codex/auth.json` into `/workdir/.codex/auth.json` when present.
-5. Add unit tests for mapping default, image resolution, and Podman args.
-6. Validate deterministic install/build/test commands in quickstart.
+4. Mount `${HOME}/.codex/auth.json` into `/workdir/.codex/auth.json` when present and set `CODEX_HOME` accordingly.
+5. Inject environment variables for resolved project/global config paths into sessions.
+6. Add unit tests for mapping default, image resolution, workdir, env injection, and Podman args.
+7. Validate deterministic install/build/test commands in quickstart.

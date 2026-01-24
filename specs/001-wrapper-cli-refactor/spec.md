@@ -21,6 +21,7 @@ As a single operator, I want sessions to run with my host user identity and have
 1. **Given** a valid local runtime and project directory, **When** I start a session without explicit mappings, **Then** my current directory is mounted at `/workdir` inside the session.
 2. **Given** a valid local runtime, **When** I start a session, **Then** files created in the session are owned by my host user (UID/GID preserved).
 3. **Given** `${HOME}/.codex/auth.json` exists, **When** I start a session, **Then** it is mounted into the session working directory for agent access.
+4. **Given** a session starts, **When** I run commands inside the container, **Then** the working directory is set to `/workdir`.
 
 ---
 
@@ -67,6 +68,9 @@ As a maintainer, I want deterministic install, build, and test steps so the refa
 - Unit test: image resolution rejects configurations where both image profile and image reference are set.
 - Unit test: default image profile is used when no image profile or image reference is specified.
 - Unit test: session run arguments include host UID/GID preservation and auth.json mount when present.
+- Unit test: session run arguments set container working directory to `/workdir`.
+- Unit test: session run arguments include CODEX_HOME pointing to `/workdir/.codex` when auth.json is mounted.
+- Unit test: session run arguments include env values for project and global config paths.
 
 ## Requirements *(mandatory)*
 
@@ -78,8 +82,11 @@ As a maintainer, I want deterministic install, build, and test steps so the refa
 - **FR-004**: System MUST mount the current working directory to `/workdir` when no explicit mappings are provided.
 - **FR-005**: System MUST preserve host UID/GID ownership for files created in sessions.
 - **FR-006**: System MUST mount `${HOME}/.codex/auth.json` into the session working directory when the file exists.
-- **FR-007**: System MUST provide deterministic install, compile, and test commands documented for maintainers.
-- **FR-008**: System MUST use deterministic tools for formatting, compilation, and code generation where applicable.
+- **FR-007**: System MUST set the container working directory to `/workdir` for session runs.
+- **FR-008**: System MUST set `CODEX_HOME` to `/workdir/.codex` when the auth file is mounted.
+- **FR-009**: System MUST set environment variables exposing the resolved project and global config paths for sessions.
+- **FR-010**: System MUST provide deterministic install, compile, and test commands documented for maintainers.
+- **FR-011**: System MUST use deterministic tools for formatting, compilation, and code generation where applicable.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -88,6 +95,8 @@ As a maintainer, I want deterministic install, build, and test steps so the refa
 - **Image Reference**: A direct image identifier supplied explicitly for a session.
 - **Workspace Mapping**: The host directory mounted to `/workdir` when defaults apply.
 - **Auth File Mount**: The optional `${HOME}/.codex/auth.json` file made available in-session.
+- **Working Directory**: The container working directory set to `/workdir`.
+- **Config Path Env**: Environment values for resolved project and global config paths.
 - **Host Identity**: The UID/GID of the current user used for session file ownership.
 
 ### Assumptions

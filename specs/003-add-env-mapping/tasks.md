@@ -76,7 +76,7 @@ description: "Task list for env mapping management"
 
 - [X] T014 [US2] Implement env mapping command handlers in `cli/src/cli/commands/env.ts`
 - [X] T015 [US2] Register env command in `cli/src/cli/index.ts`
-- [ ] T016 [US2] Use scope-aware helpers and validation in `cli/src/lib/config/envMappingsStore.ts`
+- [X] T016 [US2] Use scope-aware helpers and validation in `cli/src/lib/config/envMappingsStore.ts`
 
 **Checkpoint**: User Story 2 works independently
 

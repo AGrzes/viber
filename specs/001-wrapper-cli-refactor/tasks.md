@@ -97,7 +97,7 @@ description: "Task list for Wrapper CLI Refactor for Viber Orchestration"
 
 ### Tests for User Story 3 (REQUIRED) ⚠️
 
-- [ ] T024 [P] [US3] Add unit test to validate env constants mapping in /workdir/cli/tests/unit/env.test.ts
+- [x] T024 [P] [US3] Add unit test to validate env constants mapping in /workdir/cli/tests/unit/env.test.ts
 
 ### Implementation for User Story 3
 

@@ -84,7 +84,7 @@ export async function runSession(options: SessionOptions): Promise<number> {
 
   return runPodman({
     imageRef,
-    interactive: false,
+    interactive: true,
     mappings,
     extraMounts,
     workdir: WORKDIR,

@@ -7,7 +7,7 @@
 ## Local Setup
 
 ```bash
-npm install
+pnpm install
 ```
 
 ## Run the CLI (development)

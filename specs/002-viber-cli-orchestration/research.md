@@ -21,11 +21,16 @@
 - **Alternatives considered**: Fallback to default or auto-create (rejected to prevent surprise behavior).
 
 ## Decision 5: CLI dependencies
-- **Decision**: commander (commands), prompts (lightweight input), zod (schema validation).
-- **Rationale**: Proven OSS with minimal footprint; keeps logic readable and testable.
-- **Alternatives considered**: inquirer (heavier), custom arg parsing (reinventing).
+- **Decision**: commander (commands), prompts (lightweight input), zod (schema validation), debug (scoped logging).
+- **Rationale**: Proven OSS with minimal footprint; keeps logic readable and testable while enabling controlled debugging.
+- **Alternatives considered**: inquirer (heavier), custom arg parsing (reinventing), bespoke logging (unnecessary).
 
-## Decision 6: Podman execution model
+## Decision 6: Package manager
+- **Decision**: pnpm.
+- **Rationale**: Fast installs and efficient disk usage; aligns with a CLI-focused workflow.
+- **Alternatives considered**: npm (slower, larger node_modules), yarn (extra tooling variance).
+
+## Decision 7: Podman execution model
 - **Decision**: Build Podman CLI command lines and execute via Node child_process; no daemon required.
 - **Rationale**: Simple and transparent; aligns with “YOLO mode” and avoids extra background services.
 - **Alternatives considered**: Podman API bindings (additional complexity).

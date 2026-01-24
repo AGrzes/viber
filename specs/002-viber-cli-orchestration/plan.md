@@ -7,18 +7,18 @@
 
 ## Summary
 
-Deliver a single-user CLI that orchestrates agent sessions inside Podman containers, with project and global configuration resolution, folder mappings (RW/RO), named image profiles or direct image references, and a minimal config-init flow to avoid manual file edits. The technical approach is a Node.js CLI that reads/writes local JSON config files, resolves configuration precedence, and shells out to Podman for session lifecycle.
+Deliver a single-user CLI that orchestrates agent sessions inside Podman containers, with project and global configuration resolution, folder mappings (RW/RO), named image profiles or direct image references, and a minimal config-init flow to avoid manual file edits. The technical approach is a Node.js CLI that reads/writes local JSON config files, resolves configuration precedence, uses scoped debug logging, and shells out to Podman for session lifecycle.
 
 ## Technical Context
 
 **Language/Version**: Node.js 20 LTS (JavaScript)  
-**Primary Dependencies**: commander (CLI command parsing), prompts (lightweight interactive inputs), zod (config validation)  
+**Primary Dependencies**: commander (CLI command parsing), prompts (lightweight interactive inputs), zod (config validation), debug (scoped logging)  
 **Storage**: Local filesystem JSON files for project and global config  
 **Testing**: node:test with lightweight integration tests for command flows  
 **Target Platform**: Local developer machines with Podman installed (Linux/macOS; Windows via WSL if Podman is available)  
 **Project Type**: single  
 **Performance Goals**: Config commands complete in <1s; session start aligns with spec (<2 minutes)  
-**Constraints**: No background daemon; rely on Podman CLI; avoid auto-sync of configuration  
+**Constraints**: No background daemon; rely on Podman CLI; avoid auto-sync of configuration; use pnpm for package management  
 **Scale/Scope**: Single user; tens of projects and image profiles; config size <1MB
 
 ## Constitution Check

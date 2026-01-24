@@ -1,11 +1,11 @@
 <!--
 Sync Impact Report
-- Version: N/A (template) → 1.0.0
-- Modified principles: template placeholders → I. Elegant Simplicity, II. Modular Boundaries, III. Use Proven OSS, IV. Tests as Safety Harness, V. Pragmatic Scope & Clarity
-- Added sections: Operating Constraints, Development Workflow (concrete content)
-- Removed sections: None (all placeholders replaced)
-- Templates requiring updates: ✅ .specify/templates/plan-template.md, ✅ .specify/templates/spec-template.md, ✅ .specify/templates/tasks-template.md
-- Follow-up TODOs: Provide official [PROJECT_NAME] once decided
+- Version: 1.0.0 → 1.1.0
+- Modified principles: IV. Tests as Safety Harness and Design Shaper → IV. Explicit Testing Baseline
+- Added sections: Principle VI. Deterministic Tools Over LLMs
+- Removed sections: None
+- Templates requiring updates: ✅ /workdir/.specify/templates/plan-template.md, ✅ /workdir/.specify/templates/spec-template.md, ✅ /workdir/.specify/templates/tasks-template.md
+- Follow-up TODOs: TODO(PROJECT_NAME) remains until official project name is set
 -->
 
 # TODO(PROJECT_NAME) Constitution
@@ -28,15 +28,21 @@ Prefer stable, well-maintained open-source libraries over homegrown solutions. B
 code, justify why existing libraries are insufficient. Track licenses and updates; owning less code
 reduces maintenance and test burden.
 
-### IV. Tests as Safety Harness and Design Shaper
-Tests exist to lock in behavior, prevent regressions, and inform design. Choose the minimum set that
-catches known risks (unit where cheap, integration where contracts interact). Avoid test bloat and
-slow suites, but never skip coverage for previously broken or risky areas.
+### IV. Explicit Testing Baseline
+Every feature MUST define and implement a minimal set of unit tests that prove core behavior works
+at all (happy path plus critical guardrails). Specs MUST include a Testing Requirements section that
+enumerates these unit tests. Favor small, fast tests; avoid bloated suites, but never skip coverage
+for previously broken or risky areas.
 
 ### V. Pragmatic Scope & Self-Explanatory Code
 Less is more. Build for the main cases of the intended lifespan; avoid gold plating and speculative
 corner coverage. Code and naming must carry the meaning—comments and docs exist only to clarify
 non-obvious decisions.
+
+### VI. Deterministic Tools Over LLMs
+Prefer deterministic tooling (formatters, compilers like `tsc`, and code generators for OpenAPI or
+schemas) over LLM-driven transformations for mechanical changes. Use LLMs for reasoning and design,
+not for replacing stable, reproducible tooling outputs.
 
 ## Operating Constraints
 
@@ -44,12 +50,14 @@ non-obvious decisions.
 - Prefer configuration over forks; minimize bespoke build or deployment steps.
 - When adding dependencies, record license and update policy; remove stale ones early.
 - Keep communication concise: surface decisions, trade-offs, and contracts; omit narrative fluff.
+- Use deterministic tools for formatting, compilation, and code generation before LLM-driven edits.
 
 ## Development Workflow
 
 - Define module contracts before implementation; renegotiate contracts in review, not after release.
 - Start from existing OSS/library capabilities; only code what the gap requires.
-- Write tests that pin risky behavior before changing it; remove flaky/brittle tests or harden them.
+- Write minimal unit tests that prove core behavior works; add integration tests only where contracts
+  interact. Remove flaky/brittle tests or harden them.
 - Keep pull requests small, purpose-driven, and traceable to a contract or defect.
 - Bias to ship the simplest viable version; iterate when real usage justifies it.
 
@@ -61,4 +69,4 @@ MAJOR for principle removals/redefinitions, MINOR for new principles or expanded
 clarifications. Every pull request must state compliance or list explicit, temporary exceptions with
 expiry dates. Retrospectives will review exceptions and prune code or tests that violate principles.
 
-**Version**: 1.0.0 | **Ratified**: 2026-01-23 | **Last Amended**: 2026-01-23
+**Version**: 1.1.0 | **Ratified**: 2026-01-23 | **Last Amended**: 2026-01-24

@@ -4,7 +4,7 @@
 **Created**: [DATE]  
 **Status**: Draft  
 **Input**: User description: "$ARGUMENTS"
-**Constitution Guardrails**: Keep scope to primary use cases; reuse proven OSS; define clear module contracts; plan only tests that mitigate real risk.
+**Constitution Guardrails**: Keep scope to primary use cases; reuse proven OSS; define clear module contracts; include minimal unit tests that prove core behavior works; prefer deterministic tools over LLM transformations.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -75,6 +75,16 @@
 
 - What happens when [boundary condition]?
 - How does system handle [error scenario]?
+
+## Testing Requirements *(mandatory)*
+
+<!--
+  ACTION REQUIRED: Specify the minimal set of unit tests that prove core behavior works at all.
+  These should map directly to the primary user journeys and their guardrails.
+-->
+
+- [Test 1: core happy path behavior]
+- [Test 2: critical guardrail or error case]
 
 ## Requirements *(mandatory)*
 

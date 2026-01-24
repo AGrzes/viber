@@ -34,7 +34,8 @@
 - Simplicity: Proposed approach removes real complexity; no extra layers/duplication.
 - Modularity: Clear module boundaries/contracts; rewritable without ripple effects.
 - OSS First: Reuse proven libraries unless a gap is explicitly justified.
-- Tests as Harness: Minimal, risk-focused tests defined; avoid bloated suites.
+- Tests as Harness: Minimal unit tests defined for core behavior; avoid bloated suites.
+- Deterministic Tools: Prefer formatters/compilers/generators over LLM transforms.
 - Pragmatic Scope: Targets main use cases; no speculative edge bloat.
 - Self-Explanatory: Names/API convey intent; comments only where meaning would be unclear.
 

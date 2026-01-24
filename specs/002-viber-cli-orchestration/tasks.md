@@ -55,10 +55,10 @@ description: "Task list for Viber CLI Private Orchestration Framework"
 
 ### Implementation for User Story 1
 
-- [ ] T014 [US1] Implement session start logic (interactive) in /workdir/cli/src/services/session.ts
-- [ ] T015 [US1] Implement CLI start command handler in /workdir/cli/src/cli/commands/start.ts
-- [ ] T016 [US1] Wire start command into CLI entrypoint in /workdir/cli/src/cli/index.ts
-- [ ] T017 [US1] Add validation for image profile/reference resolution errors in /workdir/cli/src/services/session.ts
+- [x] T014 [US1] Implement session start logic (interactive) in /workdir/cli/src/services/session.ts
+- [x] T015 [US1] Implement CLI start command handler in /workdir/cli/src/cli/commands/start.ts
+- [x] T016 [US1] Wire start command into CLI entrypoint in /workdir/cli/src/cli/index.ts
+- [x] T017 [US1] Add validation for image profile/reference resolution errors in /workdir/cli/src/services/session.ts
 
 **Checkpoint**: User Story 1 is functional and testable independently
 

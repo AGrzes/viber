@@ -21,6 +21,7 @@ pnpm --filter viber-cli dev -- --help
 ```bash
 pnpm --filter viber-cli dev -- start
 pnpm --filter viber-cli dev -- run --image docker.io/library/node:25
+pnpm --filter viber-cli dev -- run --image docker.io/library/node:25 --dry-run
 pnpm --filter viber-cli dev -- profiles list
 ```
 

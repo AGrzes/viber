@@ -27,6 +27,7 @@ export type SessionOptions = {
   command?: string[];
   imageProfile?: string;
   imageReference?: string;
+  dryRun?: boolean;
 };
 
 async function resolveImageRef(
@@ -121,6 +122,7 @@ export async function runSession(options: SessionOptions): Promise<number> {
     uid: identity.uid,
     gid: identity.gid,
     usernsMode: "keep-id",
+    dryRun: options.dryRun,
     command: options.command,
   });
 }

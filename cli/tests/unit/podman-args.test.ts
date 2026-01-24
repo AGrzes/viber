@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { buildPodmanArgs } from "../../src/lib/podman/runner.js";
+import { describe, expect, it, vi } from "vitest";
+import { buildPodmanArgs, formatPodmanCommand, runPodman } from "../../src/lib/podman/runner.js";
 import { WORKDIR, CODEX_DIR, CODEX_AUTH_TARGET } from "../../src/lib/utils/paths.js";
 import { ENV_CODEX_HOME, ENV_PROJECT_CONFIG, ENV_GLOBAL_CONFIG } from "../../src/lib/utils/env.js";
 
@@ -64,5 +64,33 @@ describe("buildPodmanArgs", () => {
 
     expect(args).toContain(`${ENV_PROJECT_CONFIG}=/path/project/.viber.json`);
     expect(args).toContain(`${ENV_GLOBAL_CONFIG}=/home/user/.viber/config.json`);
+  });
+});
+
+describe("dry-run behavior", () => {
+  it("formats a podman command string", () => {
+    const args = buildPodmanArgs({
+      imageRef: "example:latest",
+      interactive: false,
+      mappings: [baseMapping],
+    });
+
+    const formatted = formatPodmanCommand(args);
+    expect(formatted.startsWith("podman run --rm")).toBe(true);
+    expect(formatted).toContain("example:latest");
+  });
+
+  it("prints command instead of executing when dryRun is true", async () => {
+    const spy = vi.spyOn(console, "log").mockImplementation(() => {});
+    const exitCode = await runPodman({
+      imageRef: "example:latest",
+      interactive: false,
+      mappings: [baseMapping],
+      dryRun: true,
+    });
+
+    expect(exitCode).toBe(0);
+    expect(spy).toHaveBeenCalledTimes(1);
+    spy.mockRestore();
   });
 });

@@ -11,8 +11,13 @@ export type PodmanRunOptions = {
   uid?: number;
   gid?: number;
   usernsMode?: string;
+  dryRun?: boolean;
   command?: string[];
 };
+
+export function formatPodmanCommand(args: string[]): string {
+  return ["podman", ...args].join(" ");
+}
 
 export function buildPodmanArgs(options: PodmanRunOptions): string[] {
   const args: string[] = ["run", "--rm"];
@@ -57,6 +62,10 @@ export function buildPodmanArgs(options: PodmanRunOptions): string[] {
 
 export function runPodman(options: PodmanRunOptions): Promise<number> {
   const args = buildPodmanArgs(options);
+  if (options.dryRun) {
+    console.log(formatPodmanCommand(args));
+    return Promise.resolve(0);
+  }
 
   return new Promise((resolve, reject) => {
     const child = spawn("podman", args, { stdio: "inherit" });

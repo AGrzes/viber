@@ -6,6 +6,12 @@
 **Input**: User description: "Another round of fixing viber cli - now I will make it more targeted THere is dumb non-feature of setting VIBER_GLOBAL_CONFIG in container. It does not make sense. Get rid of it. What makes sense is to be able to provide KV mapping for env variables on global and local level so - Command to set, list, get, delete mapping, globally and in nearest project - Optionally opportunity to provide them in setup wizard - Merge of the envs when spawning container"
 **Constitution Guardrails**: Keep scope to primary use cases; reuse proven OSS; define clear module contracts; include minimal unit tests that prove core behavior works; prefer deterministic tools over LLM transformations.
 
+## Clarifications
+
+### Session 2026-01-24
+
+- Q: What validation rule should define a “valid environment variable name” for mapping keys? → A: Keys must match `[A-Za-z_][A-Za-z0-9_]*` (case-sensitive).
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Use env mappings in container sessions (Priority: P1)
@@ -74,7 +80,7 @@ As a user running the setup wizard, I want the option to enter env mappings so t
 - **FR-003**: System MUST provide CLI commands to set, get, list, and delete env mappings in global scope.
 - **FR-004**: System MUST provide CLI commands to set, get, list, and delete env mappings for the nearest project scope.
 - **FR-005**: System MUST merge global and project mappings when starting a session, with project mappings overriding global mappings on key conflicts.
-- **FR-006**: System MUST validate mapping keys as valid environment variable names and reject invalid keys with a clear error.
+- **FR-006**: System MUST validate mapping keys against `[A-Za-z_][A-Za-z0-9_]*` (case-sensitive) and reject invalid keys with a clear error.
 - **FR-007**: System MUST allow mapping values to be empty strings and preserve them as provided.
 - **FR-008**: System MUST offer an optional step in the setup wizard to add project-scoped env mappings.
 - **FR-009**: System MUST create a project configuration when setting a project-scoped mapping if none exists.

@@ -105,7 +105,7 @@ description: "Task list for env mapping management"
 
 **Purpose**: Final validation and documentation alignment
 
-- [ ] T020 [P] Update CLI help text for env commands in `cli/src/cli/commands/env.ts`
+- [X] T020 [P] Update CLI help text for env commands in `cli/src/cli/commands/env.ts`
 - [ ] T021 Run quickstart validation against `specs/003-add-env-mapping/quickstart.md`
 
 ---

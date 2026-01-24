@@ -28,7 +28,7 @@ export function registerEnvCommand(program: Command): void {
 
   env
     .command("list")
-    .description("List env mappings")
+    .description("List env mappings (project scope by default)")
     .option("--global", "Use global scope")
     .option("--cwd <path>", "Working directory to resolve project config", process.cwd())
     .action(async (options) => {
@@ -50,7 +50,7 @@ export function registerEnvCommand(program: Command): void {
 
   env
     .command("get")
-    .description("Get an env mapping")
+    .description("Get an env mapping (project scope by default)")
     .argument("<key>", "Mapping key")
     .option("--global", "Use global scope")
     .option("--cwd <path>", "Working directory to resolve project config", process.cwd())
@@ -70,7 +70,7 @@ export function registerEnvCommand(program: Command): void {
 
   env
     .command("set")
-    .description("Set an env mapping")
+    .description("Set an env mapping (project scope by default)")
     .argument("<assignment>", "KEY=value")
     .option("--global", "Use global scope")
     .option("--cwd <path>", "Working directory to resolve project config", process.cwd())
@@ -88,7 +88,7 @@ export function registerEnvCommand(program: Command): void {
 
   env
     .command("delete")
-    .description("Delete an env mapping")
+    .description("Delete an env mapping (project scope by default)")
     .argument("<key>", "Mapping key")
     .option("--global", "Use global scope")
     .option("--cwd <path>", "Working directory to resolve project config", process.cwd())

@@ -4,18 +4,8 @@ import { runPodman } from "../lib/podman/runner.js";
 import { CliError } from "../lib/utils/errors.js";
 import { log } from "../lib/utils/log.js";
 import { getHostIdentity } from "../lib/utils/identity.js";
-import {
-  CODEX_AUTH_TARGET,
-  CODEX_DIR,
-  WORKDIR,
-  getCodexAuthSource,
-  hasCodexAuth,
-} from "../lib/utils/paths.js";
-import {
-  ENV_CODEX_HOME,
-  ENV_GLOBAL_CONFIG,
-  ENV_PROJECT_CONFIG,
-} from "../lib/utils/env.js";
+import { WORKDIR } from "../lib/utils/paths.js";
+import { buildSessionEnv } from "./sessionEnv.js";
 import { type FolderMapping } from "../lib/config/schema.js";
 import { getProfileOrThrow } from "./profiles.js";
 
@@ -80,24 +70,7 @@ export async function runSession(options: SessionOptions): Promise<number> {
     throw new CliError("Host identity is unavailable; cannot determine UID/GID.");
   }
 
-  const extraMounts: FolderMapping[] = [];
-  const env: Record<string, string> = {};
-
-  if (hasCodexAuth()) {
-    extraMounts.push({
-      sourcePath: getCodexAuthSource(),
-      targetPath: CODEX_AUTH_TARGET,
-      mode: "ro",
-    });
-    env[ENV_CODEX_HOME] = CODEX_DIR;
-  }
-
-  if (resolved.projectConfigPath) {
-    env[ENV_PROJECT_CONFIG] = resolved.projectConfigPath;
-  }
-  if (resolved.globalConfigPath) {
-    env[ENV_GLOBAL_CONFIG] = resolved.globalConfigPath;
-  }
+  const { env, extraMounts } = buildSessionEnv(resolved, process.env);
 
   const fallbackMapping: FolderMapping = {
     sourcePath: options.cwd,

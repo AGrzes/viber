@@ -53,7 +53,7 @@ description: "Task list for env mapping management"
 
 ### Implementation for User Story 1
 
-- [ ] T009 [US1] Wire env mapping merge + interpolation into session env assembly in `cli/src/services/session.ts`
+- [X] T009 [US1] Wire env mapping merge + interpolation into session env assembly in `cli/src/services/session.ts`
 - [ ] T010 [US1] Remove `VIBER_GLOBAL_CONFIG` injection and related constant from `cli/src/lib/utils/env.ts` and `cli/src/services/session.ts`
 - [ ] T011 [US1] Ensure resolved config exposes env mappings needed by session in `cli/src/lib/config/resolver.ts`
 

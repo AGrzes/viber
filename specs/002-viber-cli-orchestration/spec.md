@@ -14,6 +14,7 @@
 - Q: Which container runtime(s) are supported? → A: Podman only.
 - Q: Where is global configuration stored? → A: Locally per machine; no automatic sync.
 - Q: When searching upward for project configuration, what is the stopping point? → A: Search up to the filesystem root (or drive root).
+- Q: How should missing image profiles be handled, and is direct image reference allowed? → A: Direct image reference and named image profile are separate explicit parameters; missing profiles are errors.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -70,6 +71,7 @@ As a single operator, I want global defaults and named image profiles so I can r
 - How does the system handle conflicting mapping modes for the same path?
 - What happens when a referenced image profile does not exist?
 - What happens when outbound network access is blocked by the runtime default?
+- What happens when an explicit image reference cannot be found or pulled?
 
 ## Requirements *(mandatory)*
 
@@ -90,6 +92,8 @@ As a single operator, I want global defaults and named image profiles so I can r
 - **FR-013**: System MUST use the runtime default for network access unless an explicit network policy is configured by the user.
 - **FR-014**: System MUST use Podman as the supported local container runtime.
 - **FR-015**: System MUST store global configuration locally on the machine and MUST NOT include automatic synchronization.
+- **FR-016**: System MUST allow an explicit direct image reference as a distinct configuration option from a named image profile.
+- **FR-017**: System MUST fail with a clear error if a referenced image profile does not exist.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -98,6 +102,7 @@ As a single operator, I want global defaults and named image profiles so I can r
 - **Global Configuration**: User-wide defaults including default image profile, default mappings, and available image profiles.
 - **Folder Mapping**: A mapping entry with source path, mount label (optional), and access mode (read-write or read-only).
 - **Image Profile**: A named profile describing the runtime environment selection for sessions.
+- **Image Reference**: An explicit image identifier used directly for a session when provided.
 - **Session**: A launched interactive or one-off agent runtime tied to a specific configuration resolution.
 - **Skills Palette**: A reusable set of skills or capability bundles that projects can opt into.
 

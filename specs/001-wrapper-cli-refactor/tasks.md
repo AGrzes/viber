@@ -101,8 +101,8 @@ description: "Task list for Wrapper CLI Refactor for Viber Orchestration"
 
 ### Implementation for User Story 3
 
-- [ ] T025 [US3] Update quickstart commands in /workdir/specs/001-wrapper-cli-refactor/quickstart.md
-- [ ] T026 [US3] Align README usage with deterministic commands in /workdir/README.md
+- [x] T025 [US3] Update quickstart commands in /workdir/specs/001-wrapper-cli-refactor/quickstart.md
+- [x] T026 [US3] Align README usage with deterministic commands in /workdir/README.md
 
 **Checkpoint**: All user stories are independently functional
 
@@ -112,7 +112,7 @@ description: "Task list for Wrapper CLI Refactor for Viber Orchestration"
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T027 [P] Document new env vars in /workdir/README.md
+- [x] T027 [P] Document new env vars in /workdir/README.md
 - [ ] T028 [P] Review debug logging for workdir/env visibility in /workdir/cli/src/lib/utils/log.ts
 
 ---

@@ -6,6 +6,12 @@
 **Input**: User description: "Develop Viber CLI private agentic coding orchestration framework - By private it means it is single person operation so the publishing ready is non-goal - By orchestration framework we mean several things - Wrapper CLI tool that allows to quickly spin up agentic worker locally using containers (podman) so agent can run in YOLO mode without confirmation every 30s but also with much better sandboxing. The wrapper should manage various projects so configuration can be persisted (folder mapping, images with tooling,...) - It should work similarly to say `codex` cli so it launches interactive session but wrapped with container - It should have some project specific config (that can be dotfile found by going up hierarchy) that contains folder mapping and ability to specify multiple mappings (RWQ/RO) for things like reference documentation - It should provide some simplified way to create config than writing file by hand - but not necesarily full blown wizard - It shoud have some global config with defaults and reusable stuff like skills palete - It can launch one off container with say `podman run --rm ...` - It should have some managemnt of images (basically reference what images to use) - It can require some additoonal libs and some manual setup - it is one person operation so do not waste tie and complexituy on things like installer or making it one file exec - it can perfectly well be globally installed node.js cli tool (and assume node runtime was intalled)"
 **Constitution Guardrails**: Keep scope to primary use cases; reuse proven OSS; define clear module contracts; plan only tests that mitigate real risk.
 
+## Clarifications
+
+### Session 2026-01-24
+
+- Q: What is the default outbound network policy for sessions? → A: Use the runtime default; the tool does not impose a network policy unless explicitly configured.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Start an isolated agent session for a project (Priority: P1)
@@ -60,6 +66,7 @@ As a single operator, I want global defaults and named image profiles so I can r
 - What happens when the local container runtime is unavailable?
 - How does the system handle conflicting mapping modes for the same path?
 - What happens when a referenced image profile does not exist?
+- What happens when outbound network access is blocked by the runtime default?
 
 ## Requirements *(mandatory)*
 
@@ -77,6 +84,7 @@ As a single operator, I want global defaults and named image profiles so I can r
 - **FR-010**: System MUST support a reusable skills palette that can be referenced by projects.
 - **FR-011**: System MUST provide clear, actionable error messages when required prerequisites (such as container runtime or image profile) are missing.
 - **FR-012**: System MUST persist project and global configuration so they remain available across sessions.
+- **FR-013**: System MUST use the runtime default for network access unless an explicit network policy is configured by the user.
 
 ### Key Entities *(include if feature involves data)*
 

@@ -34,14 +34,14 @@ description: "Task list for Viber CLI Private Orchestration Framework"
 
 **Purpose**: Core infrastructure that MUST be complete before ANY user story can be implemented
 
-- [ ] T006 Define config types and Zod schemas in /workdir/cli/src/lib/config/schema.ts
-- [ ] T007 Implement config file discovery (search to filesystem root) in /workdir/cli/src/lib/config/discovery.ts
-- [ ] T008 Implement config load/merge/precedence logic (project overrides global; implicit mapping) in /workdir/cli/src/lib/config/resolver.ts
-- [ ] T009 Implement config persistence (project/global read/write) in /workdir/cli/src/lib/config/store.ts
-- [ ] T010 Implement mapping validation (paths, modes, uniqueness) in /workdir/cli/src/lib/config/validation.ts
-- [ ] T011 Implement Podman command builder and runner in /workdir/cli/src/lib/podman/runner.ts
-- [ ] T012 Implement debug logging utility and namespaces in /workdir/cli/src/lib/utils/log.ts
-- [ ] T013 Implement shared error helpers for actionable messages in /workdir/cli/src/lib/utils/errors.ts
+- [x] T006 Define config types and Zod schemas in /workdir/cli/src/lib/config/schema.ts
+- [x] T007 Implement config file discovery (search to filesystem root) in /workdir/cli/src/lib/config/discovery.ts
+- [x] T008 Implement config load/merge/precedence logic (project overrides global; implicit mapping) in /workdir/cli/src/lib/config/resolver.ts
+- [x] T009 Implement config persistence (project/global read/write) in /workdir/cli/src/lib/config/store.ts
+- [x] T010 Implement mapping validation (paths, modes, uniqueness) in /workdir/cli/src/lib/config/validation.ts
+- [x] T011 Implement Podman command builder and runner in /workdir/cli/src/lib/podman/runner.ts
+- [x] T012 Implement debug logging utility and namespaces in /workdir/cli/src/lib/utils/log.ts
+- [x] T013 Implement shared error helpers for actionable messages in /workdir/cli/src/lib/utils/errors.ts
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 

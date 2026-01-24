@@ -70,7 +70,7 @@ description: "Task list for env mapping management"
 ### Tests for User Story 2 (REQUIRED) ⚠️
 
 - [X] T012 [P] [US2] Add unit tests for global CRUD in `cli/tests/unit/envMappingsGlobal.test.ts`
-- [ ] T013 [P] [US2] Add unit tests for project CRUD and missing-project error in `cli/tests/unit/envMappingsProject.test.ts`
+- [X] T013 [P] [US2] Add unit tests for project CRUD and missing-project error in `cli/tests/unit/envMappingsProject.test.ts`
 
 ### Implementation for User Story 2
 

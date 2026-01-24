@@ -3,6 +3,20 @@ import { validateMappings } from "../lib/config/validation.js";
 import { runPodman } from "../lib/podman/runner.js";
 import { CliError } from "../lib/utils/errors.js";
 import { log } from "../lib/utils/log.js";
+import { getHostIdentity } from "../lib/utils/identity.js";
+import {
+  CODEX_AUTH_TARGET,
+  CODEX_DIR,
+  WORKDIR,
+  getCodexAuthSource,
+  hasCodexAuth,
+} from "../lib/utils/paths.js";
+import {
+  ENV_CODEX_HOME,
+  ENV_GLOBAL_CONFIG,
+  ENV_PROJECT_CONFIG,
+} from "../lib/utils/env.js";
+import { type FolderMapping } from "../lib/config/schema.js";
 import { getProfileOrThrow } from "./profiles.js";
 
 export type SessionMode = "interactive" | "one-off";
@@ -28,16 +42,16 @@ async function resolveImageRef(
     return profile.baseImageRef;
   }
 
-  if (!resolved.imageSource) {
-    throw new CliError("No image selected. Set imageProfile, imageReference, or a global default.");
+  if (resolved.imageReference) {
+    return resolved.imageReference;
   }
 
-  if (resolved.imageSourceType === "reference") {
-    return resolved.imageSource;
+  if (resolved.imageProfile) {
+    const profile = await getProfileOrThrow(resolved.imageProfile);
+    return profile.baseImageRef;
   }
 
-  const profile = await getProfileOrThrow(resolved.imageSource);
-  return profile.baseImageRef;
+  throw new CliError("No image selected. Set imageProfile, imageReference, or a default profile.");
 }
 
 export async function runSession(options: SessionOptions): Promise<number> {
@@ -56,10 +70,45 @@ export async function runSession(options: SessionOptions): Promise<number> {
   });
   log.podman("using image", imageRef);
 
+  const identity = getHostIdentity();
+  if (!identity) {
+    throw new CliError("Host identity is unavailable; cannot determine UID/GID.");
+  }
+
+  const extraMounts: FolderMapping[] = [];
+  const env: Record<string, string> = {};
+
+  if (hasCodexAuth()) {
+    extraMounts.push({
+      sourcePath: getCodexAuthSource(),
+      targetPath: CODEX_AUTH_TARGET,
+      mode: "ro",
+    });
+    env[ENV_CODEX_HOME] = CODEX_DIR;
+  }
+
+  if (resolved.projectConfigPath) {
+    env[ENV_PROJECT_CONFIG] = resolved.projectConfigPath;
+  }
+  if (resolved.globalConfigPath) {
+    env[ENV_GLOBAL_CONFIG] = resolved.globalConfigPath;
+  }
+
+  const mappings =
+    resolved.effectiveMappings.length > 0
+      ? resolved.effectiveMappings
+      : [{ sourcePath: options.cwd, targetPath: WORKDIR, mode: "rw" }];
+
   return runPodman({
     imageRef,
     interactive: options.mode === "interactive",
-    mappings: resolved.effectiveMappings,
+    mappings,
+    extraMounts,
+    workdir: WORKDIR,
+    env,
+    uid: identity.uid,
+    gid: identity.gid,
+    usernsMode: "keep-id",
     command: options.command,
   });
 }

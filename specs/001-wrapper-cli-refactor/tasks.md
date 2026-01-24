@@ -59,10 +59,10 @@ description: "Task list for Wrapper CLI Refactor for Viber Orchestration"
 
 ### Implementation for User Story 1
 
-- [ ] T015 [US1] Update session execution to set workdir, UID/GID, userns keep-id in /workdir/cli/src/services/session.ts
-- [ ] T016 [US1] Implement default mapping of CWD to `/workdir` in /workdir/cli/src/services/session.ts
-- [ ] T017 [US1] Add auth.json mount and CODEX_HOME env injection in /workdir/cli/src/services/session.ts
-- [ ] T018 [US1] Inject config path env vars using resolver outputs in /workdir/cli/src/services/session.ts
+- [x] T015 [US1] Update session execution to set workdir, UID/GID, userns keep-id in /workdir/cli/src/services/session.ts
+- [x] T016 [US1] Implement default mapping of CWD to `/workdir` in /workdir/cli/src/services/session.ts
+- [x] T017 [US1] Add auth.json mount and CODEX_HOME env injection in /workdir/cli/src/services/session.ts
+- [x] T018 [US1] Inject config path env vars using resolver outputs in /workdir/cli/src/services/session.ts
 
 **Checkpoint**: User Story 1 is functional and testable independently
 

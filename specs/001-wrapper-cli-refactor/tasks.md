@@ -81,9 +81,9 @@ description: "Task list for Wrapper CLI Refactor for Viber Orchestration"
 
 ### Implementation for User Story 2
 
-- [ ] T021 [US2] Implement default profile lookup (name `default`) in /workdir/cli/src/services/profiles.ts
-- [ ] T022 [US2] Update image resolution to use profile/reference or default in /workdir/cli/src/services/session.ts
-- [ ] T023 [US2] Ensure error messaging for invalid image selection in /workdir/cli/src/services/session.ts
+- [x] T021 [US2] Implement default profile lookup (name `default`) in /workdir/cli/src/services/profiles.ts
+- [x] T022 [US2] Update image resolution to use profile/reference or default in /workdir/cli/src/services/session.ts
+- [x] T023 [US2] Ensure error messaging for invalid image selection in /workdir/cli/src/services/session.ts
 
 **Checkpoint**: User Stories 1 and 2 both work independently
 

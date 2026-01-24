@@ -55,6 +55,10 @@ async function resolveImageRef(
 }
 
 export async function runSession(options: SessionOptions): Promise<number> {
+  if (options.imageProfile && options.imageReference) {
+    throw new CliError("image profile and image reference cannot both be set.");
+  }
+
   const resolved = await resolveConfig(options.cwd);
   log.config("resolved config", resolved);
 

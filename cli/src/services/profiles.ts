@@ -1,5 +1,5 @@
 import { readGlobalConfig, writeGlobalConfig } from "../lib/config/store.js";
-import { type ImageProfile } from "../lib/config/schema.js";
+import { DEFAULT_PROFILE_NAME, type ImageProfile } from "../lib/config/schema.js";
 import { CliError } from "../lib/utils/errors.js";
 
 export async function listProfiles(): Promise<ImageProfile[]> {
@@ -12,6 +12,10 @@ export async function getProfileOrThrow(name: string): Promise<ImageProfile> {
   const profile = profiles.find((p) => p.name === name);
   if (!profile) throw new CliError(`Image profile not found: ${name}`);
   return profile;
+}
+
+export async function getDefaultProfile(): Promise<ImageProfile> {
+  return getProfileOrThrow(DEFAULT_PROFILE_NAME);
 }
 
 export async function upsertProfile(profile: ImageProfile): Promise<void> {

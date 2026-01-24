@@ -90,7 +90,7 @@ description: "Task list for env mapping management"
 
 ### Tests for User Story 3 (REQUIRED) ⚠️
 
-- [ ] T017 [P] [US3] Add wizard env mapping flow tests in `cli/tests/unit/configWizardEnvMappings.test.ts`
+- [X] T017 [P] [US3] Add wizard env mapping flow tests in `cli/tests/unit/configWizardEnvMappings.test.ts`
 
 ### Implementation for User Story 3
 

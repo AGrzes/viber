@@ -5,6 +5,7 @@ import { z } from "zod";
 export const PROJECT_CONFIG_NAME = ".viber.json";
 export const GLOBAL_CONFIG_PATH = path.join(os.homedir(), ".viber", "config.json");
 export const DEFAULT_PROFILE_NAME = "default";
+const ENV_KEY_PATTERN = /^[A-Za-z_][A-Za-z0-9_]*$/;
 
 export const FolderMappingSchema = z.object({
   sourcePath: z.string().min(1),
@@ -25,8 +26,14 @@ export const SkillsPaletteSchema = z.object({
   entries: z.array(z.string()).default([]),
 });
 
+export const EnvMappingEntrySchema = z.object({
+  key: z.string().regex(ENV_KEY_PATTERN),
+  value: z.string(),
+});
+
 export const ProjectConfigSchema = z
   .object({
+    envMappings: z.array(EnvMappingEntrySchema).optional(),
     mappings: z.array(FolderMappingSchema).optional(),
     imageProfile: z.string().optional(),
     imageReference: z.string().optional(),
@@ -39,6 +46,7 @@ export const ProjectConfigSchema = z
   );
 
 export const GlobalConfigSchema = z.object({
+  envMappings: z.array(EnvMappingEntrySchema).optional(),
   defaultImageProfile: z.string().optional(),
   defaultMappings: z.array(FolderMappingSchema).optional(),
   imageProfiles: z.array(ImageProfileSchema).optional(),
@@ -57,6 +65,7 @@ export const ResolvedConfigSchema = z.object({
 });
 
 export type FolderMapping = z.infer<typeof FolderMappingSchema>;
+export type EnvMappingEntry = z.infer<typeof EnvMappingEntrySchema>;
 export type ImageProfile = z.infer<typeof ImageProfileSchema>;
 export type SkillsPalette = z.infer<typeof SkillsPaletteSchema>;
 export type ProjectConfig = z.infer<typeof ProjectConfigSchema>;

@@ -22,7 +22,7 @@ description: "Task list for env mapping management"
 
 **Purpose**: Establish shared data structures for env mappings
 
-- [ ] T001 Extend config schemas and types for env mappings in `cli/src/lib/config/schema.ts`
+- [X] T001 Extend config schemas and types for env mappings in `cli/src/lib/config/schema.ts`
 - [ ] T002 Update config read/write handling for env mappings in `cli/src/lib/config/store.ts`
 - [ ] T003 [P] Add env mapping validation helpers in `cli/src/lib/config/envMappings.ts`
 

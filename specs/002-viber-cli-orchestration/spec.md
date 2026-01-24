@@ -16,6 +16,7 @@
 - Q: When searching upward for project configuration, what is the stopping point? → A: Search up to the filesystem root (or drive root).
 - Q: How should missing image profiles be handled, and is direct image reference allowed? → A: Direct image reference and named image profile are separate explicit parameters; missing profiles are errors.
 - Q: When project and global settings overlap, what is the precedence? → A: Project overrides; global used only when project omits a value.
+- Q: What happens when no project configuration is found? → A: Use global defaults with an implicit mapping of the current directory.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -95,6 +96,7 @@ As a single operator, I want global defaults and named image profiles so I can r
 - **FR-015**: System MUST store global configuration locally on the machine and MUST NOT include automatic synchronization.
 - **FR-016**: System MUST allow an explicit direct image reference as a distinct configuration option from a named image profile.
 - **FR-017**: System MUST fail with a clear error if a referenced image profile does not exist.
+- **FR-018**: System MUST use global defaults and map the current directory when no project configuration is found.
 
 ### Key Entities *(include if feature involves data)*
 

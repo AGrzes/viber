@@ -12,6 +12,7 @@
 
 - Q: What validation rule should define a “valid environment variable name” for mapping keys? → A: Keys must match `[A-Za-z_][A-Za-z0-9_]*` (case-sensitive).
 - Q: When the same key exists in both scopes, which value wins? → A: Project scope overrides global scope.
+- Q: If no project configuration exists, should project-scoped set auto-create it or fail? → A: Fail; a project configuration must already exist (possibly higher in the directory hierarchy). Global scope commands must work anywhere.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -64,7 +65,7 @@ As a user running the setup wizard, I want the option to enter env mappings so t
 - What happens when a mapping key is not a valid environment variable name?
 - How does the system handle an empty string value for a mapping?
 - What happens when `get` or `delete` is called for a key that does not exist?
-- What happens when no project configuration exists and a project-scoped mapping is set?
+- What happens when no project configuration exists and a project-scoped mapping is set? It must fail with a clear error.
 
 ## Testing Requirements *(mandatory)*
 
@@ -84,8 +85,9 @@ As a user running the setup wizard, I want the option to enter env mappings so t
 - **FR-006**: System MUST validate mapping keys against `[A-Za-z_][A-Za-z0-9_]*` (case-sensitive) and reject invalid keys with a clear error.
 - **FR-007**: System MUST allow mapping values to be empty strings and preserve them as provided.
 - **FR-008**: System MUST offer an optional step in the setup wizard to add project-scoped env mappings.
-- **FR-009**: System MUST create a project configuration when setting a project-scoped mapping if none exists.
+- **FR-009**: System MUST fail with a clear error when setting a project-scoped mapping and no project configuration exists.
 - **FR-010**: System MUST report missing keys clearly when `get` or `delete` is requested for an unmapped key.
+- **FR-011**: System MUST allow global-scope mapping commands to run even when no project configuration exists.
 
 ### Key Entities
 

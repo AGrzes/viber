@@ -113,7 +113,7 @@ description: "Task list for Wrapper CLI Refactor for Viber Orchestration"
 **Purpose**: Improvements that affect multiple user stories
 
 - [x] T027 [P] Document new env vars in /workdir/README.md
-- [ ] T028 [P] Review debug logging for workdir/env visibility in /workdir/cli/src/lib/utils/log.ts
+- [x] T028 [P] Review debug logging for workdir/env visibility in /workdir/cli/src/lib/utils/log.ts
 
 ---
 

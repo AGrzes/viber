@@ -103,6 +103,9 @@ export async function runSession(options: SessionOptions): Promise<number> {
       ? resolved.effectiveMappings
       : [{ sourcePath: options.cwd, targetPath: WORKDIR, mode: "rw" }];
 
+  log.session("workdir", WORKDIR);
+  log.env("env", env);
+
   return runPodman({
     imageRef,
     interactive: options.mode === "interactive",

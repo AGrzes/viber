@@ -1,5 +1,6 @@
 import { Command } from "commander";
 import { registerConfigCommand } from "./commands/config.js";
+import { registerEnvCommand } from "./commands/env.js";
 import { registerProfilesCommand } from "./commands/profiles.js";
 import { registerRunCommand } from "./commands/run.js";
 import { registerStartCommand } from "./commands/start.js";
@@ -14,6 +15,7 @@ program
 
 registerStartCommand(program);
 registerConfigCommand(program);
+registerEnvCommand(program);
 registerProfilesCommand(program);
 registerRunCommand(program);
 

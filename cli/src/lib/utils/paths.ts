@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 
 export const WORKDIR = "/workdir";
-export const CODEX_DIR = path.join(WORKDIR, ".codex");
+export const CODEX_DIR = "/codex";
 export const CODEX_AUTH_TARGET = path.join(CODEX_DIR, "auth.json");
 
 export function getCodexAuthSource(): string {

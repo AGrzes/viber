@@ -1,0 +1,149 @@
+openapi: 3.0.3
+info:
+  title: Env Mapping Management
+  version: 1.0.0
+paths:
+  /env-mappings/global:
+    get:
+      summary: List global env mappings
+      responses:
+        "200":
+          description: Global mappings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnvMappingList"
+  /env-mappings/global/{key}:
+    get:
+      summary: Get a global env mapping
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Mapping value
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnvMappingEntry"
+        "404":
+          description: Mapping not found
+    put:
+      summary: Set a global env mapping
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EnvMappingValue"
+      responses:
+        "200":
+          description: Mapping set
+    delete:
+      summary: Delete a global env mapping
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Mapping not found
+  /env-mappings/project:
+    get:
+      summary: List project env mappings
+      responses:
+        "200":
+          description: Project mappings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnvMappingList"
+        "404":
+          description: Project config not found
+  /env-mappings/project/{key}:
+    get:
+      summary: Get a project env mapping
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Mapping value
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnvMappingEntry"
+        "404":
+          description: Mapping or project config not found
+    put:
+      summary: Set a project env mapping
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EnvMappingValue"
+      responses:
+        "200":
+          description: Mapping set
+        "404":
+          description: Project config not found
+    delete:
+      summary: Delete a project env mapping
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Mapping or project config not found
+components:
+  schemas:
+    EnvMappingEntry:
+      type: object
+      required: [key, value]
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    EnvMappingValue:
+      type: object
+      required: [value]
+      properties:
+        value:
+          type: string
+    EnvMappingList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/EnvMappingEntry"

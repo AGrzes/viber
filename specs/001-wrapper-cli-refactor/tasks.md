@@ -52,10 +52,10 @@ description: "Task list for Wrapper CLI Refactor for Viber Orchestration"
 
 ### Tests for User Story 1 (REQUIRED) ⚠️
 
-- [ ] T011 [P] [US1] Add unit test for default mapping to `/workdir` in /workdir/cli/tests/unit/mappings.test.ts
-- [ ] T012 [P] [US1] Add unit test for Podman args including userns keep-id + UID:GID in /workdir/cli/tests/unit/podman-args.test.ts
-- [ ] T013 [P] [US1] Add unit test for auth.json mount + CODEX_HOME in /workdir/cli/tests/unit/podman-args.test.ts
-- [ ] T014 [P] [US1] Add unit test for workdir and config env vars in /workdir/cli/tests/unit/podman-args.test.ts
+- [x] T011 [P] [US1] Add unit test for default mapping to `/workdir` in /workdir/cli/tests/unit/mappings.test.ts
+- [x] T012 [P] [US1] Add unit test for Podman args including userns keep-id + UID:GID in /workdir/cli/tests/unit/podman-args.test.ts
+- [x] T013 [P] [US1] Add unit test for auth.json mount + CODEX_HOME in /workdir/cli/tests/unit/podman-args.test.ts
+- [x] T014 [P] [US1] Add unit test for workdir and config env vars in /workdir/cli/tests/unit/podman-args.test.ts
 
 ### Implementation for User Story 1
 

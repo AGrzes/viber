@@ -32,13 +32,13 @@ description: "Task list for Wrapper CLI Refactor for Viber Orchestration"
 
 **Purpose**: Core infrastructure that MUST be complete before ANY user story can be implemented
 
-- [ ] T004 Update config schema to enforce imageProfile/imageReference exclusivity in /workdir/cli/src/lib/config/schema.ts
-- [ ] T005 Update resolver to surface config paths and default profile fallback in /workdir/cli/src/lib/config/resolver.ts
-- [ ] T006 Add config path helpers in /workdir/cli/src/lib/config/store.ts to expose project/global config locations
-- [ ] T007 Create identity helpers for UID/GID lookup in /workdir/cli/src/lib/utils/identity.ts
-- [ ] T008 Create auth/path helpers for `${HOME}/.codex/auth.json` and `/workdir` in /workdir/cli/src/lib/utils/paths.ts
-- [ ] T009 Add env name constants for config path injection in /workdir/cli/src/lib/utils/env.ts
-- [ ] T010 Update Podman runner to accept workdir, env, UID:GID, userns keep-id, and extra mounts in /workdir/cli/src/lib/podman/runner.ts
+- [x] T004 Update config schema to enforce imageProfile/imageReference exclusivity in /workdir/cli/src/lib/config/schema.ts
+- [x] T005 Update resolver to surface config paths and default profile fallback in /workdir/cli/src/lib/config/resolver.ts
+- [x] T006 Add config path helpers in /workdir/cli/src/lib/config/store.ts to expose project/global config locations
+- [x] T007 Create identity helpers for UID/GID lookup in /workdir/cli/src/lib/utils/identity.ts
+- [x] T008 Create auth/path helpers for `${HOME}/.codex/auth.json` and `/workdir` in /workdir/cli/src/lib/utils/paths.ts
+- [x] T009 Add env name constants for config path injection in /workdir/cli/src/lib/utils/env.ts
+- [x] T010 Update Podman runner to accept workdir, env, UID:GID, userns keep-id, and extra mounts in /workdir/cli/src/lib/podman/runner.ts
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 

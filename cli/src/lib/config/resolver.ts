@@ -1,17 +1,19 @@
 import path from "node:path";
 import { findProjectConfig } from "./discovery.js";
 import {
+  DEFAULT_PROFILE_NAME,
   FolderMappingSchema,
   ResolvedConfigSchema,
   type FolderMapping,
   type ResolvedConfig,
 } from "./schema.js";
-import { readGlobalConfig, readProjectConfig } from "./store.js";
+import { readGlobalConfig, readProjectConfig, getGlobalConfigPath } from "./store.js";
+import { WORKDIR } from "../utils/paths.js";
 
 function implicitMapping(cwd: string): FolderMapping {
   return FolderMappingSchema.parse({
     sourcePath: cwd,
-    targetPath: cwd,
+    targetPath: WORKDIR,
     mode: "rw",
   });
 }
@@ -23,6 +25,7 @@ export async function resolveConfig(cwd: string): Promise<ResolvedConfig> {
     ? await readProjectConfig(projectConfigPath)
     : undefined;
   const global = await readGlobalConfig();
+  const globalConfigPath = getGlobalConfigPath();
 
   const effectiveMappings =
     project?.mappings && project.mappings.length > 0
@@ -31,25 +34,22 @@ export async function resolveConfig(cwd: string): Promise<ResolvedConfig> {
         ? global.defaultMappings
         : [implicitMapping(absoluteCwd)];
 
-  let imageSource: string | undefined;
-  let imageSourceType: "profile" | "reference" | undefined;
+  const defaultProfileName = global?.defaultImageProfile ?? DEFAULT_PROFILE_NAME;
+  let imageProfile: string | undefined = project?.imageProfile;
+  let imageReference: string | undefined = project?.imageReference;
 
-  if (project?.imageReference) {
-    imageSource = project.imageReference;
-    imageSourceType = "reference";
-  } else if (project?.imageProfile) {
-    imageSource = project.imageProfile;
-    imageSourceType = "profile";
-  } else if (global?.defaultImageProfile) {
-    imageSource = global.defaultImageProfile;
-    imageSourceType = "profile";
+  if (!imageProfile && !imageReference) {
+    imageProfile = defaultProfileName;
   }
 
   return ResolvedConfigSchema.parse({
     project,
     global,
+    projectConfigPath: projectConfigPath ?? undefined,
+    globalConfigPath,
     effectiveMappings,
-    imageSource,
-    imageSourceType,
+    imageProfile,
+    imageReference,
+    defaultProfileName,
   });
 }

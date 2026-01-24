@@ -5,6 +5,12 @@ export type PodmanRunOptions = {
   imageRef: string;
   interactive: boolean;
   mappings: FolderMapping[];
+  extraMounts?: FolderMapping[];
+  workdir?: string;
+  env?: Record<string, string>;
+  uid?: number;
+  gid?: number;
+  usernsMode?: string;
   command?: string[];
 };
 
@@ -15,7 +21,26 @@ export function buildPodmanArgs(options: PodmanRunOptions): string[] {
     args.push("-it");
   }
 
-  for (const mapping of options.mappings) {
+  if (options.usernsMode) {
+    args.push(`--userns=${options.usernsMode}`);
+  }
+
+  if (typeof options.uid === "number" && typeof options.gid === "number") {
+    args.push("--user", `${options.uid}:${options.gid}`);
+  }
+
+  if (options.workdir) {
+    args.push("-w", options.workdir);
+  }
+
+  if (options.env) {
+    for (const [key, value] of Object.entries(options.env)) {
+      args.push("-e", `${key}=${value}`);
+    }
+  }
+
+  const mounts = [...options.mappings, ...(options.extraMounts ?? [])];
+  for (const mapping of mounts) {
     const target = mapping.targetPath ?? mapping.sourcePath;
     const mode = mapping.mode;
     args.push("-v", `${mapping.sourcePath}:${target}:${mode}`);

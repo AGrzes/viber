@@ -13,6 +13,7 @@
 - Q: What is the default outbound network policy for sessions? → A: Use the runtime default; the tool does not impose a network policy unless explicitly configured.
 - Q: Which container runtime(s) are supported? → A: Podman only.
 - Q: Where is global configuration stored? → A: Locally per machine; no automatic sync.
+- Q: When searching upward for project configuration, what is the stopping point? → A: Search up to the filesystem root (or drive root).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -74,7 +75,7 @@ As a single operator, I want global defaults and named image profiles so I can r
 
 ### Functional Requirements
 
-- **FR-001**: System MUST discover the nearest project configuration by searching upward from the current working directory.
+- **FR-001**: System MUST discover the nearest project configuration by searching upward from the current working directory up to the filesystem root (or drive root).
 - **FR-002**: System MUST support multiple folder mappings per project, each marked as read-write or read-only.
 - **FR-003**: System MUST allow folder mappings to include paths outside the project root for reference materials.
 - **FR-004**: System MUST support a global configuration containing reusable defaults (including default image profile and default mappings).

@@ -1,0 +1,178 @@
+openapi: 3.0.3
+info:
+  title: Viber CLI Orchestration Contract
+  version: 0.1.0
+  description: Command-level contract for CLI operations used by the orchestration tool.
+servers:
+  - url: http://localhost
+paths:
+  /config/init:
+    post:
+      summary: Initialize or update project configuration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectConfig'
+      responses:
+        '200':
+          description: Configuration saved
+  /config/resolve:
+    get:
+      summary: Resolve effective configuration for current directory
+      responses:
+        '200':
+          description: Resolved configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResolvedConfig'
+  /profiles:
+    get:
+      summary: List image profiles
+      responses:
+        '200':
+          description: Image profiles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ImageProfile'
+    post:
+      summary: Create or update image profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageProfile'
+      responses:
+        '200':
+          description: Profile saved
+  /profiles/{name}:
+    delete:
+      summary: Remove an image profile
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Deleted
+  /sessions/start:
+    post:
+      summary: Start an interactive session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionRequest'
+      responses:
+        '200':
+          description: Session started
+  /sessions/run:
+    post:
+      summary: Run a one-off session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionRequest'
+      responses:
+        '200':
+          description: Session completed
+components:
+  schemas:
+    FolderMapping:
+      type: object
+      required: [sourcePath, mode]
+      properties:
+        sourcePath:
+          type: string
+        targetPath:
+          type: string
+        mode:
+          type: string
+          enum: [rw, ro]
+        label:
+          type: string
+    ImageProfile:
+      type: object
+      required: [name, baseImageRef]
+      properties:
+        name:
+          type: string
+        baseImageRef:
+          type: string
+        notes:
+          type: string
+        buildSteps:
+          type: array
+          items:
+            type: string
+    ProjectConfig:
+      type: object
+      properties:
+        mappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/FolderMapping'
+        imageProfile:
+          type: string
+        imageReference:
+          type: string
+        skillsPalette:
+          type: string
+        networkPolicy:
+          type: string
+    GlobalConfig:
+      type: object
+      properties:
+        defaultImageProfile:
+          type: string
+        defaultMappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/FolderMapping'
+        imageProfiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImageProfile'
+    ResolvedConfig:
+      type: object
+      properties:
+        project:
+          $ref: '#/components/schemas/ProjectConfig'
+        global:
+          $ref: '#/components/schemas/GlobalConfig'
+        effectiveMappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/FolderMapping'
+        imageSource:
+          type: string
+    SessionRequest:
+      type: object
+      required: [mode]
+      properties:
+        mode:
+          type: string
+          enum: [interactive, one-off]
+        imageProfile:
+          type: string
+        imageReference:
+          type: string
+        mappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/FolderMapping'
+        skillsPalette:
+          type: string
+        networkPolicy:
+          type: string

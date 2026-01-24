@@ -33,7 +33,7 @@ description: "Task list for env mapping management"
 **Purpose**: Shared helpers used by all user stories
 
 - [X] T004 Add merge and interpolation helpers in `cli/src/lib/utils/envMappings.ts`
-- [ ] T005 [P] Add env mapping CRUD helpers (get/set/list/delete per scope) in `cli/src/lib/config/envMappingsStore.ts`
+- [X] T005 [P] Add env mapping CRUD helpers (get/set/list/delete per scope) in `cli/src/lib/config/envMappingsStore.ts`
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 

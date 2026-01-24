@@ -1,5 +1,6 @@
 import prompts from "prompts";
-import { type FolderMapping, type ProjectConfig } from "../lib/config/schema.js";
+import { isValidEnvKey } from "../lib/config/envMappings.js";
+import { type EnvMappingEntry, type FolderMapping, type ProjectConfig } from "../lib/config/schema.js";
 
 async function promptMappings(): Promise<FolderMapping[]> {
   const mappings: FolderMapping[] = [];
@@ -53,6 +54,42 @@ async function promptMappings(): Promise<FolderMapping[]> {
   return mappings;
 }
 
+async function promptEnvMappings(): Promise<EnvMappingEntry[]> {
+  const mappings: EnvMappingEntry[] = [];
+
+  while (true) {
+    const { add } = await prompts({
+      type: "confirm",
+      name: "add",
+      message: "Add an env mapping?",
+      initial: mappings.length === 0,
+    });
+
+    if (!add) break;
+
+    const response = await prompts([
+      {
+        type: "text",
+        name: "key",
+        message: "Env key",
+        validate: (value) => (isValidEnvKey(value) ? true : "Invalid env key"),
+      },
+      {
+        type: "text",
+        name: "value",
+        message: "Env value (empty allowed)",
+      },
+    ]);
+
+    mappings.push({
+      key: response.key,
+      value: response.value ?? "",
+    });
+  }
+
+  return mappings;
+}
+
 export async function runConfigWizard(): Promise<ProjectConfig> {
   const { imageChoice } = await prompts({
     type: "select",
@@ -87,10 +124,12 @@ export async function runConfigWizard(): Promise<ProjectConfig> {
   }
 
   const mappings = await promptMappings();
+  const envMappings = await promptEnvMappings();
 
   return {
     mappings: mappings.length > 0 ? mappings : undefined,
     imageProfile,
     imageReference,
+    envMappings: envMappings.length > 0 ? envMappings : undefined,
   };
 }

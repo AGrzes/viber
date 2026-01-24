@@ -94,8 +94,8 @@ description: "Task list for env mapping management"
 
 ### Implementation for User Story 3
 
-- [ ] T018 [US3] Add optional env mapping prompts in `cli/src/services/configWizard.ts`
-- [ ] T019 [US3] Persist wizard env mappings into project config in `cli/src/services/configWizard.ts`
+- [X] T018 [US3] Add optional env mapping prompts in `cli/src/services/configWizard.ts`
+- [X] T019 [US3] Persist wizard env mappings into project config in `cli/src/services/configWizard.ts`
 
 **Checkpoint**: User Story 3 works independently
 

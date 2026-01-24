@@ -9,11 +9,8 @@ import { buildSessionEnv } from "./sessionEnv.js";
 import { type FolderMapping } from "../lib/config/schema.js";
 import { getProfileOrThrow } from "./profiles.js";
 
-export type SessionMode = "interactive" | "one-off";
-
 export type SessionOptions = {
   cwd: string;
-  mode: SessionMode;
   command?: string[];
   imageProfile?: string;
   imageReference?: string;
@@ -87,7 +84,7 @@ export async function runSession(options: SessionOptions): Promise<number> {
 
   return runPodman({
     imageRef,
-    interactive: options.mode === "interactive",
+    interactive: false,
     mappings,
     extraMounts,
     workdir: WORKDIR,

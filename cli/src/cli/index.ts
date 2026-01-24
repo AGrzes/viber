@@ -3,7 +3,6 @@ import { registerConfigCommand } from "./commands/config.js";
 import { registerEnvCommand } from "./commands/env.js";
 import { registerProfilesCommand } from "./commands/profiles.js";
 import { registerRunCommand } from "./commands/run.js";
-import { registerStartCommand } from "./commands/start.js";
 
 const program = new Command();
 
@@ -13,7 +12,6 @@ program
   .version("0.1.0")
   .enablePositionalOptions();
 
-registerStartCommand(program);
 registerConfigCommand(program);
 registerEnvCommand(program);
 registerProfilesCommand(program);

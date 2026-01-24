@@ -18,7 +18,6 @@ export function registerRunCommand(program: Command): void {
 
         const exitCode = await runSession({
           cwd: options.cwd,
-          mode: "one-off",
           imageReference: options.image,
           imageProfile: options.profile,
           dryRun: Boolean(options.dryRun),

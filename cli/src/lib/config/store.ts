@@ -32,6 +32,10 @@ export async function writeProjectConfig(
     ...config,
     imageProfile: config.imageProfile || undefined,
     imageReference: config.imageReference || undefined,
+    envMappings: config.envMappings?.map((entry) => ({
+      key: entry.key,
+      value: entry.value,
+    })),
     mappings: config.mappings?.map((mapping) => ({
       ...mapping,
       targetPath: mapping.targetPath || mapping.sourcePath,
@@ -53,7 +57,14 @@ export async function readGlobalConfig(): Promise<GlobalConfig | null> {
 }
 
 export async function writeGlobalConfig(config: GlobalConfig): Promise<void> {
-  await writeJson(GLOBAL_CONFIG_PATH, GlobalConfigSchema.parse(config));
+  const normalized: GlobalConfig = {
+    ...config,
+    envMappings: config.envMappings?.map((entry) => ({
+      key: entry.key,
+      value: entry.value,
+    })),
+  };
+  await writeJson(GLOBAL_CONFIG_PATH, GlobalConfigSchema.parse(normalized));
 }
 
 export function getGlobalConfigPath(): string {

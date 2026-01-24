@@ -25,16 +25,17 @@ export async function resolveConfig(cwd: string): Promise<ResolvedConfig> {
     ? await readProjectConfig(projectConfigPath)
     : undefined;
   const global = await readGlobalConfig();
+  const globalConfig = global ?? undefined;
   const globalConfigPath = getGlobalConfigPath();
 
   const effectiveMappings =
     project?.mappings && project.mappings.length > 0
       ? project.mappings
-      : global?.defaultMappings && global.defaultMappings.length > 0
-        ? global.defaultMappings
+      : globalConfig?.defaultMappings && globalConfig.defaultMappings.length > 0
+        ? globalConfig.defaultMappings
         : [implicitMapping(absoluteCwd)];
 
-  const defaultProfileName = global?.defaultImageProfile ?? DEFAULT_PROFILE_NAME;
+  const defaultProfileName = globalConfig?.defaultImageProfile ?? DEFAULT_PROFILE_NAME;
   let imageProfile: string | undefined = project?.imageProfile;
   let imageReference: string | undefined = project?.imageReference;
 
@@ -44,7 +45,7 @@ export async function resolveConfig(cwd: string): Promise<ResolvedConfig> {
 
   return ResolvedConfigSchema.parse({
     project,
-    global,
+    global: globalConfig,
     projectConfigPath: projectConfigPath ?? undefined,
     globalConfigPath,
     effectiveMappings,

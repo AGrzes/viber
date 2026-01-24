@@ -89,12 +89,12 @@ description: "Task list for Viber CLI Private Orchestration Framework"
 
 ### Implementation for User Story 3
 
-- [ ] T022 [US3] Implement image profile CRUD service in /workdir/cli/src/services/profiles.ts
-- [ ] T023 [US3] Implement CLI profiles commands in /workdir/cli/src/cli/commands/profiles.ts
-- [ ] T024 [US3] Wire profiles commands into CLI entrypoint in /workdir/cli/src/cli/index.ts
-- [ ] T025 [US3] Implement one-off run command handler in /workdir/cli/src/cli/commands/run.ts
-- [ ] T026 [US3] Implement one-off session execution in /workdir/cli/src/services/session.ts
-- [ ] T027 [US3] Enforce missing profile errors for profile-based runs in /workdir/cli/src/services/profiles.ts
+- [x] T022 [US3] Implement image profile CRUD service in /workdir/cli/src/services/profiles.ts
+- [x] T023 [US3] Implement CLI profiles commands in /workdir/cli/src/cli/commands/profiles.ts
+- [x] T024 [US3] Wire profiles commands into CLI entrypoint in /workdir/cli/src/cli/index.ts
+- [x] T025 [US3] Implement one-off run command handler in /workdir/cli/src/cli/commands/run.ts
+- [x] T026 [US3] Implement one-off session execution in /workdir/cli/src/services/session.ts
+- [x] T027 [US3] Enforce missing profile errors for profile-based runs in /workdir/cli/src/services/profiles.ts
 
 **Checkpoint**: All user stories are independently functional
 

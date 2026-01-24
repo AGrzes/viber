@@ -3,6 +3,7 @@ import { validateMappings } from "../lib/config/validation.js";
 import { runPodman } from "../lib/podman/runner.js";
 import { CliError } from "../lib/utils/errors.js";
 import { log } from "../lib/utils/log.js";
+import { getProfileOrThrow } from "./profiles.js";
 
 export type SessionMode = "interactive" | "one-off";
 
@@ -10,9 +11,23 @@ export type SessionOptions = {
   cwd: string;
   mode: SessionMode;
   command?: string[];
+  imageProfile?: string;
+  imageReference?: string;
 };
 
-function resolveImageRef(resolved: Awaited<ReturnType<typeof resolveConfig>>): string {
+async function resolveImageRef(
+  resolved: Awaited<ReturnType<typeof resolveConfig>>,
+  overrides: Pick<SessionOptions, "imageProfile" | "imageReference">
+): Promise<string> {
+  if (overrides.imageReference) {
+    return overrides.imageReference;
+  }
+
+  if (overrides.imageProfile) {
+    const profile = await getProfileOrThrow(overrides.imageProfile);
+    return profile.baseImageRef;
+  }
+
   if (!resolved.imageSource) {
     throw new CliError("No image selected. Set imageProfile, imageReference, or a global default.");
   }
@@ -21,12 +36,7 @@ function resolveImageRef(resolved: Awaited<ReturnType<typeof resolveConfig>>): s
     return resolved.imageSource;
   }
 
-  const profiles = resolved.global?.imageProfiles ?? [];
-  const profile = profiles.find((p) => p.name === resolved.imageSource);
-  if (!profile) {
-    throw new CliError(`Image profile not found: ${resolved.imageSource}`);
-  }
-
+  const profile = await getProfileOrThrow(resolved.imageSource);
   return profile.baseImageRef;
 }
 
@@ -40,7 +50,10 @@ export async function runSession(options: SessionOptions): Promise<number> {
     throw new CliError(`Invalid mappings: ${details}`);
   }
 
-  const imageRef = resolveImageRef(resolved);
+  const imageRef = await resolveImageRef(resolved, {
+    imageProfile: options.imageProfile,
+    imageReference: options.imageReference,
+  });
   log.podman("using image", imageRef);
 
   return runPodman({

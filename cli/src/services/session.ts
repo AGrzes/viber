@@ -98,10 +98,15 @@ export async function runSession(options: SessionOptions): Promise<number> {
     env[ENV_GLOBAL_CONFIG] = resolved.globalConfigPath;
   }
 
+  const fallbackMapping: FolderMapping = {
+    sourcePath: options.cwd,
+    targetPath: WORKDIR,
+    mode: "rw",
+  };
   const mappings =
     resolved.effectiveMappings.length > 0
       ? resolved.effectiveMappings
-      : [{ sourcePath: options.cwd, targetPath: WORKDIR, mode: "rw" }];
+      : [fallbackMapping];
 
   log.session("workdir", WORKDIR);
   log.env("env", env);

@@ -11,6 +11,7 @@
 ### Session 2026-01-24
 
 - Q: What is the default outbound network policy for sessions? → A: Use the runtime default; the tool does not impose a network policy unless explicitly configured.
+- Q: Which container runtime(s) are supported? → A: Podman only.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -63,7 +64,7 @@ As a single operator, I want global defaults and named image profiles so I can r
 
 - What happens when no project configuration is found while searching parent directories?
 - How does the system handle invalid or missing folder paths in mappings?
-- What happens when the local container runtime is unavailable?
+- What happens when Podman is unavailable or not configured?
 - How does the system handle conflicting mapping modes for the same path?
 - What happens when a referenced image profile does not exist?
 - What happens when outbound network access is blocked by the runtime default?
@@ -82,9 +83,10 @@ As a single operator, I want global defaults and named image profiles so I can r
 - **FR-008**: Users MUST be able to start an interactive agent session for a project using the resolved configuration.
 - **FR-009**: Users MUST be able to launch a one-off session using a specified image profile without persisting changes.
 - **FR-010**: System MUST support a reusable skills palette that can be referenced by projects.
-- **FR-011**: System MUST provide clear, actionable error messages when required prerequisites (such as container runtime or image profile) are missing.
+- **FR-011**: System MUST provide clear, actionable error messages when required prerequisites (such as Podman or an image profile) are missing.
 - **FR-012**: System MUST persist project and global configuration so they remain available across sessions.
 - **FR-013**: System MUST use the runtime default for network access unless an explicit network policy is configured by the user.
+- **FR-014**: System MUST use Podman as the supported local container runtime.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -99,7 +101,7 @@ As a single operator, I want global defaults and named image profiles so I can r
 ### Assumptions
 
 - The tool is intended for a single operator; no multi-user permissions or publishing workflow is required.
-- A compatible local container runtime is available and configured by the user.
+- Podman is available and configured by the user.
 - Network connectivity and external dependencies are managed outside the tool.
 
 ### Out of Scope

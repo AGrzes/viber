@@ -1,6 +1,6 @@
 # Feature Specification: Env Mapping Management
 
-**Feature Branch**: `[001-add-env-mapping]`  
+**Feature Branch**: `[003-add-env-mapping]`  
 **Created**: January 24, 2026  
 **Status**: Draft  
 **Input**: User description: "Another round of fixing viber cli - now I will make it more targeted THere is dumb non-feature of setting VIBER_GLOBAL_CONFIG in container. It does not make sense. Get rid of it. What makes sense is to be able to provide KV mapping for env variables on global and local level so - Command to set, list, get, delete mapping, globally and in nearest project - Optionally opportunity to provide them in setup wizard - Merge of the envs when spawning container"

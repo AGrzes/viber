@@ -14,6 +14,7 @@
 - Q: When the same key exists in both scopes, which value wins? → A: Project scope overrides global scope.
 - Q: If no project configuration exists, should project-scoped set auto-create it or fail? → A: Fail; a project configuration must already exist (possibly higher in the directory hierarchy). Global scope commands must work anywhere.
 - Q: Should empty string values be allowed? → A: Yes; empty strings are valid values and are stored explicitly.
+- Q: Should stored mapping values support interpolation of host environment variables (for example `E1=$HOST_VAR`)? → A: Yes; allow interpolation inside values, without importing host env vars by default.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -89,6 +90,7 @@ As a user running the setup wizard, I want the option to enter env mappings so t
 - **FR-009**: System MUST fail with a clear error when setting a project-scoped mapping and no project configuration exists.
 - **FR-010**: System MUST report missing keys clearly when `get` or `delete` is requested for an unmapped key.
 - **FR-011**: System MUST allow global-scope mapping commands to run even when no project configuration exists.
+- **FR-012**: System MUST support interpolation of host environment variables within mapping values (for example `E1=$HOST_VAR`) without importing host variables by default.
 
 ### Key Entities
 

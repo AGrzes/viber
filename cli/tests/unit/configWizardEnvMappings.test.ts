@@ -1,9 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
 
-const promptMock = vi.fn();
-vi.mock("prompts", () => ({ default: promptMock }));
+vi.mock("prompts", () => ({ default: vi.fn() }));
 
+import prompts from "prompts";
 import { runConfigWizard } from "../../src/services/configWizard.js";
+
+const promptMock = vi.mocked(prompts);
 
 describe("config wizard env mappings", () => {
   it("captures env mappings when provided", async () => {

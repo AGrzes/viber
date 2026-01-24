@@ -24,7 +24,7 @@ description: "Task list for env mapping management"
 
 - [X] T001 Extend config schemas and types for env mappings in `cli/src/lib/config/schema.ts`
 - [X] T002 Update config read/write handling for env mappings in `cli/src/lib/config/store.ts`
-- [ ] T003 [P] Add env mapping validation helpers in `cli/src/lib/config/envMappings.ts`
+- [X] T003 [P] Add env mapping validation helpers in `cli/src/lib/config/envMappings.ts`
 
 ---
 

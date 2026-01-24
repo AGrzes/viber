@@ -5,7 +5,7 @@ import { z } from "zod";
 export const PROJECT_CONFIG_NAME = ".viber.json";
 export const GLOBAL_CONFIG_PATH = path.join(os.homedir(), ".viber", "config.json");
 export const DEFAULT_PROFILE_NAME = "default";
-const ENV_KEY_PATTERN = /^[A-Za-z_][A-Za-z0-9_]*$/;
+export const ENV_KEY_PATTERN = /^[A-Za-z_][A-Za-z0-9_]*$/;
 
 export const FolderMappingSchema = z.object({
   sourcePath: z.string().min(1),

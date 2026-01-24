@@ -76,8 +76,8 @@ description: "Task list for Wrapper CLI Refactor for Viber Orchestration"
 
 ### Tests for User Story 2 (REQUIRED) ⚠️
 
-- [ ] T019 [P] [US2] Add unit test for default profile resolution in /workdir/cli/tests/unit/image-resolution.test.ts
-- [ ] T020 [P] [US2] Add unit test for profile+reference rejection in /workdir/cli/tests/unit/image-resolution.test.ts
+- [x] T019 [P] [US2] Add unit test for default profile resolution in /workdir/cli/tests/unit/image-resolution.test.ts
+- [x] T020 [P] [US2] Add unit test for profile+reference rejection in /workdir/cli/tests/unit/image-resolution.test.ts
 
 ### Implementation for User Story 2
 

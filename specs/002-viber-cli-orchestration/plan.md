@@ -18,7 +18,7 @@ Deliver a single-user CLI that orchestrates agent sessions inside Podman contain
 **Target Platform**: Local developer machines with Podman installed (Linux/macOS; Windows via WSL if Podman is available)  
 **Project Type**: single  
 **Performance Goals**: Config commands complete in <1s; session start aligns with spec (<2 minutes)  
-**Constraints**: No background daemon; rely on Podman CLI; avoid auto-sync of configuration; use pnpm for package management  
+**Constraints**: No background daemon; rely on Podman CLI; avoid auto-sync of configuration; monorepo with pnpm workspaces  
 **Scale/Scope**: Single user; tens of projects and image profiles; config size <1MB
 
 ## Constitution Check
@@ -49,23 +49,25 @@ specs/002-viber-cli-orchestration/
 ### Source Code (repository root)
 
 ```text
-src/
-├── cli/
-│   ├── index.ts
-│   └── commands/
-├── lib/
-│   ├── config/
-│   ├── podman/
-│   └── utils/
-├── models/
-└── services/
-
-tests/
-├── integration/
-└── unit/
+pnpm-workspace.yaml
+cli/
+├── package.json
+├── src/
+│   ├── cli/
+│   │   ├── index.ts
+│   │   └── commands/
+│   ├── lib/
+│   │   ├── config/
+│   │   ├── podman/
+│   │   └── utils/
+│   ├── models/
+│   └── services/
+└── tests/
+    ├── integration/
+    └── unit/
 ```
 
-**Structure Decision**: Single CLI project with shared libraries for config resolution and Podman execution.
+**Structure Decision**: Monorepo root with pnpm workspaces; CLI module lives in `/workdir/cli`.
 
 ## Complexity Tracking
 

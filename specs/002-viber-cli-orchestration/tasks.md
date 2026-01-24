@@ -22,10 +22,11 @@ description: "Task list for Viber CLI Private Orchestration Framework"
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Initialize CLI package with pnpm scripts and dependencies in /workdir/package.json
-- [ ] T002 Add TypeScript config for Node 25 in /workdir/tsconfig.json
-- [ ] T003 [P] Create CLI entrypoint scaffold in /workdir/src/cli/index.ts
-- [ ] T004 [P] Create base directory structure under /workdir/src/ (cli/commands, lib/config, lib/podman, lib/utils, models, services)
+- [ ] T001 Create pnpm workspace config in /workdir/pnpm-workspace.yaml
+- [ ] T002 Initialize CLI package with pnpm scripts and dependencies in /workdir/cli/package.json
+- [ ] T003 Add TypeScript config for Node 25 in /workdir/cli/tsconfig.json
+- [ ] T004 [P] Create CLI entrypoint scaffold in /workdir/cli/src/cli/index.ts
+- [ ] T005 [P] Create base directory structure under /workdir/cli/src/ (cli/commands, lib/config, lib/podman, lib/utils, models, services)
 
 ---
 
@@ -33,14 +34,14 @@ description: "Task list for Viber CLI Private Orchestration Framework"
 
 **Purpose**: Core infrastructure that MUST be complete before ANY user story can be implemented
 
-- [ ] T005 Define config types and Zod schemas in /workdir/src/lib/config/schema.ts
-- [ ] T006 Implement config file discovery (search to filesystem root) in /workdir/src/lib/config/discovery.ts
-- [ ] T007 Implement config load/merge/precedence logic (project overrides global; implicit mapping) in /workdir/src/lib/config/resolver.ts
-- [ ] T008 Implement config persistence (project/global read/write) in /workdir/src/lib/config/store.ts
-- [ ] T009 Implement mapping validation (paths, modes, uniqueness) in /workdir/src/lib/config/validation.ts
-- [ ] T010 Implement Podman command builder and runner in /workdir/src/lib/podman/runner.ts
-- [ ] T011 Implement debug logging utility and namespaces in /workdir/src/lib/utils/log.ts
-- [ ] T012 Implement shared error helpers for actionable messages in /workdir/src/lib/utils/errors.ts
+- [ ] T006 Define config types and Zod schemas in /workdir/cli/src/lib/config/schema.ts
+- [ ] T007 Implement config file discovery (search to filesystem root) in /workdir/cli/src/lib/config/discovery.ts
+- [ ] T008 Implement config load/merge/precedence logic (project overrides global; implicit mapping) in /workdir/cli/src/lib/config/resolver.ts
+- [ ] T009 Implement config persistence (project/global read/write) in /workdir/cli/src/lib/config/store.ts
+- [ ] T010 Implement mapping validation (paths, modes, uniqueness) in /workdir/cli/src/lib/config/validation.ts
+- [ ] T011 Implement Podman command builder and runner in /workdir/cli/src/lib/podman/runner.ts
+- [ ] T012 Implement debug logging utility and namespaces in /workdir/cli/src/lib/utils/log.ts
+- [ ] T013 Implement shared error helpers for actionable messages in /workdir/cli/src/lib/utils/errors.ts
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 
@@ -54,10 +55,10 @@ description: "Task list for Viber CLI Private Orchestration Framework"
 
 ### Implementation for User Story 1
 
-- [ ] T013 [US1] Implement session start logic (interactive) in /workdir/src/services/session.ts
-- [ ] T014 [US1] Implement CLI start command handler in /workdir/src/cli/commands/start.ts
-- [ ] T015 [US1] Wire start command into CLI entrypoint in /workdir/src/cli/index.ts
-- [ ] T016 [US1] Add validation for image profile/reference resolution errors in /workdir/src/services/session.ts
+- [ ] T014 [US1] Implement session start logic (interactive) in /workdir/cli/src/services/session.ts
+- [ ] T015 [US1] Implement CLI start command handler in /workdir/cli/src/cli/commands/start.ts
+- [ ] T016 [US1] Wire start command into CLI entrypoint in /workdir/cli/src/cli/index.ts
+- [ ] T017 [US1] Add validation for image profile/reference resolution errors in /workdir/cli/src/services/session.ts
 
 **Checkpoint**: User Story 1 is functional and testable independently
 
@@ -71,10 +72,10 @@ description: "Task list for Viber CLI Private Orchestration Framework"
 
 ### Implementation for User Story 2
 
-- [ ] T017 [US2] Implement interactive config prompt flow in /workdir/src/services/configWizard.ts
-- [ ] T018 [US2] Implement CLI config init/update command in /workdir/src/cli/commands/config.ts
-- [ ] T019 [US2] Wire config command into CLI entrypoint in /workdir/src/cli/index.ts
-- [ ] T020 [US2] Add mapping/image selection normalization for config writes in /workdir/src/lib/config/store.ts
+- [ ] T018 [US2] Implement interactive config prompt flow in /workdir/cli/src/services/configWizard.ts
+- [ ] T019 [US2] Implement CLI config init/update command in /workdir/cli/src/cli/commands/config.ts
+- [ ] T020 [US2] Wire config command into CLI entrypoint in /workdir/cli/src/cli/index.ts
+- [ ] T021 [US2] Add mapping/image selection normalization for config writes in /workdir/cli/src/lib/config/store.ts
 
 **Checkpoint**: User Stories 1 and 2 both work independently
 
@@ -88,12 +89,12 @@ description: "Task list for Viber CLI Private Orchestration Framework"
 
 ### Implementation for User Story 3
 
-- [ ] T021 [US3] Implement image profile CRUD service in /workdir/src/services/profiles.ts
-- [ ] T022 [US3] Implement CLI profiles commands in /workdir/src/cli/commands/profiles.ts
-- [ ] T023 [US3] Wire profiles commands into CLI entrypoint in /workdir/src/cli/index.ts
-- [ ] T024 [US3] Implement one-off run command handler in /workdir/src/cli/commands/run.ts
-- [ ] T025 [US3] Implement one-off session execution in /workdir/src/services/session.ts
-- [ ] T026 [US3] Enforce missing profile errors for profile-based runs in /workdir/src/services/profiles.ts
+- [ ] T022 [US3] Implement image profile CRUD service in /workdir/cli/src/services/profiles.ts
+- [ ] T023 [US3] Implement CLI profiles commands in /workdir/cli/src/cli/commands/profiles.ts
+- [ ] T024 [US3] Wire profiles commands into CLI entrypoint in /workdir/cli/src/cli/index.ts
+- [ ] T025 [US3] Implement one-off run command handler in /workdir/cli/src/cli/commands/run.ts
+- [ ] T026 [US3] Implement one-off session execution in /workdir/cli/src/services/session.ts
+- [ ] T027 [US3] Enforce missing profile errors for profile-based runs in /workdir/cli/src/services/profiles.ts
 
 **Checkpoint**: All user stories are independently functional
 
@@ -103,9 +104,9 @@ description: "Task list for Viber CLI Private Orchestration Framework"
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T027 [P] Document CLI usage and examples in /workdir/README.md
-- [ ] T028 [P] Align quickstart commands with final CLI usage in /workdir/specs/002-viber-cli-orchestration/quickstart.md
-- [ ] T029 Add final pass on error messages and debug namespaces in /workdir/src/lib/utils/log.ts
+- [ ] T028 [P] Document CLI usage and examples in /workdir/README.md
+- [ ] T029 [P] Align quickstart commands with final CLI usage in /workdir/specs/002-viber-cli-orchestration/quickstart.md
+- [ ] T030 Add final pass on error messages and debug namespaces in /workdir/cli/src/lib/utils/log.ts
 
 ---
 
@@ -126,9 +127,9 @@ description: "Task list for Viber CLI Private Orchestration Framework"
 
 ### Parallel Opportunities
 
-- Phase 1: T003 and T004 can run in parallel
-- Phase 2: T010 and T011 can run in parallel after T005–T009 are complete
-- Phase 6: T027 and T028 can run in parallel
+- Phase 1: T004 and T005 can run in parallel
+- Phase 2: T011 and T012 can run in parallel after T006–T010 are complete
+- Phase 6: T028 and T029 can run in parallel
 
 ---
 

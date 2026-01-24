@@ -15,6 +15,7 @@
 - Q: Where is global configuration stored? → A: Locally per machine; no automatic sync.
 - Q: When searching upward for project configuration, what is the stopping point? → A: Search up to the filesystem root (or drive root).
 - Q: How should missing image profiles be handled, and is direct image reference allowed? → A: Direct image reference and named image profile are separate explicit parameters; missing profiles are errors.
+- Q: When project and global settings overlap, what is the precedence? → A: Project overrides; global used only when project omits a value.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -81,7 +82,7 @@ As a single operator, I want global defaults and named image profiles so I can r
 - **FR-002**: System MUST support multiple folder mappings per project, each marked as read-write or read-only.
 - **FR-003**: System MUST allow folder mappings to include paths outside the project root for reference materials.
 - **FR-004**: System MUST support a global configuration containing reusable defaults (including default image profile and default mappings).
-- **FR-005**: System MUST apply project-specific configuration as overrides to global defaults with clear precedence rules.
+- **FR-005**: System MUST apply project-specific configuration as overrides to global defaults; global defaults are used only when project values are not provided.
 - **FR-006**: System MUST provide a CLI flow that creates or updates project configuration without manual file editing.
 - **FR-007**: System MUST support named image profiles that can be created, listed, updated, and removed.
 - **FR-008**: Users MUST be able to start an interactive agent session for a project using the resolved configuration.

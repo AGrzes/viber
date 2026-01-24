@@ -79,7 +79,7 @@ As a user running the setup wizard, I want the option to enter env mappings so t
 
 ### Functional Requirements
 
-- **FR-001**: System MUST NOT set `VIBER_GLOBAL_CONFIG` in the container environment.
+- **FR-001**: System MUST remove the existing behavior that injects `VIBER_GLOBAL_CONFIG` into the container environment.
 - **FR-002**: System MUST allow users to store env mappings as key/value pairs at both global and project scope.
 - **FR-003**: System MUST provide CLI commands to set, get, list, and delete env mappings in global scope.
 - **FR-004**: System MUST provide CLI commands to set, get, list, and delete env mappings for the nearest project scope.

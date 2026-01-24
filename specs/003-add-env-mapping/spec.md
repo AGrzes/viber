@@ -11,6 +11,7 @@
 ### Session 2026-01-24
 
 - Q: What validation rule should define a “valid environment variable name” for mapping keys? → A: Keys must match `[A-Za-z_][A-Za-z0-9_]*` (case-sensitive).
+- Q: When the same key exists in both scopes, which value wins? → A: Project scope overrides global scope.
 
 ## User Scenarios & Testing *(mandatory)*
 

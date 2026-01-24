@@ -22,11 +22,11 @@ description: "Task list for Viber CLI Private Orchestration Framework"
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Create pnpm workspace config in /workdir/pnpm-workspace.yaml
-- [ ] T002 Initialize CLI package with pnpm scripts and dependencies in /workdir/cli/package.json
-- [ ] T003 Add TypeScript config for Node 25 in /workdir/cli/tsconfig.json
-- [ ] T004 [P] Create CLI entrypoint scaffold in /workdir/cli/src/cli/index.ts
-- [ ] T005 [P] Create base directory structure under /workdir/cli/src/ (cli/commands, lib/config, lib/podman, lib/utils, models, services)
+- [x] T001 Create pnpm workspace config in /workdir/pnpm-workspace.yaml
+- [x] T002 Initialize CLI package with pnpm scripts and dependencies in /workdir/cli/package.json
+- [x] T003 Add TypeScript config for Node 25 in /workdir/cli/tsconfig.json
+- [x] T004 [P] Create CLI entrypoint scaffold in /workdir/cli/src/cli/index.ts
+- [x] T005 [P] Create base directory structure under /workdir/cli/src/ (cli/commands, lib/config, lib/podman, lib/utils, models, services)
 
 ---
 

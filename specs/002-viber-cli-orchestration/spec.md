@@ -12,6 +12,7 @@
 
 - Q: What is the default outbound network policy for sessions? → A: Use the runtime default; the tool does not impose a network policy unless explicitly configured.
 - Q: Which container runtime(s) are supported? → A: Podman only.
+- Q: Where is global configuration stored? → A: Locally per machine; no automatic sync.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -87,6 +88,7 @@ As a single operator, I want global defaults and named image profiles so I can r
 - **FR-012**: System MUST persist project and global configuration so they remain available across sessions.
 - **FR-013**: System MUST use the runtime default for network access unless an explicit network policy is configured by the user.
 - **FR-014**: System MUST use Podman as the supported local container runtime.
+- **FR-015**: System MUST store global configuration locally on the machine and MUST NOT include automatic synchronization.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -109,6 +111,7 @@ As a single operator, I want global defaults and named image profiles so I can r
 - Multi-user access controls, team sharing, or enterprise governance.
 - Automatic installer or one-file executable packaging.
 - Managed cloud-hosted orchestration.
+- Automatic synchronization of global configuration across machines.
 
 ## Success Criteria *(mandatory)*
 

@@ -47,7 +47,7 @@ description: "Task list for env mapping management"
 
 ### Tests for User Story 1 (REQUIRED) ⚠️
 
-- [ ] T006 [P] [US1] Add merge/precedence unit tests in `cli/tests/unit/envMappingsMerge.test.ts`
+- [X] T006 [P] [US1] Add merge/precedence unit tests in `cli/tests/unit/envMappingsMerge.test.ts`
 - [ ] T007 [P] [US1] Add interpolation unit tests in `cli/tests/unit/envMappingsInterpolation.test.ts`
 - [ ] T008 [P] [US1] Add session env assembly test in `cli/tests/unit/sessionEnv.test.ts`
 

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   parseProjectAgentsValue,
-  removeGlobalAgentFromMap,
+  removeGlobalAgentsEntryFromMap,
   upsertGlobalAgents,
 } from "../../src/lib/config/agents.js";
 
@@ -15,7 +15,7 @@ describe("agents config helpers", () => {
   });
 
   it("removes a global agent entry", () => {
-    const { next, removed } = removeGlobalAgentFromMap({ alpha: "A" }, "alpha");
+    const { next, removed } = removeGlobalAgentsEntryFromMap({ alpha: "A" }, "alpha");
 
     expect(removed).toBe(true);
     expect(next).toEqual({});

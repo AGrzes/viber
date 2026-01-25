@@ -2,23 +2,23 @@ import { CliError } from "../lib/utils/errors.js";
 import { type ResolvedConfig } from "../lib/config/schema.js";
 import { parseProjectAgentsValue } from "../lib/config/agents.js";
 
-export type AgentSelectionOptions = {
+export type AgentsSelectionOptions = {
   selectedName?: string;
   noGlobal?: boolean;
 };
 
-export type AgentSelectionResult = {
+export type AgentsSelectionResult = {
   globalContent?: string;
   projectContent?: string;
   selectedName?: string;
 };
 
-export function resolveAgentSelection(
+export function resolveAgentsSelection(
   resolved: ResolvedConfig,
-  options: AgentSelectionOptions
-): AgentSelectionResult {
+  options: AgentsSelectionOptions
+): AgentsSelectionResult {
   if (options.selectedName && options.noGlobal) {
-    throw new CliError("Cannot select a global agent name and disable global agents.");
+    throw new CliError("Cannot select a global AGENTS entry and disable global AGENTS.");
   }
 
   const globalAgents = resolved.global?.agents ?? {};
@@ -35,7 +35,7 @@ export function resolveAgentSelection(
   }
 
   if (selectedName && !Object.prototype.hasOwnProperty.call(globalAgents, selectedName)) {
-    throw new CliError(`Agent content not found: ${selectedName}`);
+    throw new CliError(`AGENTS content not found: ${selectedName}`);
   }
 
   return {

@@ -2,12 +2,12 @@ import { Command } from "commander";
 import { getErrorMessage, CliError } from "../../lib/utils/errors.js";
 import { openEditor } from "../../lib/utils/editor.js";
 import {
-  clearGlobalAgent,
+  clearGlobalAgentsEntry,
   clearProjectAgents,
   clearProjectReference,
-  getGlobalAgent,
+  getGlobalAgentsEntry,
   getProjectAgentsValue,
-  setGlobalAgent,
+  setGlobalAgentsEntry,
   setProjectAgentsText,
   setProjectNoGlobal,
   setProjectReference,
@@ -30,10 +30,10 @@ export function registerAgentsCommand(program: Command): void {
     .action(async (options) => {
       try {
         if (options.global) {
-          const existing = await getGlobalAgent(options.global);
+          const existing = await getGlobalAgentsEntry(options.global);
           const { content, changed } = await openEditor(existing ?? "");
           if (changed) {
-            await setGlobalAgent(options.global, content);
+            await setGlobalAgentsEntry(options.global, content);
           }
           return;
         }
@@ -57,7 +57,7 @@ export function registerAgentsCommand(program: Command): void {
     .action(async (options) => {
       try {
         if (options.global) {
-          await clearGlobalAgent(options.global);
+          await clearGlobalAgentsEntry(options.global);
           return;
         }
         await clearProjectAgents();
@@ -94,9 +94,9 @@ export function registerAgentsCommand(program: Command): void {
         if (!name) {
           throw new CliError("Global entry name is required.");
         }
-        const existing = await getGlobalAgent(name);
+        const existing = await getGlobalAgentsEntry(name);
         if (!existing) {
-          throw new CliError(`Agent content not found: ${name}`);
+          throw new CliError(`AGENTS content not found: ${name}`);
         }
         await setProjectReference(name);
       } catch (err) {

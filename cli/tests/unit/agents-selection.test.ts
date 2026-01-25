@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { resolveAgentSelection } from "../../src/services/agents-selection.js";
+import { resolveAgentsSelection } from "../../src/services/agents-selection.js";
 import { type ResolvedConfig } from "../../src/lib/config/schema.js";
 
 function makeResolvedConfig(overrides: Partial<ResolvedConfig>): ResolvedConfig {
@@ -18,13 +18,13 @@ function makeResolvedConfig(overrides: Partial<ResolvedConfig>): ResolvedConfig 
   };
 }
 
-describe("resolveAgentSelection", () => {
+describe("resolveAgentsSelection", () => {
   it("uses explicit CLI selection", () => {
     const resolved = makeResolvedConfig({
       global: { agents: { alpha: "A" } },
     });
 
-    const result = resolveAgentSelection(resolved, { selectedName: "alpha" });
+    const result = resolveAgentsSelection(resolved, { selectedName: "alpha" });
 
     expect(result.globalContent).toBe("A");
     expect(result.selectedName).toBe("alpha");
@@ -36,8 +36,8 @@ describe("resolveAgentSelection", () => {
     });
 
     expect(() =>
-      resolveAgentSelection(resolved, { selectedName: "missing" })
-    ).toThrowError(/Agent content not found/);
+      resolveAgentsSelection(resolved, { selectedName: "missing" })
+    ).toThrowError(/AGENTS content not found/);
   });
 
   it("uses project reference when provided", () => {
@@ -46,7 +46,7 @@ describe("resolveAgentSelection", () => {
       global: { agents: { beta: "B" } },
     });
 
-    const result = resolveAgentSelection(resolved, {});
+    const result = resolveAgentsSelection(resolved, {});
 
     expect(result.globalContent).toBe("B");
     expect(result.selectedName).toBe("beta");
@@ -57,7 +57,7 @@ describe("resolveAgentSelection", () => {
       global: { agents: { default: "D" } },
     });
 
-    const result = resolveAgentSelection(resolved, {});
+    const result = resolveAgentsSelection(resolved, {});
 
     expect(result.globalContent).toBe("D");
     expect(result.selectedName).toBe("default");
@@ -69,7 +69,7 @@ describe("resolveAgentSelection", () => {
       global: { agents: { default: "D" } },
     });
 
-    const result = resolveAgentSelection(resolved, {});
+    const result = resolveAgentsSelection(resolved, {});
 
     expect(result.globalContent).toBeUndefined();
   });
@@ -80,7 +80,7 @@ describe("resolveAgentSelection", () => {
     });
 
     expect(() =>
-      resolveAgentSelection(resolved, { selectedName: "default", noGlobal: true })
-    ).toThrowError(/Cannot select/);
+      resolveAgentsSelection(resolved, { selectedName: "default", noGlobal: true })
+    ).toThrowError(/Cannot select a global AGENTS entry and disable global AGENTS/);
   });
 });

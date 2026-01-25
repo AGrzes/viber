@@ -9,7 +9,7 @@ import { ENV_CODEX_HOME } from "../lib/utils/env.js";
 import { buildSessionEnv } from "./sessionEnv.js";
 import { type FolderMapping } from "../lib/config/schema.js";
 import { getProfileOrThrow } from "./profiles.js";
-import { resolveAgentSelection } from "./agents-selection.js";
+import { resolveAgentsSelection } from "./agents-selection.js";
 import { buildAgentsContent, writeAgentsFile } from "./agents-file.js";
 
 export type SessionOptions = {
@@ -61,7 +61,7 @@ export async function runSession(options: SessionOptions): Promise<number> {
     throw new CliError(`Invalid mappings: ${details}`);
   }
 
-  const selection = resolveAgentSelection(resolved, {
+  const selection = resolveAgentsSelection(resolved, {
     selectedName: options.agents,
     noGlobal: options.agentsNoGlobal,
   });

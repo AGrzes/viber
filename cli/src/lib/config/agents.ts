@@ -49,7 +49,7 @@ export function upsertGlobalAgents(
   };
 }
 
-export function removeGlobalAgentFromMap(
+export function removeGlobalAgentsEntryFromMap(
   existing: Record<string, string> | undefined,
   name: string
 ): { next: Record<string, string>; removed: boolean } {
@@ -79,12 +79,15 @@ export async function listGlobalAgents(): Promise<Record<string, string>> {
   return global?.agents ?? {};
 }
 
-export async function getGlobalAgent(name: string): Promise<string | null> {
+export async function getGlobalAgentsEntry(name: string): Promise<string | null> {
   const agents = await listGlobalAgents();
   return agents[name] ?? null;
 }
 
-export async function setGlobalAgent(name: string, content: string): Promise<void> {
+export async function setGlobalAgentsEntry(
+  name: string,
+  content: string
+): Promise<void> {
   const global: GlobalConfig = (await readGlobalConfig()) ?? {};
   const agents = upsertGlobalAgents(global.agents, name, content);
   await writeGlobalConfig({
@@ -93,11 +96,11 @@ export async function setGlobalAgent(name: string, content: string): Promise<voi
   });
 }
 
-export async function clearGlobalAgent(name: string): Promise<void> {
+export async function clearGlobalAgentsEntry(name: string): Promise<void> {
   const global: GlobalConfig = (await readGlobalConfig()) ?? {};
-  const { next, removed } = removeGlobalAgentFromMap(global.agents, name);
+  const { next, removed } = removeGlobalAgentsEntryFromMap(global.agents, name);
   if (!removed) {
-    throw new CliError(`Agent content not found: ${name}`);
+    throw new CliError(`AGENTS content not found: ${name}`);
   }
   await writeGlobalConfig({
     ...global,

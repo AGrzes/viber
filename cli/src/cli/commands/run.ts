@@ -5,7 +5,7 @@ import { getErrorMessage } from "../../lib/utils/errors.js";
 export function registerRunCommand(program: Command): void {
   program
     .command("run")
-    .description("Run a one-off agent session")
+    .description("Run a one-off AGENTS session")
     .option("--cwd <path>", "Working directory to resolve config", process.cwd())
     .option("--image <ref>", "Direct image reference to use")
     .option("--profile <name>", "Image profile name to use")

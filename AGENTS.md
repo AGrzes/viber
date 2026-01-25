@@ -6,5 +6,7 @@ You are in container so this mean
 # Process
 After any change do git commit - try to explain changes but the fact of committing history is most important
 Before any change commit the current state if there are uncommited changes.
+# Formatting
+- Use Prettier as the reference formatter; run `pnpm -C cli format` to apply and `pnpm -C cli format:check` (or `pnpm -C cli lint`) to verify.
 # Rules
 - Do not modify AGENTS.md unless explicitly asked by user

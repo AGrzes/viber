@@ -1,39 +1,39 @@
-import { describe, expect, it, vi } from "vitest";
-import { buildPodmanArgs, formatPodmanCommand, runPodman } from "../../src/lib/podman/runner.js";
-import { WORKDIR, CODEX_DIR, CODEX_AUTH_TARGET } from "../../src/lib/utils/paths.js";
-import { ENV_CODEX_HOME } from "../../src/lib/utils/env.js";
+import { describe, expect, it, vi } from 'vitest'
+import { buildPodmanArgs, formatPodmanCommand, runPodman } from '../../src/lib/podman/runner.js'
+import { WORKDIR, CODEX_DIR, CODEX_AUTH_TARGET } from '../../src/lib/utils/paths.js'
+import { ENV_CODEX_HOME } from '../../src/lib/utils/env.js'
 
 const baseMapping = {
-  sourcePath: "/host/project",
+  sourcePath: '/host/project',
   targetPath: WORKDIR,
-  mode: "rw",
-};
+  mode: 'rw',
+}
 
 const authMapping = {
-  sourcePath: "/home/user/.codex/auth.json",
+  sourcePath: '/home/user/.codex/auth.json',
   targetPath: CODEX_AUTH_TARGET,
-  mode: "ro",
-};
+  mode: 'ro',
+}
 
-describe("buildPodmanArgs", () => {
-  it("includes userns keep-id and explicit UID:GID", () => {
+describe('buildPodmanArgs', () => {
+  it('includes userns keep-id and explicit UID:GID', () => {
     const args = buildPodmanArgs({
-      imageRef: "example:latest",
+      imageRef: 'example:latest',
       interactive: false,
       mappings: [baseMapping],
-      usernsMode: "keep-id",
+      usernsMode: 'keep-id',
       uid: 1000,
       gid: 1001,
-    });
+    })
 
-    expect(args).toContain("--userns=keep-id");
-    expect(args).toContain("--user");
-    expect(args).toContain("1000:1001");
-  });
+    expect(args).toContain('--userns=keep-id')
+    expect(args).toContain('--user')
+    expect(args).toContain('1000:1001')
+  })
 
-  it("includes workdir and CODEX_HOME when auth mount is present", () => {
+  it('includes workdir and CODEX_HOME when auth mount is present', () => {
     const args = buildPodmanArgs({
-      imageRef: "example:latest",
+      imageRef: 'example:latest',
       interactive: true,
       mappings: [baseMapping],
       extraMounts: [authMapping],
@@ -41,54 +41,54 @@ describe("buildPodmanArgs", () => {
       env: {
         [ENV_CODEX_HOME]: CODEX_DIR,
       },
-    });
+    })
 
-    expect(args).toContain("-w");
-    expect(args).toContain(WORKDIR);
-    expect(args).toContain("-e");
-    expect(args).toContain(`${ENV_CODEX_HOME}=${CODEX_DIR}`);
-    expect(args).toContain(`-v`);
-    expect(args).toContain(`${authMapping.sourcePath}:${authMapping.targetPath}:${authMapping.mode}`);
-  });
+    expect(args).toContain('-w')
+    expect(args).toContain(WORKDIR)
+    expect(args).toContain('-e')
+    expect(args).toContain(`${ENV_CODEX_HOME}=${CODEX_DIR}`)
+    expect(args).toContain(`-v`)
+    expect(args).toContain(`${authMapping.sourcePath}:${authMapping.targetPath}:${authMapping.mode}`)
+  })
 
-  it("accepts explicit env entries", () => {
+  it('accepts explicit env entries', () => {
     const args = buildPodmanArgs({
-      imageRef: "example:latest",
+      imageRef: 'example:latest',
       interactive: false,
       mappings: [baseMapping],
       env: {
-        FOO: "bar",
+        FOO: 'bar',
       },
-    });
+    })
 
-    expect(args).toContain("FOO=bar");
-  });
-});
+    expect(args).toContain('FOO=bar')
+  })
+})
 
-describe("dry-run behavior", () => {
-  it("formats a podman command string", () => {
+describe('dry-run behavior', () => {
+  it('formats a podman command string', () => {
     const args = buildPodmanArgs({
-      imageRef: "example:latest",
+      imageRef: 'example:latest',
       interactive: false,
       mappings: [baseMapping],
-    });
+    })
 
-    const formatted = formatPodmanCommand(args);
-    expect(formatted.startsWith("podman run --rm")).toBe(true);
-    expect(formatted).toContain("example:latest");
-  });
+    const formatted = formatPodmanCommand(args)
+    expect(formatted.startsWith('podman run --rm')).toBe(true)
+    expect(formatted).toContain('example:latest')
+  })
 
-  it("prints command instead of executing when dryRun is true", async () => {
-    const spy = vi.spyOn(console, "log").mockImplementation(() => {});
+  it('prints command instead of executing when dryRun is true', async () => {
+    const spy = vi.spyOn(console, 'log').mockImplementation(() => {})
     const exitCode = await runPodman({
-      imageRef: "example:latest",
+      imageRef: 'example:latest',
       interactive: false,
       mappings: [baseMapping],
       dryRun: true,
-    });
+    })
 
-    expect(exitCode).toBe(0);
-    expect(spy).toHaveBeenCalledTimes(1);
-    spy.mockRestore();
-  });
-});
+    expect(exitCode).toBe(0)
+    expect(spy).toHaveBeenCalledTimes(1)
+    spy.mockRestore()
+  })
+})

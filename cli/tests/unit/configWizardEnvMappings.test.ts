@@ -1,28 +1,26 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from 'vitest'
 
-vi.mock("prompts", () => ({ default: vi.fn() }));
+vi.mock('prompts', () => ({ default: vi.fn() }))
 
-import prompts from "prompts";
-import { runConfigWizard } from "../../src/services/configWizard.js";
+import prompts from 'prompts'
+import { runConfigWizard } from '../../src/services/configWizard.js'
 
-const promptMock = vi.mocked(prompts);
+const promptMock = vi.mocked(prompts)
 
-describe("config wizard env mappings", () => {
-  it("captures env mappings when provided", async () => {
+describe('config wizard env mappings', () => {
+  it('captures env mappings when provided', async () => {
     const responses = [
-      { imageChoice: "none" },
+      { imageChoice: 'none' },
       { add: false },
       { add: true },
-      { key: "API_URL", value: "https://example" },
+      { key: 'API_URL', value: 'https://example' },
       { add: false },
-    ];
+    ]
 
-    promptMock.mockImplementation(async () => responses.shift());
+    promptMock.mockImplementation(async () => responses.shift())
 
-    const config = await runConfigWizard();
+    const config = await runConfigWizard()
 
-    expect(config.envMappings).toEqual([
-      { key: "API_URL", value: "https://example" },
-    ]);
-  });
-});
+    expect(config.envMappings).toEqual([{ key: 'API_URL', value: 'https://example' }])
+  })
+})

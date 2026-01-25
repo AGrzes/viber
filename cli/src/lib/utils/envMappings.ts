@@ -1,5 +1,5 @@
 import { type EnvMappingEntry } from '../config/schema.js'
-import { substituteEnvValue } from '../utils/envSubst.js'
+import { substituteEnv } from '../utils/envSubst.js'
 
 export function mergeEnvMappings(
   globalEntries: EnvMappingEntry[] = [],
@@ -19,7 +19,7 @@ export function mergeEnvMappings(
 }
 
 export function interpolateEnvValue(value: string, hostEnv: NodeJS.ProcessEnv): string {
-  return substituteEnvValue(value, hostEnv)
+  return substituteEnv(value, hostEnv)
 }
 
 export function interpolateEnvMappings(

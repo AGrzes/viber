@@ -1,20 +1,19 @@
 import { describe, expect, it } from 'vitest'
-import { substituteEnvPath, substituteEnvValue } from '../../../src/lib/utils/envSubst.js'
+import { substituteEnv } from '../../../src/lib/utils/envSubst.js'
 
 describe('env substitution helper', () => {
   it('replaces ${VAR} placeholders with provided env values', () => {
-    const result = substituteEnvPath('/app/${ENV}/config', { ENV: 'stage' })
+    const result = substituteEnv('/app/${ENV}/config', { ENV: 'stage' })
     expect(result).toBe('/app/stage/config')
   })
 
-  it('throws when placeholders reference undefined variables', () => {
-    expect(() =>
-      substituteEnvPath('/app/${ENV}/config', { OTHER: 'value' })
-    ).toThrow('Missing environment variables for template path: ENV')
+  it('replaces $VAR syntax as well', () => {
+    const result = substituteEnv('/app/$ENV/config', { ENV: 'prod' })
+    expect(result).toBe('/app/prod/config')
   })
 
-  it('can substitute strings without requiring paths', () => {
-    const result = substituteEnvValue('Hello ${USER}', { USER: 'Coder' })
-    expect(result).toBe('Hello Coder')
+  it('leaves missing variables blank', () => {
+    const result = substituteEnv('/app/${ENV}/config', {})
+    expect(result).toBe('/app//config')
   })
 })

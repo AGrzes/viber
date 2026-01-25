@@ -4,7 +4,7 @@ import os from 'node:os'
 import path from 'node:path'
 import Handlebars from 'handlebars'
 import { CliError } from '../utils/errors.js'
-import { substituteEnvPath } from '../utils/envSubst.js'
+import { substituteEnv } from '../utils/envSubst.js'
 import { RenderedFile, SuppressionList, TemplateDefinition } from './types.js'
 
 type TemplateProcessorOptions = {
@@ -29,7 +29,7 @@ export async function processTemplates(options: TemplateProcessorOptions): Promi
     const fileName = `${sanitizeTemplateName(definition.name)}-${crypto.randomUUID()}.tmp`
     const tempPath = path.join(tempDir, fileName)
     await fs.writeFile(tempPath, content)
-    const containerPath = substituteEnvPath(definition.path, env)
+    const containerPath = substituteEnv(definition.path, env)
     renderedFiles.push({
       templateName: definition.name,
       tempPath,

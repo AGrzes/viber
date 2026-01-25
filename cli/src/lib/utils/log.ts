@@ -1,13 +1,13 @@
-import debug from "debug";
+import debug from 'debug'
 
 export const log = {
-  cli: debug("viber:cli"),
-  config: debug("viber:config"),
-  podman: debug("viber:podman"),
-  session: debug("viber:session"),
-  env: debug("viber:env"),
-};
+  cli: debug('viber:cli'),
+  config: debug('viber:config'),
+  podman: debug('viber:podman'),
+  session: debug('viber:session'),
+  env: debug('viber:env'),
+}
 
 export function enableDebug(namespaces: string): void {
-  debug.enable(namespaces);
+  debug.enable(namespaces)
 }

@@ -9,8 +9,11 @@
   "scripts": {
     "dev": "tsx src/cli/index.ts",
     "build": "tsc -p tsconfig.json",
-    "test": "vitest",
-    "lint": "echo \"no lint configured\""
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "format": "prettier -w .",
+    "format:check": "prettier -c .",
+    "lint": "prettier -c ."
   },
   "dependencies": {
     "commander": "^12.1.0",
@@ -22,6 +25,7 @@
     "@types/debug": "^4.1.12",
     "@types/node": "^22.10.2",
     "@types/prompts": "^2.4.9",
+    "prettier": "^3.3.3",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3",
     "vitest": "^2.1.8"

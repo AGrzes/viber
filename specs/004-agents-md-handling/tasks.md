@@ -11,8 +11,8 @@ description: "Task list for AGENTS.md Handling"
 
 ## Phase 1: Setup (Shared Infrastructure)
 
-- [ ] T001 Confirm config file locations for global and project settings in `cli/src/lib/config`
-- [ ] T002 Identify session startup entrypoint that mounts AGENTS.md in `cli/src/services`
+- [X] T001 Confirm config file locations for global and project settings in `cli/src/lib/config`
+- [X] T002 Identify session startup entrypoint that mounts AGENTS.md in `cli/src/services`
 
 ## Phase 2: Foundational (Blocking Prerequisites)
 

@@ -14,6 +14,7 @@
 - Q: If the external editor exits non-zero or without changes, how should the CLI handle saving agent content? → A: Do not update stored content.
 - Q: How should users select which named global content is active for a session? → A: Allow a CLI flag and a project-level default; use the global default when neither is set; allow a flag or project setting to skip global content entirely.
 - Q: If both skip-global and an explicit global content name are set, which should take precedence? → A: CLI flags override project config; contradictory CLI flags are an error; project config supports explicit null for no default.
+- Q: If a named global content is requested but does not exist, what should the CLI do? → A: Fail startup with a clear error.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -109,6 +110,7 @@ As a CLI user, I want to edit agent content in my preferred external editor so I
 - **FR-015**: The system MUST allow a project-level explicit null to indicate no global content default.
 - **FR-016**: The system MUST treat conflicting CLI flags (select name and skip-global) as an error.
 - **FR-017**: The system MUST apply selection precedence as: CLI flags, then project config, then global default.
+- **FR-018**: The system MUST fail startup with a clear error when a requested named global content does not exist.
 
 ### Requirement Acceptance Criteria
 
@@ -129,6 +131,7 @@ As a CLI user, I want to edit agent content in my preferred external editor so I
 - **FR-015**: When a project-level explicit null is set and no explicit session selection is provided, no global content is included.
 - **FR-016**: When conflicting CLI flags are provided, startup fails with a clear error.
 - **FR-017**: CLI selections override project config selections when both are provided.
+- **FR-018**: Requesting a non-existent named global content fails startup with a clear error.
 
 ### Key Entities *(include if feature involves data)*
 

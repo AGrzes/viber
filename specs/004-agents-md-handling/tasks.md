@@ -77,8 +77,8 @@ description: "Task list for AGENTS.md Handling"
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T025 Update CLI help text and usage examples in `cli/src/cli/commands/agents.ts`
-- [ ] T026 Add user-facing error messages for missing names in `cli/src/cli/commands/agents.ts`
+- [X] T025 Update CLI help text and usage examples in `cli/src/cli/commands/agents.ts`
+- [X] T026 Add user-facing error messages for missing names in `cli/src/cli/commands/agents.ts`
 
 ## Dependencies & Execution Order
 

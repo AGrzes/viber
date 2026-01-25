@@ -15,7 +15,13 @@ import {
 import { parseProjectAgentsValue } from "../../lib/config/agents.js";
 
 export function registerAgentsCommand(program: Command): void {
-  const agents = program.command("agents").description("Manage AGENTS.md content");
+  const agents = program
+    .command("agents")
+    .description("Manage AGENTS.md content")
+    .addHelpText(
+      "after",
+      `\nExamples:\n  viber agents edit\n  viber agents edit --global default\n  viber agents clear\n  viber agents clear --global default\n  viber agents reference default\n  viber agents reference --no-global\n`
+    );
 
   agents
     .command("edit")
@@ -87,6 +93,10 @@ export function registerAgentsCommand(program: Command): void {
         }
         if (!name) {
           throw new CliError("Global entry name is required.");
+        }
+        const existing = await getGlobalAgent(name);
+        if (!existing) {
+          throw new CliError(`Agent content not found: ${name}`);
         }
         await setProjectReference(name);
       } catch (err) {

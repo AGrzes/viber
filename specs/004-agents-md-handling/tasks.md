@@ -16,9 +16,9 @@ description: "Task list for AGENTS.md Handling"
 
 ## Phase 2: Foundational (Blocking Prerequisites)
 
-- [ ] T003 Create agents config helpers and schema in `cli/src/lib/config/agents.ts`
-- [ ] T004 Implement selection resolver (CLI → project reference/no-global → global default) in `cli/src/services/agents-selection.ts`
-- [ ] T005 Implement combined AGENTS.md builder in `cli/src/services/agents-file.ts`
+- [X] T003 Create agents config helpers and schema in `cli/src/lib/config/agents.ts`
+- [X] T004 Implement selection resolver (CLI → project reference/no-global → global default) in `cli/src/services/agents-selection.ts`
+- [X] T005 Implement combined AGENTS.md builder in `cli/src/services/agents-file.ts`
 
 ## Phase 3: User Story 1 - Use Combined Agent Instructions on Start (Priority: P1)
 
@@ -33,10 +33,10 @@ description: "Task list for AGENTS.md Handling"
 
 ### Implementation for User Story 1
 
-- [ ] T008 [US1] Load global/project agents on session start in `cli/src/services/session-start.ts`
-- [ ] T009 [US1] Generate and mount AGENTS.md only when content exists in `cli/src/services/session-start.ts`
-- [ ] T010 [US1] Return clear error on missing global name in `cli/src/services/agents-selection.ts`
-- [ ] T011 [US1] Enforce conflict error for `--agents` + `--agents-no-global` in `cli/src/cli/index.ts`
+- [X] T008 [US1] Load global/project agents on session start in `cli/src/services/session.ts`
+- [X] T009 [US1] Generate and mount AGENTS.md only when content exists in `cli/src/services/session.ts`
+- [X] T010 [US1] Return clear error on missing global name in `cli/src/services/agents-selection.ts`
+- [X] T011 [US1] Enforce conflict error for `--agents` + `--agents-no-global` in `cli/src/services/agents-selection.ts`
 
 ## Phase 4: User Story 2 - Select a Named Global Agent Content (Priority: P2)
 
@@ -51,10 +51,10 @@ description: "Task list for AGENTS.md Handling"
 
 ### Implementation for User Story 2
 
-- [ ] T014 [US2] Parse `--agents <name>` and `--agents-no-global` in `cli/src/cli/index.ts`
-- [ ] T015 [US2] Resolve `default` as implicit global default in `cli/src/services/agents-selection.ts`
-- [ ] T016 [US2] Enforce case-sensitive uniqueness in `cli/src/lib/config/agents.ts`
-- [ ] T017 [US2] Implement project reference persistence in `cli/src/lib/config/agents.ts`
+- [X] T014 [US2] Parse `--agents <name>` and `--agents-no-global` in `cli/src/cli/commands/run.ts`
+- [X] T015 [US2] Resolve `default` as implicit global default in `cli/src/services/agents-selection.ts`
+- [X] T016 [US2] Enforce case-sensitive uniqueness in `cli/src/lib/config/agents.ts`
+- [X] T017 [US2] Implement project reference persistence in `cli/src/lib/config/agents.ts`
 
 ## Phase 5: User Story 3 - Edit Agent Content in an External Editor (Priority: P3)
 
@@ -69,11 +69,11 @@ description: "Task list for AGENTS.md Handling"
 
 ### Implementation for User Story 3
 
-- [ ] T020 [US3] Add `viber agents edit [--global <name>]` command in `cli/src/cli/commands/agents.ts`
-- [ ] T021 [US3] Add `viber agents clear [--global <name>]` command in `cli/src/cli/commands/agents.ts`
-- [ ] T022 [US3] Add `viber agents reference <name>|--clear|--no-global` command in `cli/src/cli/commands/agents.ts`
-- [ ] T023 [US3] Wire editor invocation for edit flow in `cli/src/lib/utils/editor.ts`
-- [ ] T024 [US3] Persist global/project text edits in `cli/src/lib/config/agents.ts`
+- [X] T020 [US3] Add `viber agents edit [--global <name>]` command in `cli/src/cli/commands/agents.ts`
+- [X] T021 [US3] Add `viber agents clear [--global <name>]` command in `cli/src/cli/commands/agents.ts`
+- [X] T022 [US3] Add `viber agents reference <name>|--clear|--no-global` command in `cli/src/cli/commands/agents.ts`
+- [X] T023 [US3] Wire editor invocation for edit flow in `cli/src/lib/utils/editor.ts`
+- [X] T024 [US3] Persist global/project text edits in `cli/src/lib/config/agents.ts`
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 

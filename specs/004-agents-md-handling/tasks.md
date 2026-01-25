@@ -28,8 +28,8 @@ description: "Task list for AGENTS.md Handling"
 
 ### Tests for User Story 1 (REQUIRED)
 
-- [ ] T006 [P] [US1] Unit test for selection precedence in `cli/tests/unit/agents-selection.test.ts`
-- [ ] T007 [P] [US1] Unit test for AGENTS.md assembly order in `cli/tests/unit/agents-file.test.ts`
+- [X] T006 [P] [US1] Unit test for selection precedence in `cli/tests/unit/agents-selection.test.ts`
+- [X] T007 [P] [US1] Unit test for AGENTS.md assembly order in `cli/tests/unit/agents-file.test.ts`
 
 ### Implementation for User Story 1
 
@@ -46,8 +46,8 @@ description: "Task list for AGENTS.md Handling"
 
 ### Tests for User Story 2 (REQUIRED)
 
-- [ ] T012 [P] [US2] Unit test for default-name fallback in `cli/tests/unit/agents-selection.test.ts`
-- [ ] T013 [P] [US2] Unit test for case-sensitive uniqueness in `cli/tests/unit/agents-config.test.ts`
+- [X] T012 [P] [US2] Unit test for default-name fallback in `cli/tests/unit/agents-selection.test.ts`
+- [X] T013 [P] [US2] Unit test for case-sensitive uniqueness in `cli/tests/unit/agents-config.test.ts`
 
 ### Implementation for User Story 2
 
@@ -64,8 +64,8 @@ description: "Task list for AGENTS.md Handling"
 
 ### Tests for User Story 3 (REQUIRED)
 
-- [ ] T018 [P] [US3] Unit test for editor save/no-save behavior in `cli/tests/unit/agents-editor.test.ts`
-- [ ] T019 [P] [US3] Unit test for clear commands in `cli/tests/unit/agents-config.test.ts`
+- [X] T018 [P] [US3] Unit test for editor save/no-save behavior in `cli/tests/unit/agents-editor.test.ts`
+- [X] T019 [P] [US3] Unit test for clear commands in `cli/tests/unit/agents-config.test.ts`
 
 ### Implementation for User Story 3
 

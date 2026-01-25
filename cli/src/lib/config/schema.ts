@@ -33,6 +33,7 @@ export const EnvMappingEntrySchema = z.object({
 
 export const ProjectConfigSchema = z
   .object({
+    agents: z.string().nullable().optional(),
     envMappings: z.array(EnvMappingEntrySchema).optional(),
     mappings: z.array(FolderMappingSchema).optional(),
     imageProfile: z.string().optional(),
@@ -46,6 +47,7 @@ export const ProjectConfigSchema = z
   );
 
 export const GlobalConfigSchema = z.object({
+  agents: z.record(z.string()).optional(),
   envMappings: z.array(EnvMappingEntrySchema).optional(),
   defaultImageProfile: z.string().optional(),
   defaultMappings: z.array(FolderMappingSchema).optional(),

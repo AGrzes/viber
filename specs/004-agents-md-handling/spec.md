@@ -13,6 +13,7 @@
 - Q: When no global or project agent content is configured, what should the CLI do about AGENTS.md for the session? → A: Do not create or mount AGENTS.md.
 - Q: If the external editor exits non-zero or without changes, how should the CLI handle saving agent content? → A: Do not update stored content.
 - Q: How should users select which named global content is active for a session? → A: Allow a CLI flag and a project-level default; use the global default when neither is set; allow a flag or project setting to skip global content entirely.
+- Q: If both skip-global and an explicit global content name are set, which should take precedence? → A: CLI flags override project config; contradictory CLI flags are an error; project config supports explicit null for no default.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -45,6 +46,8 @@ As a CLI user, I want to store multiple named global agent contents with one def
 2. **Given** multiple named global contents are configured, **When** the CLI is started with a specific content name, **Then** that named content is used.
 3. **Given** a project-level default global content is configured, **When** the CLI starts without an explicit selection, **Then** the project-level default is used.
 4. **Given** a project or session sets skip-global, **When** the CLI starts, **Then** no global content is included in the combined AGENTS.md.
+5. **Given** a project-level explicit null is set for global content, **When** the CLI starts without an explicit selection, **Then** no global content is included.
+6. **Given** conflicting CLI flags that both select a global name and skip global, **When** the CLI starts, **Then** it fails with a clear error.
 
 ---
 
@@ -69,6 +72,7 @@ As a CLI user, I want to edit agent content in my preferred external editor so I
 - What happens when the external editor exits without saving or returns a non-zero status? If the editor exits non-zero or without changes, the system does not update stored content.
 - How does the system handle a requested named content that does not exist?
 - What happens when skip-global is set and only project content is present?
+- What happens when both skip-global and a global selection are passed via CLI? The system errors with a clear message.
 
 ## Testing Requirements *(mandatory)*
 
@@ -81,6 +85,8 @@ As a CLI user, I want to edit agent content in my preferred external editor so I
 - Verify editor non-zero exit or no-change does not update stored content.
 - Verify project-level default selection is used when no explicit session selection is provided.
 - Verify skip-global excludes global content even when a global default exists.
+- Verify explicit null project setting results in no global content being included.
+- Verify conflicting CLI flags (select name and skip-global) produce a clear error.
 
 ## Requirements *(mandatory)*
 
@@ -100,6 +106,9 @@ As a CLI user, I want to edit agent content in my preferred external editor so I
 - **FR-012**: If the editor exits non-zero or produces no changes, the system MUST NOT update stored content.
 - **FR-013**: The system MUST allow a project-level default selection for the active global content name, used when no explicit session selection is provided.
 - **FR-014**: The system MUST allow a project or session to skip global content entirely when generating the combined AGENTS.md.
+- **FR-015**: The system MUST allow a project-level explicit null to indicate no global content default.
+- **FR-016**: The system MUST treat conflicting CLI flags (select name and skip-global) as an error.
+- **FR-017**: The system MUST apply selection precedence as: CLI flags, then project config, then global default.
 
 ### Requirement Acceptance Criteria
 
@@ -117,6 +126,9 @@ As a CLI user, I want to edit agent content in my preferred external editor so I
 - **FR-012**: Editor non-zero exit or no-change does not update stored content.
 - **FR-013**: If a project-level default is set and no explicit session selection is provided, that project default is used.
 - **FR-014**: When skip-global is set, the combined AGENTS.md contains only project content (if any).
+- **FR-015**: When a project-level explicit null is set and no explicit session selection is provided, no global content is included.
+- **FR-016**: When conflicting CLI flags are provided, startup fails with a clear error.
+- **FR-017**: CLI selections override project config selections when both are provided.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -125,6 +137,7 @@ As a CLI user, I want to edit agent content in my preferred external editor so I
 - **Active Agent Selection**: The chosen global content name for a session (default or explicit).
 - **Project Default Global Selection**: A project-scoped default for which global content name to use.
 - **Skip-Global Setting**: A project or session setting that suppresses inclusion of global content.
+- **Project Explicit Null**: A project-scoped setting indicating no default global content should be applied.
 - **Generated Agent File**: The combined instruction output used for the current session.
 
 ## Success Criteria *(mandatory)*
@@ -143,5 +156,5 @@ As a CLI user, I want to edit agent content in my preferred external editor so I
 ## Assumptions
 
 - The combined content uses simple concatenation with a blank line between global and project content.
-- Selection precedence is: explicit session selection, project-level default, then global default.
+- Selection precedence is: CLI flags, then project config (named default or explicit null), then global default.
 - The standard AGENTS.md location is consistent across sessions and is the expected lookup path for tools.

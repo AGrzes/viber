@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { buildPodmanArgs, formatPodmanCommand, runPodman } from "../../src/lib/podman/runner.js";
 import { WORKDIR, CODEX_DIR, CODEX_AUTH_TARGET } from "../../src/lib/utils/paths.js";
-import { ENV_CODEX_HOME, ENV_PROJECT_CONFIG, ENV_GLOBAL_CONFIG } from "../../src/lib/utils/env.js";
+import { ENV_CODEX_HOME } from "../../src/lib/utils/env.js";
 
 const baseMapping = {
   sourcePath: "/host/project",
@@ -51,19 +51,17 @@ describe("buildPodmanArgs", () => {
     expect(args).toContain(`${authMapping.sourcePath}:${authMapping.targetPath}:${authMapping.mode}`);
   });
 
-  it("includes project and global config env vars", () => {
+  it("accepts explicit env entries", () => {
     const args = buildPodmanArgs({
       imageRef: "example:latest",
       interactive: false,
       mappings: [baseMapping],
       env: {
-        [ENV_PROJECT_CONFIG]: "/path/project/.viber.json",
-        [ENV_GLOBAL_CONFIG]: "/home/user/.viber/config.json",
+        FOO: "bar",
       },
     });
 
-    expect(args).toContain(`${ENV_PROJECT_CONFIG}=/path/project/.viber.json`);
-    expect(args).toContain(`${ENV_GLOBAL_CONFIG}=/home/user/.viber/config.json`);
+    expect(args).toContain("FOO=bar");
   });
 });
 

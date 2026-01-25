@@ -8,10 +8,3 @@ Before and after any change do git commit - try to explain changes but the fact 
 
 # Rules
 - Do not modify AGENTS.md unless explicitly asked by user
-
-## Active Technologies
-- Node.js 25 (TypeScript 5.x) + commander, prompts, zod, debug, tsx, vitest (001-wrapper-cli-refactor)
-- Local filesystem JSON config files (001-wrapper-cli-refactor)
-
-## Recent Changes
-- 001-wrapper-cli-refactor: Added Node.js 25 (TypeScript 5.x) + commander, prompts, zod, debug, tsx, vitest

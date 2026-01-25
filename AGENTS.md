@@ -4,7 +4,13 @@ You are in container so this mean
 - If you need new os level tools then let user know to update container image as in session installation will be lost on next start
 
 # Process
-Before and after any change do git commit - try to explain changes but the fact of committing history is most important
-
+After any change do git commit - try to explain changes but the fact of committing history is most important
+Before any change commit the current state if there are uncommited changes.
 # Rules
 - Do not modify AGENTS.md unless explicitly asked by user
+
+# Remarks 
+## Spec `short-name`
+In context of speckit branches numbering:
+> Specs directories: Check for directories matching `specs/[0-9]+-<short-name>`
+Short name is any feature name not current feature name.

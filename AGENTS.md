@@ -11,6 +11,5 @@ Before any change commit the current state if there are uncommited changes.
 
 # Remarks 
 ## Spec `short-name`
-In context of speckit branches numbering:
-> Specs directories: Check for directories matching `specs/[0-9]+-<short-name>`
-Short name is any feature name not current feature name.
+Specs directories: scan all specs/[0-9]+-* directories, regardless of short name, and use the highest number found (excluding the current
+  feature directory if it already exists).

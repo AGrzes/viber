@@ -26,8 +26,8 @@ description: "Task list for container file templates feature"
 
 **Purpose**: Prepare the repo for template rendering by adding the required dependency and scaffolding types. These tasks unblock the rest of the work.
 
-- [ ] T001 Update `cli/package.json` to add the `handlebars` dependency and refresh `pnpm-lock.yaml` (run `pnpm -C cli install`) so deterministic template rendering is available. (cli/package.json)
-- [ ] T002 Create `cli/src/lib/templates/types.ts` (and export via `cli/src/lib/templates/index.ts` if needed) to declare `TemplateDefinition`, `SuppressionList`, `RenderedFile`, and `TemplateSet` shapes before implementing processing logic. (cli/src/lib/templates/types.ts)
+- [X] T001 Update `cli/package.json` to add the `handlebars` dependency and refresh `pnpm-lock.yaml` (run `pnpm -C cli install`) so deterministic template rendering is available. (cli/package.json)
+- [X] T002 Create `cli/src/lib/templates/types.ts` (and export via `cli/src/lib/templates/index.ts` if needed) to declare `TemplateDefinition`, `SuppressionList`, `RenderedFile`, and `TemplateSet` shapes before implementing processing logic. (cli/src/lib/templates/types.ts)
 
 ---
 
@@ -35,8 +35,8 @@ description: "Task list for container file templates feature"
 
 **Purpose**: Wire template configuration into the existing resolver so downstream services can read merged definitions before user stories run.
 
-- [ ] T003 Extend `cli/src/lib/config/schema.ts` with `TemplateDefinitionSchema`, `ProjectConfigSchema.templates`, `GlobalConfigSchema.templates`, and `ResolvedConfig.templateSet` so template definitions from both configs are validated. (cli/src/lib/config/schema.ts)
-- [ ] T004 Update `cli/src/lib/config/resolver.ts` to load `templates` arrays from project/global configs, normalize missing entries, and surface the merged template set through `ResolvedConfig.templateSet` for other services to consume. (cli/src/lib/config/resolver.ts)
+- [X] T003 Extend `cli/src/lib/config/schema.ts` with `TemplateDefinitionSchema`, `ProjectConfigSchema.templates`, `GlobalConfigSchema.templates`, and `ResolvedConfig.templateSet` so template definitions from both configs are validated. (cli/src/lib/config/schema.ts)
+- [X] T004 Update `cli/src/lib/config/resolver.ts` to load `templates` arrays from project/global configs, normalize missing entries, and surface the merged template set through `ResolvedConfig.templateSet` for other services to consume. (cli/src/lib/config/resolver.ts)
 
 ---
 
@@ -48,12 +48,10 @@ description: "Task list for container file templates feature"
 
 ### Tests for User Story 1
 
-- [ ] T005 [P] [US1] Add `cli/tests/unit/templates/render.test.ts` that exercises the template processor, verifying Handlebars rendering, temporary file creation, and resolved container path with environment substitution. (cli/tests/unit/templates/render.test.ts)
+- [X] T005 [P] [US1] Add `cli/tests/unit/templates/render.test.ts` that exercises the template processor, verifying Handlebars rendering, temporary file creation, and resolved container path with environment substitution. (cli/tests/unit/templates/render.test.ts)
 
-### Implementation for User Story 1
-
-- [ ] T006 [US1] Implement the template processor in `cli/src/lib/templates/processor.ts` to render Handlebars templates with `parameters`, resolve `${VAR}` placeholders against current env values, write each output to a temp file, and emit `RenderedFile` metadata. (cli/src/lib/templates/processor.ts)
-- [ ] T007 [US1] Update `cli/src/services/session.ts` to call the template processor before invoking Podman, append each generated `extraMounts` entry, and bubble up rendering errors so container launch fails fast when template creation fails. (cli/src/services/session.ts)
+- [X] T006 [US1] Implement the template processor in `cli/src/lib/templates/processor.ts` to render Handlebars templates with `parameters`, resolve `${VAR}` placeholders against current env values, write each output to a temp file, and emit `RenderedFile` metadata. (cli/src/lib/templates/processor.ts)
+- [X] T007 [US1] Update `cli/src/services/session.ts` to call the template processor before invoking Podman, append each generated `extraMounts` entry, and bubble up rendering errors so container launch fails fast when template creation fails. (cli/src/services/session.ts)
 
 ### Parallel Example: User Story 1
 
@@ -69,12 +67,10 @@ Tasks `T005` (unit test) and `T006` (processor implementation) can run together 
 
 ### Tests for User Story 2
 
-- [ ] T008 [P] [US2] Add `cli/tests/unit/templates/merge.test.ts` that covers deep merging of two template definitions with the same name, asserting local values win and missing required fields produce a validation error. (cli/tests/unit/templates/merge.test.ts)
+- [X] T008 [P] [US2] Add `cli/tests/unit/templates/merge.test.ts` that covers deep merging of two template definitions with the same name, asserting local values win and missing required fields produce a validation error. (cli/tests/unit/templates/merge.test.ts)
 
-### Implementation for User Story 2
-
-- [ ] T009 [US2] Implement deep merge logic in `cli/src/lib/templates/merge.ts` (used by the processor) that joins template entries by name, merges nested `parameters`, and validates presence of `name`, `path`, and `template`. (cli/src/lib/templates/merge.ts)
-- [ ] T010 [US2] Wire the merge helper into the template processor so resolved configs feed merged definitions while preserving the clear error cases defined in the spec. (cli/src/lib/templates/processor.ts)
+- [X] T009 [US2] Implement deep merge logic in `cli/src/lib/templates/merge.ts` (used by the processor) that joins template entries by name, merges nested `parameters`, and validates presence of `name`, `path`, and `template`. (cli/src/lib/templates/merge.ts)
+- [X] T010 [US2] Wire the merge helper into the template processor so resolved configs feed merged definitions while preserving the clear error cases defined in the spec. (cli/src/lib/templates/processor.ts)
 
 ### Parallel Example: User Story 2
 
@@ -90,12 +86,10 @@ Run `T008` (merge unit test) while developing `T009` (merge helper) so tests fai
 
 ### Tests for User Story 3
 
-- [ ] T011 [P] [US3] Add `cli/tests/unit/templates/suppression.test.ts` that feeds a suppression list into the processor and verifies suppressed names are absent from the rendered output and mount list. (cli/tests/unit/templates/suppression.test.ts)
+- [X] T011 [P] [US3] Add `cli/tests/unit/templates/suppression.test.ts` that feeds a suppression list into the processor and verifies suppressed names are absent from the rendered output and mount list. (cli/tests/unit/templates/suppression.test.ts)
 
-### Implementation for User Story 3
-
-- [ ] T012 [US3] Add a repeated `--suppress <template>` option to `cli/src/cli/commands/run.ts`, collect the names into an array, and document the flag in CLI help text. (cli/src/cli/commands/run.ts)
-- [ ] T013 [US3] Extend `cli/src/services/session.ts` to accept the suppression list, pass it to the template processor, and honor it when building `extraMounts` so suppressed templates never reach Podman. (cli/src/services/session.ts)
+- [X] T012 [US3] Add a repeated `--suppress <template>` option to `cli/src/cli/commands/run.ts`, collect the names into an array, and document the flag in CLI help text. (cli/src/cli/commands/run.ts)
+- [X] T013 [US3] Extend `cli/src/services/session.ts` to accept the suppression list, pass it to the template processor, and honor it when building `extraMounts` so suppressed templates never reach Podman. (cli/src/services/session.ts)
 
 ### Parallel Example: User Story 3
 
@@ -107,7 +101,7 @@ Run `T008` (merge unit test) while developing `T009` (merge helper) so tests fai
 
 **Purpose**: Wrap up documentation and ensure the quickstart reflects the new flow.
 
-- [ ] T014 Update `specs/005-container-file-templates/quickstart.md` to include the template config schema, env variable resolution behavior, and the new `--suppress` flag so users can exercise the feature end-to-end. (specs/005-container-file-templates/quickstart.md)
+- [X] T014 Update `specs/005-container-file-templates/quickstart.md` to include the template config schema, env variable resolution behavior, and the new `--suppress` flag so users can exercise the feature end-to-end. (specs/005-container-file-templates/quickstart.md)
 
 ---
 

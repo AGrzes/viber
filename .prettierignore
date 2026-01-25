@@ -1,0 +1,9 @@
+node_modules/
+dist/
+build/
+coverage/
+.pnpm-store/
+.pnp+
+*.log
+.env*
+*.lock

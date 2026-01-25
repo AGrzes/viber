@@ -11,6 +11,7 @@ import { type FolderMapping } from '../lib/config/schema.js'
 import { getProfileOrThrow } from './profiles.js'
 import { resolveAgentsSelection } from './agents-selection.js'
 import { buildAgentsContent, writeAgentsFile } from './agents-file.js'
+import { processTemplates } from '../lib/templates/processor.js'
 
 export type SessionOptions = {
   cwd: string
@@ -20,6 +21,7 @@ export type SessionOptions = {
   dryRun?: boolean
   agents?: string
   agentsNoGlobal?: boolean
+  templateSuppressions?: string[]
 }
 
 async function resolveImageRef(
@@ -88,6 +90,19 @@ export async function runSession(options: SessionOptions): Promise<number> {
       mode: 'ro',
     })
     env[ENV_CODEX_HOME] = CODEX_DIR
+  }
+
+  const templateFiles = await processTemplates({
+    templateSet: resolved.templateSet,
+    env,
+    suppressionList: options.templateSuppressions ?? [],
+  })
+  for (const file of templateFiles) {
+    extraMounts.push({
+      sourcePath: file.tempPath,
+      targetPath: file.containerPath,
+      mode: 'ro',
+    })
   }
 
   const fallbackMapping: FolderMapping = {

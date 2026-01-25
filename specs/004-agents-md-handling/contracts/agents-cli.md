@@ -41,11 +41,11 @@ These contracts describe CLI commands and their expected inputs/outputs. All con
 ## Session selection
 
 - **Select name for session**
-  - **Command**: `viber --agents <name>`
+  - **Command**: `viber run --agents <name>`
   - **Output**: Session starts with named global text
 
 - **No-global for session**
-  - **Command**: `viber --agents-no-global`
+  - **Command**: `viber run --agents-no-global`
   - **Output**: Session starts without global text
 
 ## Error contracts

@@ -17,9 +17,9 @@
 ## Select active global text for a session
 
 - Use a specific global entry for this run:
-  - `viber --agents <name>`
+  - `viber run --agents <name>`
 - Skip global content entirely:
-  - `viber --agents-no-global`
+  - `viber run --agents-no-global`
 
 ## Configure project reference
 

@@ -8,8 +8,3 @@ After any change do git commit - try to explain changes but the fact of committi
 Before any change commit the current state if there are uncommited changes.
 # Rules
 - Do not modify AGENTS.md unless explicitly asked by user
-
-# Remarks 
-## Spec `short-name`
-Specs directories: scan all specs/[0-9]+-* directories, regardless of short name, and use the highest number found (excluding the current
-  feature directory if it already exists).

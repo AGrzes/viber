@@ -149,6 +149,10 @@ export async function setProjectReference(
 
 export async function clearProjectReference(cwd = process.cwd()): Promise<void> {
   const value = await getProjectAgentsValue(cwd);
+  if (value === null) {
+    await setProjectAgentsValue(undefined, cwd);
+    return;
+  }
   if (typeof value === "string" && value.startsWith(AGENTS_REF_PREFIX)) {
     await setProjectAgentsValue(undefined, cwd);
   }

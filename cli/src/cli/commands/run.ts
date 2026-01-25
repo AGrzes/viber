@@ -9,6 +9,8 @@ export function registerRunCommand(program: Command): void {
     .option("--cwd <path>", "Working directory to resolve config", process.cwd())
     .option("--image <ref>", "Direct image reference to use")
     .option("--profile <name>", "Image profile name to use")
+    .option("--agents <name>", "Named global agents entry to use")
+    .option("--agents-no-global", "Disable global agents for this session")
     .option("--dry-run", "Print podman command without running")
     .allowUnknownOption(true)
     .passThroughOptions()
@@ -22,6 +24,8 @@ export function registerRunCommand(program: Command): void {
           imageProfile: options.profile,
           dryRun: Boolean(options.dryRun),
           command: passthrough.length > 0 ? passthrough : undefined,
+          agents: options.agents,
+          agentsNoGlobal: Boolean(options.agentsNoGlobal),
         });
         process.exitCode = exitCode;
       } catch (err) {

@@ -4,39 +4,28 @@ export type EnvMap = Record<string, string | undefined>
 
 const ENV_VAR_REGEX = /\$\{([A-Za-z_][A-Za-z0-9_]*)\}|\$([A-Za-z_][A-Za-z0-9_]*)/g
 
-export type MissingValueBehavior = 'error' | 'empty'
-
 const TEMPLATE_PATH_ERROR = 'Missing environment variables for template path'
 
 export function substituteEnvPath(rawPath: string, env: EnvMap): string {
-  return substituteEnvValue(rawPath, env, {
-    missing: 'error',
-    errorPrefix: TEMPLATE_PATH_ERROR,
-  })
-}
-
-type SubstituteOptions = {
-  missing?: MissingValueBehavior
-  errorPrefix?: string
+  return substituteEnvValue(rawPath, env, true, TEMPLATE_PATH_ERROR)
 }
 
 export function substituteEnvValue(
   raw: string,
   env: EnvMap,
-  options: SubstituteOptions = {}
+  errorOnMissing = false,
+  errorPrefix?: string
 ): string {
-  const { missing = 'empty' } = options
-  const { errorPrefix } = options
   const missingVars: string[] = []
 
   const resolved = raw.replace(ENV_VAR_REGEX, (_match, braced, simple) => {
     const key = braced || simple
     const value = env[key]
     if (value == null || value === '') {
-      if (missing === 'empty') {
+      if (errorOnMissing) {
+        missingVars.push(key)
         return ''
       }
-      missingVars.push(key)
       return ''
     }
     return value

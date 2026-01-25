@@ -5,11 +5,18 @@ vi.mock("node:child_process", () => ({
   spawn: vi.fn(),
 }));
 
-vi.mock("node:fs/promises", () => ({
-  mkdtemp: vi.fn().mockResolvedValue("/tmp/viber-edit-test"),
-  writeFile: vi.fn().mockResolvedValue(undefined),
-  readFile: vi.fn(),
-}));
+vi.mock("node:fs/promises", () => {
+  const mkdtemp = vi.fn().mockResolvedValue("/tmp/viber-edit-test");
+  const writeFile = vi.fn().mockResolvedValue(undefined);
+  const readFile = vi.fn();
+  return {
+    mkdtemp,
+    writeFile,
+    readFile,
+    default: { mkdtemp, writeFile, readFile },
+    __esModule: true,
+  };
+});
 
 import { spawn } from "node:child_process";
 import * as fs from "node:fs/promises";

@@ -13,11 +13,10 @@
 
 - **Fields**:
   - `agents` (string | undefined | null)
-  - `agentsRef` (string | undefined)
 - **Rules**:
-  - `agents` is the project text when a string is present
+  - `agents` is the project text when a plain string is present
   - `agents` set to null explicitly excludes global content
-  - `agentsRef` stores the referenced global name when set
+  - `agents` prefixed with `@ref:` stores a global reference name
 
 ### ActiveAgentSelection
 
@@ -25,7 +24,7 @@
   - `selectedName` (string | null)
   - `noGlobal` (boolean)
 - **Rules**:
-  - Precedence: CLI selection, then project `agentsRef`, then global `default` entry
+  - Precedence: CLI selection, then project reference, then global `default` entry
   - CLI no-global overrides project reference
   - Conflicting CLI selection and no-global is an error
 
@@ -42,5 +41,5 @@
 ## Relationships
 
 - `GlobalAgents` owns multiple named entries.
-- `ProjectAgents.agentsRef` references a `GlobalAgents` name.
+- Project references are stored in `ProjectAgents.agents` with the `@ref:` prefix.
 - `GeneratedAgentFile` is derived from `ActiveAgentSelection` and `ProjectAgents.agents`.

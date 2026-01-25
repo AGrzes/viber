@@ -6,6 +6,14 @@
 **Input**: User description: "Add AGENTS.md handling to viber cli - Provide option to specify content on project level - Provide option to specify multiple named contents on global level (map key -> content) with one default - If agents are configured then on start flusf content global + local to temp file and mount it under CODEX_HOME/AGENTS.md - Provide content editing capacity launching external editor (like git do with commit messages)"
 **Constitution Guardrails**: Keep scope to primary use cases; reuse proven OSS; define clear module contracts; include minimal unit tests that prove core behavior works; prefer deterministic tools over LLM transformations.
 
+## Clarifications
+
+### Session 2026-01-25
+
+- Q: When no global or project agent content is configured, what should the CLI do about AGENTS.md for the session? → A: Do not create or mount AGENTS.md.
+- Q: If the external editor exits non-zero or without changes, how should the CLI handle saving agent content? → A: Do not update stored content.
+- Q: How should users select which named global content is active for a session? → A: Allow a CLI flag and a project-level default; use the global default when neither is set; allow a flag or project setting to skip global content entirely.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Use Combined Agent Instructions on Start (Priority: P1)
@@ -35,6 +43,8 @@ As a CLI user, I want to store multiple named global agent contents with one def
 
 1. **Given** multiple named global contents and a default are configured, **When** the CLI starts without an explicit selection, **Then** the default content is used.
 2. **Given** multiple named global contents are configured, **When** the CLI is started with a specific content name, **Then** that named content is used.
+3. **Given** a project-level default global content is configured, **When** the CLI starts without an explicit selection, **Then** the project-level default is used.
+4. **Given** a project or session sets skip-global, **When** the CLI starts, **Then** no global content is included in the combined AGENTS.md.
 
 ---
 
@@ -54,10 +64,11 @@ As a CLI user, I want to edit agent content in my preferred external editor so I
 
 ### Edge Cases
 
-- What happens when no global or project agent content is configured?
+- What happens when no global or project agent content is configured? The system does not create or mount an AGENTS.md for that session.
 - How does the system handle an empty named content or an empty project content?
-- What happens when the external editor exits without saving or returns a non-zero status?
+- What happens when the external editor exits without saving or returns a non-zero status? If the editor exits non-zero or without changes, the system does not update stored content.
 - How does the system handle a requested named content that does not exist?
+- What happens when skip-global is set and only project content is present?
 
 ## Testing Requirements *(mandatory)*
 
@@ -66,6 +77,10 @@ As a CLI user, I want to edit agent content in my preferred external editor so I
 - Verify explicit named global content overrides the default when requested.
 - Verify the edit flow persists changes for global and project content.
 - Verify the system handles missing or invalid named content with a clear error and no session crash.
+- Verify no AGENTS.md is created or mounted when no agent content is configured.
+- Verify editor non-zero exit or no-change does not update stored content.
+- Verify project-level default selection is used when no explicit session selection is provided.
+- Verify skip-global excludes global content even when a global default exists.
 
 ## Requirements *(mandatory)*
 
@@ -81,6 +96,10 @@ As a CLI user, I want to edit agent content in my preferred external editor so I
 - **FR-008**: The system MUST persist edits made via the external editor back to the appropriate global or project configuration.
 - **FR-009**: The system MUST provide a clear, user-facing error when a requested named global content does not exist.
 - **FR-010**: The system MUST handle empty or missing content gracefully and avoid creating invalid AGENTS.md output.
+- **FR-011**: When no global or project content is configured, the system MUST NOT create or mount AGENTS.md for the session.
+- **FR-012**: If the editor exits non-zero or produces no changes, the system MUST NOT update stored content.
+- **FR-013**: The system MUST allow a project-level default selection for the active global content name, used when no explicit session selection is provided.
+- **FR-014**: The system MUST allow a project or session to skip global content entirely when generating the combined AGENTS.md.
 
 ### Requirement Acceptance Criteria
 
@@ -94,12 +113,18 @@ As a CLI user, I want to edit agent content in my preferred external editor so I
 - **FR-008**: After saving and exiting the editor, the updated content is stored and used in the next session.
 - **FR-009**: Requesting a non-existent named content yields a clear error message and no silent fallback.
 - **FR-010**: Empty or missing content results in a valid, readable AGENTS.md (or no file) without session failure.
+- **FR-011**: When no content is configured, no AGENTS.md is mounted for the session.
+- **FR-012**: Editor non-zero exit or no-change does not update stored content.
+- **FR-013**: If a project-level default is set and no explicit session selection is provided, that project default is used.
+- **FR-014**: When skip-global is set, the combined AGENTS.md contains only project content (if any).
 
 ### Key Entities *(include if feature involves data)*
 
 - **Global Agent Content**: A named instruction set stored at the user level, including one default designation.
 - **Project Agent Content**: A project-scoped instruction set stored for a specific repository or workspace.
 - **Active Agent Selection**: The chosen global content name for a session (default or explicit).
+- **Project Default Global Selection**: A project-scoped default for which global content name to use.
+- **Skip-Global Setting**: A project or session setting that suppresses inclusion of global content.
 - **Generated Agent File**: The combined instruction output used for the current session.
 
 ## Success Criteria *(mandatory)*
@@ -118,5 +143,5 @@ As a CLI user, I want to edit agent content in my preferred external editor so I
 ## Assumptions
 
 - The combined content uses simple concatenation with a blank line between global and project content.
-- The default named global content is used unless an explicit selection is provided for a session.
+- Selection precedence is: explicit session selection, project-level default, then global default.
 - The standard AGENTS.md location is consistent across sessions and is the expected lookup path for tools.

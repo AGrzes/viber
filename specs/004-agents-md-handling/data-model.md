@@ -13,10 +13,11 @@
 
 - **Fields**:
   - `agents` (string | undefined | null)
+  - `agentsRef` (string | undefined)
 - **Rules**:
   - `agents` is the project text when a plain string is present
   - `agents` set to null explicitly excludes global content
-  - `agents` prefixed with `@ref:` stores a global reference name
+  - `agentsRef` stores the referenced global name when set
 
 ### ActiveAgentSelection
 
@@ -41,5 +42,5 @@
 ## Relationships
 
 - `GlobalAgents` owns multiple named entries.
-- Project references are stored in `ProjectAgents.agents` with the `@ref:` prefix.
+- Project references are stored in `ProjectAgents.agentsRef`.
 - `GeneratedAgentFile` is derived from `ActiveAgentSelection` and `ProjectAgents.agents`.

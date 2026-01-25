@@ -34,6 +34,7 @@ export const EnvMappingEntrySchema = z.object({
 export const ProjectConfigSchema = z
   .object({
     agents: z.string().nullable().optional(),
+    agentsRef: z.string().optional(),
     envMappings: z.array(EnvMappingEntrySchema).optional(),
     mappings: z.array(FolderMappingSchema).optional(),
     imageProfile: z.string().optional(),

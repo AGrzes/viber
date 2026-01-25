@@ -128,7 +128,7 @@ As a CLI user, I want to edit agent content in my preferred external editor so I
 - **Global Agents Map**: Map of `name` → plain-text content.
 - **Global Content Name**: Case-sensitive identifier for global entries.
 - **Project Agents Value**: Plain-text content for the project, or null to explicitly exclude global content.
-- **Project Reference**: Optional global name stored in `agents` using the `@ref:` prefix.
+- **Project Reference**: Optional global name stored in `agentsRef`.
 - **Generated Agent File**: The combined instruction output used for the current session.
 
 ## Success Criteria *(mandatory)*
@@ -150,4 +150,4 @@ As a CLI user, I want to edit agent content in my preferred external editor so I
 - Selection precedence is: CLI flags, then project reference or no-global, then global `default` entry if present.
 - The standard AGENTS.md location is consistent across sessions and is the expected lookup path for tools.
 - Agent content is stored and edited as plain text.
-- Project storage uses `agents` as string | undefined | null, with `@ref:` prefix indicating a global reference name.
+- Project storage uses `agents` as string | undefined | null and optional `agentsRef` for a global name.

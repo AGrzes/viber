@@ -8,8 +8,6 @@ import {
 } from "./store.js";
 import { type GlobalConfig, type ProjectConfig } from "./schema.js";
 
-export const AGENTS_REF_PREFIX = "@ref:";
-
 export type ProjectAgentsValue = {
   projectText?: string;
   referenceName?: string;
@@ -25,19 +23,19 @@ function requireProjectConfigPath(cwd: string): string {
 }
 
 export function parseProjectAgentsValue(
-  value: string | null | undefined
+  project?: ProjectConfig
 ): ProjectAgentsValue {
-  if (value === null) {
-    return { noGlobal: true };
-  }
-  if (value === undefined) {
+  if (!project) {
     return { noGlobal: false };
   }
-  if (value.startsWith(AGENTS_REF_PREFIX)) {
-    const referenceName = value.slice(AGENTS_REF_PREFIX.length);
-    return { referenceName, noGlobal: false };
+  if (project.agents === null) {
+    return { noGlobal: true, referenceName: project.agentsRef };
   }
-  return { projectText: value, noGlobal: false };
+  return {
+    noGlobal: false,
+    projectText: project.agents ?? undefined,
+    referenceName: project.agentsRef,
+  };
 }
 
 export function upsertGlobalAgents(
@@ -144,16 +142,20 @@ export async function setProjectReference(
   name: string,
   cwd = process.cwd()
 ): Promise<void> {
-  await setProjectAgentsValue(`${AGENTS_REF_PREFIX}${name}`, cwd);
+  const configPath = requireProjectConfigPath(cwd);
+  const project = await readProjectConfig(configPath);
+  await writeProjectConfig(configPath, {
+    ...project,
+    agentsRef: name,
+  });
 }
 
 export async function clearProjectReference(cwd = process.cwd()): Promise<void> {
-  const value = await getProjectAgentsValue(cwd);
-  if (value === null) {
-    await setProjectAgentsValue(undefined, cwd);
-    return;
-  }
-  if (typeof value === "string" && value.startsWith(AGENTS_REF_PREFIX)) {
-    await setProjectAgentsValue(undefined, cwd);
-  }
+  const configPath = requireProjectConfigPath(cwd);
+  const project = await readProjectConfig(configPath);
+  if (!project.agentsRef) return;
+  await writeProjectConfig(configPath, {
+    ...project,
+    agentsRef: undefined,
+  });
 }

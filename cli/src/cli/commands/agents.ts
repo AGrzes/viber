@@ -39,7 +39,7 @@ export function registerAgentsCommand(program: Command): void {
         }
 
         const existingValue = await getProjectAgentsValue();
-        const parsed = parseProjectAgentsValue(existingValue);
+        const parsed = parseProjectAgentsValue({ agents: existingValue });
         const { content, changed } = await openEditor(parsed.projectText ?? "");
         if (changed) {
           await setProjectAgentsText(content);

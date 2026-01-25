@@ -22,8 +22,8 @@ describe("agents config helpers", () => {
   });
 
   it("parses project no-global and references", () => {
-    const noGlobal = parseProjectAgentsValue(null);
-    const reference = parseProjectAgentsValue("@ref:beta");
+    const noGlobal = parseProjectAgentsValue({ agents: null });
+    const reference = parseProjectAgentsValue({ agentsRef: "beta" });
 
     expect(noGlobal.noGlobal).toBe(true);
     expect(reference.referenceName).toBe("beta");

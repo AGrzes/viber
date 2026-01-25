@@ -42,7 +42,7 @@ describe("resolveAgentSelection", () => {
 
   it("uses project reference when provided", () => {
     const resolved = makeResolvedConfig({
-      project: { agents: "@ref:beta" },
+      project: { agentsRef: "beta" },
       global: { agents: { beta: "B" } },
     });
 
@@ -65,7 +65,7 @@ describe("resolveAgentSelection", () => {
 
   it("respects project no-global", () => {
     const resolved = makeResolvedConfig({
-      project: { agents: null },
+      project: { agents: null, agentsRef: "default" },
       global: { agents: { default: "D" } },
     });
 

@@ -22,7 +22,7 @@ export function resolveAgentSelection(
   }
 
   const globalAgents = resolved.global?.agents ?? {};
-  const projectValue = parseProjectAgentsValue(resolved.project?.agents);
+  const projectValue = parseProjectAgentsValue(resolved.project);
 
   const noGlobal = Boolean(options.noGlobal) || projectValue.noGlobal;
 

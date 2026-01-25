@@ -1,0 +1,160 @@
+openapi: 3.0.3
+info:
+  title: AGENTS Configuration API
+  version: 0.1.0
+  description: Logical contract for CLI configuration operations.
+servers:
+  - url: http://localhost
+paths:
+  /config/global-agents:
+    get:
+      summary: List global agent contents
+      responses:
+        "200":
+          description: List of global agent contents
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalAgentConfig"
+    put:
+      summary: Replace global agent configuration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GlobalAgentConfig"
+      responses:
+        "200":
+          description: Updated configuration
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalAgentConfig"
+  /config/global-agents/{name}:
+    put:
+      summary: Create or update a named global agent content
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GlobalAgentContent"
+      responses:
+        "200":
+          description: Updated entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalAgentContent"
+    delete:
+      summary: Delete a named global agent content
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+  /config/project-agent:
+    get:
+      summary: Get project agent configuration
+      responses:
+        "200":
+          description: Project agent configuration
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProjectAgentConfig"
+    put:
+      summary: Update project agent configuration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectAgentConfig"
+      responses:
+        "200":
+          description: Updated project configuration
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProjectAgentConfig"
+  /session/agents/resolve:
+    post:
+      summary: Resolve active agent content for a session
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ActiveAgentSelection"
+      responses:
+        "200":
+          description: Combined agent content and file path
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneratedAgentFile"
+components:
+  schemas:
+    GlobalAgentContent:
+      type: object
+      required: [name, content]
+      properties:
+        name:
+          type: string
+          description: Case-sensitive unique name.
+        content:
+          type: string
+        isDefault:
+          type: boolean
+    GlobalAgentConfig:
+      type: object
+      properties:
+        entries:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/GlobalAgentContent"
+        defaultName:
+          type: string
+          nullable: true
+    ProjectAgentConfig:
+      type: object
+      properties:
+        content:
+          type: string
+          nullable: true
+        globalSelectionName:
+          type: string
+          nullable: true
+        skipGlobal:
+          type: boolean
+    ActiveAgentSelection:
+      type: object
+      properties:
+        selectedName:
+          type: string
+          nullable: true
+        skipGlobal:
+          type: boolean
+    GeneratedAgentFile:
+      type: object
+      required: [path, content]
+      properties:
+        path:
+          type: string
+        content:
+          type: string
+        createdAt:
+          type: string
+          format: date-time

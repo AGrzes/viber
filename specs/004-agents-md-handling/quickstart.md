@@ -1,41 +1,39 @@
 # Quickstart: AGENTS.md Handling
 
-## Set global agent content (plain text)
+## Edit global or project text (plain text)
 
-- Create or update a named global entry:
-  - `viber agents global set <name>`
-- Set the global default:
-  - `viber agents global default <name>`
+- Edit a named global entry:
+  - `viber agents edit --global <name>`
+- Edit project text:
+  - `viber agents edit`
 
-## Set project agent content (plain text)
+## Clear text
 
-- Set project content for the current repo:
-  - `viber agents project set`
+- Clear a named global entry:
+  - `viber agents clear --global <name>`
+- Clear project text:
+  - `viber agents clear`
 
-## Select active global content for a session
+## Select active global text for a session
 
 - Use a specific global entry for this run:
   - `viber --agents <name>`
 - Skip global content entirely:
-  - `viber --agents-skip-global`
+  - `viber --agents-no-global`
 
-## Configure project defaults
+## Configure project reference
 
-- Set a project default global entry:
-  - `viber agents project default <name>`
-- Explicitly opt out of any global default for the project:
-  - `viber agents project default --none`
-
-## Edit content in your editor
-
-- Edit a named global entry:
-  - `viber agents global edit <name>`
-- Edit project content:
-  - `viber agents project edit`
+- Set a project reference to a global entry:
+  - `viber agents reference <name>`
+- Clear project reference:
+  - `viber agents reference --clear`
+- Explicitly exclude global content for this project:
+  - `viber agents reference --no-global`
 
 ## Notes
 
 - Global content is applied before project content.
 - If no global or project content is configured, no AGENTS.md is created for the session.
-- Conflicting CLI flags (select name + skip global) fail with a clear error.
+- Conflicting CLI flags (select name + no-global) fail with a clear error.
 - Content values are stored as raw text without special formatting.
+- The global default is the entry named `default` (if it exists).

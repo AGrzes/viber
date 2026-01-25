@@ -2,45 +2,41 @@
 
 These contracts describe CLI commands and their expected inputs/outputs. All content values are plain text.
 
-## Global text entries
+## Edit text
 
-- **Set or update named text**
-  - **Command**: `viber agents global set <name>`
-  - **Input**: Text content (via stdin or editor flow)
-  - **Output**: Success message; updated name becomes available
+- **Edit global text**
+  - **Command**: `viber agents edit --global <name>`
+  - **Input**: Text content via editor
+  - **Output**: Success message; name available for selection
 
-- **Set default name**
-  - **Command**: `viber agents global default <name>`
-  - **Input**: Existing name
-  - **Output**: Success message; default updated
+- **Edit project text**
+  - **Command**: `viber agents edit`
+  - **Input**: Text content via editor
+  - **Output**: Success message
 
-- **List names**
-  - **Command**: `viber agents global list`
-  - **Output**: Names and default indicator
+## Clear text
 
-- **Delete name**
-  - **Command**: `viber agents global delete <name>`
+- **Clear global text**
+  - **Command**: `viber agents clear --global <name>`
   - **Output**: Success message; name removed
 
-## Project text
-
-- **Set project text**
-  - **Command**: `viber agents project set`
-  - **Input**: Text content (via stdin or editor flow)
+- **Clear project text**
+  - **Command**: `viber agents clear`
   - **Output**: Success message
 
-- **Set project default global name**
-  - **Command**: `viber agents project default <name>`
-  - **Input**: Existing global name
-  - **Output**: Success message
+## Project reference
 
-- **Clear project default (explicit null)**
-  - **Command**: `viber agents project default --none`
-  - **Output**: Success message; no global default for project
+- **Set project reference**
+  - **Command**: `viber agents reference <name>`
+  - **Output**: Success message; project uses referenced global name
 
-- **Skip global**
-  - **Command**: `viber agents project skip-global [on|off]`
-  - **Output**: Success message; skip-global toggled
+- **Clear project reference**
+  - **Command**: `viber agents reference --clear`
+  - **Output**: Success message; project reference removed
+
+- **Explicit no-global**
+  - **Command**: `viber agents reference --no-global`
+  - **Output**: Success message; global content excluded for project
 
 ## Session selection
 
@@ -48,12 +44,12 @@ These contracts describe CLI commands and their expected inputs/outputs. All con
   - **Command**: `viber --agents <name>`
   - **Output**: Session starts with named global text
 
-- **Skip global for session**
-  - **Command**: `viber --agents-skip-global`
+- **No-global for session**
+  - **Command**: `viber --agents-no-global`
   - **Output**: Session starts without global text
 
 ## Error contracts
 
 - Requesting a non-existent name fails with a clear error and non-zero exit.
-- Passing both `--agents <name>` and `--agents-skip-global` fails with a clear error.
+- Passing both `--agents <name>` and `--agents-no-global` fails with a clear error.
 - Editor exits non-zero or content unchanged: stored text is not updated.

@@ -8,7 +8,7 @@
 
 ## Decision 2: Selection precedence and conflict handling
 
-- **Decision**: Apply selection precedence as CLI flags, then project config (named default or explicit null), then global default; conflicting CLI flags are errors.
+- **Decision**: Apply selection precedence as CLI flags, then project reference or no-global, then global `default` entry; conflicting CLI flags are errors.
 - **Rationale**: Explicit user intent should override stored defaults, and conflicts should surface early.
 - **Alternatives considered**: Implicit precedence (e.g., skip-global always wins); rejected because it can hide user mistakes.
 

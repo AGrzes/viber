@@ -1,6 +1,5 @@
 import { type EnvMappingEntry } from '../config/schema.js'
-
-const ENV_REF_PATTERN = /\$\{([A-Za-z_][A-Za-z0-9_]*)\}|\$([A-Za-z_][A-Za-z0-9_]*)/g
+import { substituteEnv } from '../utils/envSubst.js'
 
 export function mergeEnvMappings(
   globalEntries: EnvMappingEntry[] = [],
@@ -20,10 +19,7 @@ export function mergeEnvMappings(
 }
 
 export function interpolateEnvValue(value: string, hostEnv: NodeJS.ProcessEnv): string {
-  return value.replace(ENV_REF_PATTERN, (_match, braced, simple) => {
-    const key = braced || simple
-    return hostEnv[key] ?? ''
-  })
+  return substituteEnv(value, hostEnv)
 }
 
 export function interpolateEnvMappings(

@@ -9,6 +9,7 @@ import {
 } from './schema.js'
 import { readGlobalConfig, readProjectConfig, getGlobalConfigPath } from './store.js'
 import { WORKDIR } from '../utils/paths.js'
+import { mergeTemplateDefinitions } from '../templates/merge.js'
 
 function implicitMapping(cwd: string): FolderMapping {
   return FolderMappingSchema.parse({
@@ -43,6 +44,10 @@ export async function resolveConfig(cwd: string): Promise<ResolvedConfig> {
     imageProfile = defaultProfileName
   }
 
+  const projectTemplates = project?.templates ?? []
+  const globalTemplates = globalConfig?.templates ?? []
+  const templateSet = mergeTemplateDefinitions(globalTemplates, projectTemplates)
+
   return ResolvedConfigSchema.parse({
     project,
     global: globalConfig,
@@ -54,5 +59,8 @@ export async function resolveConfig(cwd: string): Promise<ResolvedConfig> {
     imageProfile,
     imageReference,
     defaultProfileName,
+    projectTemplates,
+    globalTemplates,
+    templateSet,
   })
 }

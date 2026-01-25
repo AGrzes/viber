@@ -11,6 +11,14 @@ export function registerRunCommand(program: Command): void {
     .option('--profile <name>', 'Image profile name to use')
     .option('--agents <name>', 'Named global agents entry to use')
     .option('--agents-no-global', 'Disable global agents for this session')
+    .option(
+      '--suppress <template>',
+      'Template name to skip rendering/mounting for this run (can be repeated)',
+      (value: string, previous: string[] = []) => {
+        return [...previous, value]
+      },
+      [] as string[]
+    )
     .option('--dry-run', 'Print podman command without running')
     .allowUnknownOption(true)
     .passThroughOptions()
@@ -26,6 +34,7 @@ export function registerRunCommand(program: Command): void {
           command: passthrough.length > 0 ? passthrough : undefined,
           agents: options.agents,
           agentsNoGlobal: Boolean(options.agentsNoGlobal),
+          templateSuppressions: options.suppress ?? [],
         })
         process.exitCode = exitCode
       } catch (err) {

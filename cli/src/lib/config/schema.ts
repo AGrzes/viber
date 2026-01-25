@@ -1,6 +1,7 @@
 import os from 'node:os'
 import path from 'node:path'
 import { z } from 'zod'
+import { TemplateDefinitionSchema } from '../templates/types.js'
 
 export const PROJECT_CONFIG_NAME = '.viber.json'
 export const GLOBAL_CONFIG_PATH = path.join(os.homedir(), '.viber', 'config.json')
@@ -33,6 +34,7 @@ export const EnvMappingEntrySchema = z.object({
 
 export const ProjectConfigSchema = z
   .object({
+    templates: z.array(TemplateDefinitionSchema).optional(),
     agents: z.string().nullable().optional(),
     agentsRef: z.string().optional(),
     envMappings: z.array(EnvMappingEntrySchema).optional(),
@@ -48,6 +50,7 @@ export const ProjectConfigSchema = z
   )
 
 export const GlobalConfigSchema = z.object({
+  templates: z.array(TemplateDefinitionSchema).optional(),
   agents: z.record(z.string()).optional(),
   envMappings: z.array(EnvMappingEntrySchema).optional(),
   defaultImageProfile: z.string().optional(),
@@ -67,6 +70,9 @@ export const ResolvedConfigSchema = z.object({
   imageProfile: z.string().optional(),
   imageReference: z.string().optional(),
   defaultProfileName: z.string().optional(),
+  projectTemplates: z.array(TemplateDefinitionSchema).optional(),
+  globalTemplates: z.array(TemplateDefinitionSchema).optional(),
+  templateSet: z.record(TemplateDefinitionSchema).default({}),
 })
 
 export type FolderMapping = z.infer<typeof FolderMappingSchema>

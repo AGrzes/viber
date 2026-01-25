@@ -1,13 +1,13 @@
 # Quickstart: AGENTS.md Handling
 
-## Set global agent content
+## Set global agent content (plain text)
 
 - Create or update a named global entry:
   - `viber agents global set <name>`
 - Set the global default:
   - `viber agents global default <name>`
 
-## Set project agent content
+## Set project agent content (plain text)
 
 - Set project content for the current repo:
   - `viber agents project set`
@@ -38,3 +38,4 @@
 - Global content is applied before project content.
 - If no global or project content is configured, no AGENTS.md is created for the session.
 - Conflicting CLI flags (select name + skip global) fail with a clear error.
+- Content values are stored as raw text without special formatting.

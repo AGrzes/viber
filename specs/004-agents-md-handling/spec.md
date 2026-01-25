@@ -165,3 +165,4 @@ As a CLI user, I want to edit agent content in my preferred external editor so I
 - The combined content uses simple concatenation with a blank line between global and project content.
 - Selection precedence is: CLI flags, then project config (named default or explicit null), then global default.
 - The standard AGENTS.md location is consistent across sessions and is the expected lookup path for tools.
+- Agent content is stored and edited as plain text.

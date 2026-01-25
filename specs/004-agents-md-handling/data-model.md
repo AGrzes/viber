@@ -6,7 +6,7 @@
 
 - **Fields**:
   - `name` (string, case-sensitive, unique)
-  - `content` (string, may be empty but persisted)
+  - `content` (plain text, may be empty but persisted)
   - `isDefault` (boolean)
 - **Validation**:
   - `name` must be unique by exact match
@@ -23,7 +23,7 @@
 ### ProjectAgentConfig
 
 - **Fields**:
-  - `content` (string or null)
+  - `content` (plain text or null)
   - `globalSelectionName` (string or null)
   - `skipGlobal` (boolean)
 - **Rules**:
@@ -43,7 +43,7 @@
 
 - **Fields**:
   - `path` (string)
-  - `content` (string)
+  - `content` (plain text)
   - `createdAt` (timestamp)
 - **Rules**:
   - Created only when global or project content exists

@@ -7,7 +7,7 @@
 
 ## Summary
 
-Add global and project-scoped AGENTS.md content configuration with named global entries and a default; allow per-session selection and skip-global; combine global+project content into a temp AGENTS.md mounted at startup; provide external-editor editing flows with clear error handling and selection precedence.
+Add global and project-scoped AGENTS.md plain-text entries with named global entries and a default; allow per-session selection and skip-global; combine global+project text into a temp AGENTS.md mounted at startup; provide external-editor editing flows with clear error handling and selection precedence.
 
 ## Technical Context
 

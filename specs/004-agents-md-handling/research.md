@@ -1,10 +1,10 @@
 # Research: AGENTS.md Handling
 
-## Decision 1: Configuration storage and schema
+## Decision 1: Plain text storage
 
-- **Decision**: Reuse the existing CLI config store for both global and project agent settings.
-- **Rationale**: Keeps storage consistent with current CLI behavior and avoids introducing new persistence layers.
-- **Alternatives considered**: Separate config files for agents only; rejected due to extra surface area.
+- **Decision**: Store AGENTS.md content as plain text blobs in the existing CLI storage.
+- **Rationale**: Keeps behavior simple and predictable while avoiding a new persistence system.
+- **Alternatives considered**: Separate files for each entry; rejected due to extra moving parts.
 
 ## Decision 2: Selection precedence and conflict handling
 
@@ -14,7 +14,7 @@
 
 ## Decision 3: AGENTS.md generation behavior
 
-- **Decision**: Generate a combined AGENTS.md only when global or project content is configured; do not create or mount when both are absent.
+- **Decision**: Generate a combined AGENTS.md only when global or project text exists; do not create or mount when both are absent.
 - **Rationale**: Avoids misleading empty files while honoring the feature scope.
 - **Alternatives considered**: Always creating an empty file; rejected for potential confusion.
 

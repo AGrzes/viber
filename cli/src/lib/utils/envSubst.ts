@@ -1,35 +1,23 @@
-import path from 'node:path'
 import { CliError } from './errors.js'
 
 export type EnvMap = Record<string, string | undefined>
-
-export type EnvSubstOptions = {
-  allowEmpty?: boolean
-}
 
 const ENV_VAR_REGEX = /\$\{([A-Za-z_][A-Za-z0-9_]*)\}|\$([A-Za-z_][A-Za-z0-9_]*)/g
 
 export type MissingValueBehavior = 'error' | 'empty'
 
-export function substituteEnvPath(
-  rawPath: string,
-  env: EnvMap,
-  options: EnvSubstOptions = {}
-): string {
-  const { allowEmpty = false } = options
-  const resolved = substituteEnvValue(rawPath, env, {
-    missing: allowEmpty ? 'empty' : 'error',
+const TEMPLATE_PATH_ERROR = 'Missing environment variables for template path'
+
+export function substituteEnvPath(rawPath: string, env: EnvMap): string {
+  return substituteEnvValue(rawPath, env, {
+    missing: 'error',
+    errorPrefix: TEMPLATE_PATH_ERROR,
   })
-
-  if (!path.posix.isAbsolute(resolved)) {
-    throw new CliError(`Resolved template path must be absolute: ${resolved}`)
-  }
-
-  return path.posix.normalize(resolved)
 }
 
 type SubstituteOptions = {
   missing?: MissingValueBehavior
+  errorPrefix?: string
 }
 
 export function substituteEnvValue(
@@ -38,6 +26,7 @@ export function substituteEnvValue(
   options: SubstituteOptions = {}
 ): string {
   const { missing = 'empty' } = options
+  const { errorPrefix } = options
   const missingVars: string[] = []
 
   const resolved = raw.replace(ENV_VAR_REGEX, (_match, braced, simple) => {
@@ -54,7 +43,8 @@ export function substituteEnvValue(
   })
 
   if (missingVars.length > 0) {
-    throw new CliError(`Missing environment variables for substitution: ${missingVars.join(', ')}`)
+    const prefix = errorPrefix ?? 'Missing environment variables for substitution'
+    throw new CliError(`${prefix}: ${missingVars.join(', ')}`)
   }
 
   return resolved

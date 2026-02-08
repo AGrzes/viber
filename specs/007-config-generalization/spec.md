@@ -7,6 +7,7 @@ Use concept of profile
 Assume
 - Global configuration defines a profiles object with a special `default` profile plus zero or more named profiles
 - Project configuration may either inherit from default profile, a list of profiles (including default) or empty list (no inheritance)
+- Project `inherit` supports multiple profile names (list), same as global profiles.
 Express all configuration in terms of profiles
 Project configuration shape: the project config file itself is the current profile object with an optional `inherit` field.
 `inherit` supports only global profile names. Project configs do not define inline inherited profiles.

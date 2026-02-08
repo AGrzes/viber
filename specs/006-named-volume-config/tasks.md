@@ -85,11 +85,11 @@
 
 ### Implementation for User Story 1
 
-- [ ] T019 [US1] Update readProjectConfig() in cli/src/lib/config/store.ts to parse volumeMappings field
-- [ ] T020 [P] [US1] Add volumeMappings validation in cli/src/lib/config/validation.ts using VolumeMappingSchema
-- [ ] T021 [US1] Update buildPodmanArgs() in cli/src/lib/podman/runner.ts to detect volumeName vs sourcePath
-- [ ] T022 [US1] Generate `-v volumeName:targetPath:mode` for named volumes in cli/src/lib/podman/runner.ts
-- [ ] T023 [US1] Generate `-v sourcePath:targetPath:mode` for bind mounts in cli/src/lib/podman/runner.ts
+- [X] T019 [US1] Update readProjectConfig() in cli/src/lib/config/store.ts to parse volumeMappings field
+- [X] T020 [P] [US1] Add volumeMappings validation in cli/src/lib/config/validation.ts using VolumeMappingSchema
+- [X] T021 [US1] Update buildPodmanArgs() in cli/src/lib/podman/runner.ts to detect volumeName vs sourcePath
+- [X] T022 [US1] Generate `-v volumeName:targetPath:mode` for named volumes in cli/src/lib/podman/runner.ts
+- [X] T023 [US1] Generate `-v sourcePath:targetPath:mode` for bind mounts in cli/src/lib/podman/runner.ts
 
 **Checkpoint**: Project-level named volumes working - can create, mount, and persist volumes
 
@@ -103,16 +103,16 @@
 
 ### Tests for User Story 2 (REQUIRED) ⚠️
 
-- [ ] T024 [P] [US2] Unit test: Parse volumeMappings from global config in cli/tests/unit/config/volumeMappings.test.ts
-- [ ] T025 [P] [US2] Unit test: Merge global and project volumeMappings by target path in cli/tests/unit/config/volumeMappings.test.ts
-- [ ] T026 [P] [US2] Unit test: Project volumeMappings override global when same targetPath in cli/tests/unit/config/volumeMappings.test.ts
+- [X] T024 [P] [US2] Unit test: Parse volumeMappings from global config in cli/tests/unit/config/volumeMappings.test.ts
+- [X] T025 [P] [US2] Unit test: Merge global and project volumeMappings by target path in cli/tests/unit/config/volumeMappings.test.ts
+- [X] T026 [P] [US2] Unit test: Project volumeMappings override global when same targetPath in cli/tests/unit/config/volumeMappings.test.ts
 
 ### Implementation for User Story 2
 
-- [ ] T027 [US2] Update readGlobalConfig() in cli/src/lib/config/store.ts to parse volumeMappings field
-- [ ] T028 [US2] Implement mergeVolumeMappings() function in cli/src/lib/config/resolver.ts using object spread
-- [ ] T029 [US2] Call mergeVolumeMappings(global, project) in config resolution chain in cli/src/lib/config/resolver.ts
-- [ ] T030 [US2] Update ResolvedConfig to include merged volumeMappings in cli/src/lib/config/resolver.ts
+- [X] T027 [US2] Update readGlobalConfig() in cli/src/lib/config/store.ts to parse volumeMappings field
+- [X] T028 [US2] Implement mergeVolumeMappings() function in cli/src/lib/config/resolver.ts using object spread
+- [X] T029 [US2] Call mergeVolumeMappings(global, project) in config resolution chain in cli/src/lib/config/resolver.ts
+- [X] T030 [US2] Update ResolvedConfig to include merged volumeMappings in cli/src/lib/config/resolver.ts
 
 **Checkpoint**: Global volumes working - sharing across projects with project override capability
 

@@ -69,4 +69,5 @@ Clarifications (iterative)
 - `--dry-run` continues to output the full `podman ...` command (so resolution and command preparation are exercised).
 - The auto-mount of `~/.codex/auth.json` should be removed; document in README how to implement it via `volumes` instead (no templates needed).
 - Remove special-case `CODEX_HOME` handling; document in README how to set it via `env` if needed.
+- Do not add config path env vars; this is not present in current implementation.
 - `volumes` keeps the current simple map shape: `sourceOrVolumeName -> "target[:mode]"`.

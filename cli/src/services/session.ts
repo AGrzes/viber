@@ -8,6 +8,7 @@ import { WORKDIR } from '../lib/utils/paths.js'
 import { buildSessionEnv } from './sessionEnv.js'
 import { ProfileSchema, type FolderMapping, type Profile } from '../lib/config/schema.js'
 import { TemplateDefinitionSchema } from '../lib/templates/types.js'
+import { isPlainObject, pruneNullEntries } from '../lib/utils/objects.js'
 import { processTemplates } from '../lib/templates/processor.js'
 
 export type SessionOptions = {
@@ -17,10 +18,6 @@ export type SessionOptions = {
   profiles?: string[]
   dryRun?: boolean
   suppressions?: string[]
-}
-
-function isPlainObject(value: unknown): value is Record<string, unknown> {
-  return Boolean(value && typeof value === 'object' && !Array.isArray(value))
 }
 
 function applySuppressions(profile: Profile, suppressions: string[] = []): Profile {
@@ -53,16 +50,6 @@ function applySuppressions(profile: Profile, suppressions: string[] = []): Profi
   }
 
   return next as Profile
-}
-
-function pruneNullEntries<T extends Record<string, unknown>>(input?: T): T | undefined {
-  if (!input) return undefined
-  const result: Record<string, unknown> = {}
-  for (const [key, value] of Object.entries(input)) {
-    if (value === null) continue
-    result[key] = value
-  }
-  return Object.keys(result).length > 0 ? (result as T) : undefined
 }
 
 function normalizeProfile(profile: Profile): Profile {

@@ -1,4 +1,4 @@
-import { interpolateEnvMap } from '../lib/utils/envMappings.js'
+import { substituteEnvMap } from '../lib/utils/envSubst.js'
 import { type FolderMapping, type Profile } from '../lib/config/schema.js'
 
 export type SessionEnvResult = {
@@ -7,6 +7,6 @@ export type SessionEnvResult = {
 }
 
 export function buildSessionEnv(profile: Profile, hostEnv: NodeJS.ProcessEnv): SessionEnvResult {
-  const env = interpolateEnvMap(profile.env, hostEnv)
+  const env = substituteEnvMap(profile.env, hostEnv)
   return { env, extraMounts: [] }
 }

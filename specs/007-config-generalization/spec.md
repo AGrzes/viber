@@ -76,4 +76,5 @@ Clarifications (iterative)
 - Missing profiles passed to `viber run --profile` are a hard error.
 - `viber run --image` overrides the merged profile `image` value.
 - Keep `--cwd` for `viber run` and `viber config` to control project config discovery start.
+- Project config filename remains `.viber.json`.
 - `volumes` keeps the current simple map shape: `sourceOrVolumeName -> "target[:mode]"`.

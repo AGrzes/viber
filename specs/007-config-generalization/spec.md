@@ -30,3 +30,4 @@ Clarifications (iterative)
 - Nulls are allowed for deletions, but the final resolved profile must pass validation; if required fields are missing or null after merge, configuration is invalid.
 - Image profile is removed. Image selection is via `imageReference` in profiles, and normal deep-merge override semantics apply (child overrides parent).
 - `agentsRef` is removed. Agent selection is handled via profile content and inheritance; profiles carry `agents` map entries (e.g., `agents: { default: "..." }`).
+- `agents` uses the same map model in both global and project profiles; it participates in deep-merge with null deletions.

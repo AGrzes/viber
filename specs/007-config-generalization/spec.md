@@ -38,6 +38,7 @@ Clarifications (iterative)
   - `imageReference` -> `image`
   - `envMappings` -> `env`
   - `volumeMappings` -> `volumes`
-  - `templates` becomes a map keyed by template name (name moves to key)
+- `templates` becomes a map keyed by template name (name moves to key)
+- Template `parameters` remain objects and are deep-merged across inheritance.
 - `env` values are strings only.
 - `volumes` keeps the current simple map shape: `sourceOrVolumeName -> "target[:mode]"`.

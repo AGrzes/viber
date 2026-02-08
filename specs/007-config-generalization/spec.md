@@ -29,3 +29,4 @@ Clarifications (iterative)
 - Deletions in inherited maps use explicit `null` values (e.g., `env: { B: null }` removes `B`).
 - Nulls are allowed for deletions, but the final resolved profile must pass validation; if required fields are missing or null after merge, configuration is invalid.
 - Image profile is removed. Image selection is via `imageReference` in profiles, and normal deep-merge override semantics apply (child overrides parent).
+- `agentsRef` is removed. Agent selection is handled via profile content and inheritance; profiles carry `agents` map entries (e.g., `agents: { default: "..." }`).

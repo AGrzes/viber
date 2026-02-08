@@ -43,6 +43,7 @@ Clarifications (iterative)
 - `viber config path` (local) errors if no project config exists (so scripts can detect absence).
 - `viber config path --global` errors if the global config does not exist.
 - Project config discovery continues to search upward for `.viber.json`.
+- The final resolved config is a single merged object; source provenance is not preserved.
 - `viber config` creates only a project config as an empty JSON object by default.
 - `viber config --profile <name>` creates/updates the project config to set `inherit: [<name>]`.
 - `viber config --profile <name>` validates that the named global profile exists.

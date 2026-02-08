@@ -3,6 +3,7 @@ Use concept of profile
 - A json object that have all configurations
 - May inherit from other profiles
 - Inheritance is done by deep merge in order of inherited profiles then current profile configuration
+  (left-to-right, later inherited profiles override earlier ones; current profile overrides all inherited results).
 Assume
 - Global configuration defines a profiles object with a special `default` profile plus zero or more named profiles
 - Project configuration may either inherit from default profile, a list of profiles (including default) or empty list (no inheritance)

@@ -13,6 +13,7 @@
 - Q: How should the system ensure volume isolation when multiple projects use the same volume name? → A: Volume names are user-defined with manual scoping - developers must add project identifiers themselves if they want isolation
 - Q: Should named volumes be a separate config section or extend the existing mappings structure? → A: New unified volumeMappings section replaces mappings for volume-backed paths, with migration from old mappings format and warnings for legacy usage
 - Q: Should volume configurations be part of existing imageProfiles or a separate profile system? → A: Volume configs only at global/project level - no profile-specific volumes (profile generalization deferred to future work)
+- Q: How should global and project volumeMappings be merged? → A: Use map/object storage keyed by target path for simple merge - project entries override global entries with matching target paths
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -66,15 +67,15 @@ A developer using viber-cli for the first time without any configuration should 
 
 ### Edge Cases
 
-- What happens when a volume name conflicts between configuration levels (global vs project)?
+- What happens when global and project both define different mount types (bind vs volume) for the same target path?
 - How does the system handle invalid path specifications (missing directories, permission issues)?
 - What happens if a named volume already exists but with different settings?
-- What happens if a configuration file specifies the same target path for multiple volume mappings?
 - How does the system handle very long volume names or paths with special characters?
 - What happens when a volume is still in use by another container?
-- How does migration handle edge cases like partial configs or configs with both old and new format?
-- What happens if a user manually edits a migrated config back to the old format?
+- How does migration handle edge cases like partial configs or mixed array/map formats?
+- What happens if a user manually edits a migrated config back to the old array format?
 - How are warnings displayed in non-interactive or scripted environments?
+- What happens if volumeMappings contains invalid keys (non-path strings)?
 
 ## Testing Requirements *(mandatory)*
 
@@ -89,27 +90,27 @@ A developer using viber-cli for the first time without any configuration should 
 
 ### Functional Requirements
 
-- **FR-001**: System MUST allow users to define volume mappings with either volumeName:targetPath (named volume) or sourcePath:targetPath (bind mount) pairs in configuration files
-- **FR-002**: System MUST support two configuration levels: global and project, with project taking precedence over global
-- **FR-003**: System MUST create and mount volumes automatically when a container starts based on active configuration
-- **FR-004**: System MUST persist data in named volumes across container restarts and deletions
-- **FR-005**: System MUST validate volume configuration syntax before applying it and provide clear error messages for invalid configurations
-- **FR-006**: System MUST allow users to specify multiple volume mappings at each configuration level
-- **FR-007**: System MUST merge volume configurations from both levels, with project-level taking highest precedence
+- **FR-001**: System MUST store volumeMappings as a map/object structure with target path as key and mapping definition as value
+- **FR-002**: System MUST allow users to define volume mappings with either volumeName:targetPath (named volume) or sourcePath:targetPath (bind mount) in configuration files
+- **FR-003**: System MUST support two configuration levels: global and project, with project taking precedence over global
+- **FR-004**: System MUST merge global and project volumeMappings by target path - project entries override global entries with the same target path key
+- **FR-005**: System MUST create and mount volumes automatically when a container starts based on merged configuration
+- **FR-006**: System MUST persist data in named volumes across container restarts and deletions
+- **FR-007**: System MUST validate volume configuration syntax before applying it and provide clear error messages for invalid configurations
 - **FR-008**: System MUST document the default volume behavior when no configuration is provided
-- **FR-009**: System MUST handle path conflicts gracefully when the same container path is specified multiple times
-- **FR-010**: System MUST support standard path formats for volume names, source paths, and target paths
-- **FR-011**: System MUST provide commands or options to view active volume configuration for the current context
-- **FR-012**: Developers MAY manually scope volume names (e.g., "projectA-cache") to achieve isolation between projects; identical volume names across projects share the same underlying volume
-- **FR-013**: System MUST detect legacy "mappings" configuration format and automatically migrate to new "volumeMappings" format when writing configuration
-- **FR-014**: System MUST display a deprecation warning when loading configuration files using the legacy "mappings" format
-- **FR-015**: System MUST support both bind mounts and named volumes within the unified volumeMappings structure
+- **FR-009**: System MUST support standard path formats for volume names, source paths, and target paths
+- **FR-010**: System MUST provide commands or options to view active volume configuration for the current context
+- **FR-011**: Developers MAY manually scope volume names (e.g., "projectA-cache") to achieve isolation between projects; identical volume names across projects share the same underlying volume
+- **FR-012**: System MUST detect legacy "mappings" array format and automatically migrate to new map-based "volumeMappings" format when writing configuration
+- **FR-013**: System MUST display a deprecation warning when loading configuration files using the legacy "mappings" array format
+- **FR-014**: System MUST support both bind mounts and named volumes within the unified volumeMappings structure
 
 ### Key Entities
 
-- **Volume Mapping**: Represents a mount configuration that can be either a bind mount (sourcePath→targetPath) or a named volume (volumeName→targetPath). Attributes include: volume name (optional string), source path (optional string), target path (string), mode (rw/ro), configuration source (global/project). Exactly one of volumeName or sourcePath must be specified.
+- **Volume Mapping**: Represents a mount configuration that can be either a bind mount (sourcePath→targetPath) or a named volume (volumeName→targetPath). Attributes include: volume name (optional string), source path (optional string), target path (string - serves as unique key), mode (rw/ro), configuration source (global/project). Exactly one of volumeName or sourcePath must be specified.
+- **Volume Mappings Collection**: Stored as a map/object with target path as key, mapping definition as value. Enables simple merge: Object.assign(global, project) with project overriding global for matching target paths.
 - **Configuration Level**: Hierarchical layer where volume mappings can be defined. Two levels: global (system-wide via ~/.viber/config.json) and project (directory-specific via .viber.json). Project level has highest priority for conflict resolution.
-- **Legacy Mapping**: Old-style folder mapping (sourcePath + targetPath without volumeName). System must detect, migrate on write, and warn on read for backward compatibility.
+- **Legacy Mapping**: Old-style folder mapping array (sourcePath + targetPath without volumeName). System must detect, migrate on write to new map format, and warn on read for backward compatibility.
 
 ## Success Criteria *(mandatory)*
 
@@ -128,6 +129,7 @@ A developer using viber-cli for the first time without any configuration should 
 - Configuration files use JSON format (.viber.json for project, ~/.viber/config.json for global) with Zod schema validation
 - Global configuration is stored in user's home directory at ~/.viber/config.json
 - Project configuration is stored in the project's root directory as .viber.json
+- volumeMappings is stored as a JavaScript object/map with target path as key for efficient merging
 - Named volumes are created using the container runtime's standard volume management system
 - Volume names follow container runtime naming conventions (alphanumeric, hyphens, underscores)
 - Developers have appropriate permissions to create and manage volumes in their container environment
@@ -135,9 +137,10 @@ A developer using viber-cli for the first time without any configuration should 
 - Default behavior (when no config exists) uses the existing defaultMappings behavior from global config
 - Volume data lifecycle is managed by the user through container runtime tools (not auto-deleted by viber-cli)
 - Configuration changes require container restart to take effect
-- Legacy "mappings" field will be supported indefinitely for reading, but new configs use "volumeMappings"
-- Migration from "mappings" to "volumeMappings" preserves all existing bind mount functionality
+- Legacy "mappings" array field will be supported indefinitely for reading, but new configs use "volumeMappings" object
+- Migration from array "mappings" to object "volumeMappings" preserves all existing bind mount functionality
 - Profile-level volume configuration is out of scope for this feature (deferred to future profile generalization work)
+- Merge conflicts (same target path in global and project) are resolved by project config taking precedence
 
 ## Out of Scope
 

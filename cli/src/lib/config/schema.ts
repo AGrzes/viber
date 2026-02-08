@@ -32,22 +32,15 @@ export const VolumeMappingSchema = z
     mode: z.enum(['rw', 'ro']),
     label: z.string().optional(),
   })
-  .refine(
-    (data) =>
-      (data.volumeName && !data.sourcePath) || (!data.volumeName && data.sourcePath),
-    {
-      message: 'Must specify either volumeName or sourcePath, not both',
-    }
-  )
+  .refine((data) => (data.volumeName && !data.sourcePath) || (!data.volumeName && data.sourcePath), {
+    message: 'Must specify either volumeName or sourcePath, not both',
+  })
 
 /**
  * VolumeMappingsCollection: Map of volume mappings keyed by target path
  * Enables simple merge strategy: { ...global, ...project }
  */
-export const VolumeMappingsCollectionSchema = z.record(
-  z.string().min(1),
-  VolumeMappingSchema
-)
+export const VolumeMappingsCollectionSchema = z.record(z.string().min(1), VolumeMappingSchema)
 
 export const ImageProfileSchema = z.object({
   name: z.string().min(1),

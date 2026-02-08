@@ -67,14 +67,9 @@ export async function resolveConfig(cwd: string): Promise<ResolvedConfig> {
         : [implicitMapping(absoluteCwd)]
 
   // New volumeMappings: merge global and project, convert to array
-  const mergedVolumeMappings = mergeVolumeMappings(
-    globalConfig?.volumeMappings,
-    project?.volumeMappings
-  )
+  const mergedVolumeMappings = mergeVolumeMappings(globalConfig?.volumeMappings, project?.volumeMappings)
   const volumeMappingsArray =
-    Object.keys(mergedVolumeMappings).length > 0
-      ? volumeMappingsToArray(mergedVolumeMappings)
-      : []
+    Object.keys(mergedVolumeMappings).length > 0 ? volumeMappingsToArray(mergedVolumeMappings) : []
 
   // Combine: legacy mappings (or workdir) + volumeMappings
   // volumeMappings extend (don't replace) default behavior

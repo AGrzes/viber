@@ -32,9 +32,7 @@ function mergeTwo(base: TemplateDefinition, override: TemplateDefinition): Templ
   try {
     return TemplateDefinitionSchema.parse(mergedPayload)
   } catch (err) {
-    throw new CliError(
-      `Template "${override.name}" is invalid after merge: ${(err as Error).message}`
-    )
+    throw new CliError(`Template "${override.name}" is invalid after merge: ${(err as Error).message}`)
   }
 }
 

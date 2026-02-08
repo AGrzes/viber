@@ -126,20 +126,20 @@
 
 ### Tests for Legacy Migration (REQUIRED) ⚠️
 
-- [ ] T031 [P] Unit test: Detect legacy mappings array in cli/tests/unit/config/migration.test.ts
-- [ ] T032 [P] Unit test: Convert legacy array to volumeMappings map in cli/tests/unit/config/migration.test.ts
-- [ ] T033 [P] Unit test: Preserve all fields during migration in cli/tests/unit/config/migration.test.ts
-- [ ] T034 [P] Unit test: Write migrated config removes mappings field in cli/tests/unit/config/migration.test.ts
+- [X] T031 [P] Unit test: Detect legacy mappings array in cli/tests/unit/config/migration.test.ts
+- [X] T032 [P] Unit test: Convert legacy array to volumeMappings map in cli/tests/unit/config/migration.test.ts
+- [X] T033 [P] Unit test: Preserve all fields during migration in cli/tests/unit/config/migration.test.ts
+- [X] T034 [P] Unit test: Write migrated config removes mappings field in cli/tests/unit/config/migration.test.ts
 
 ### Implementation for Legacy Migration
 
-- [ ] T035 [P] Create migrateLegacyMappings() function in cli/src/lib/config/store.ts
-- [ ] T036 Detect Array.isArray(config.mappings) in readProjectConfig() in cli/src/lib/config/store.ts
-- [ ] T037 [P] Detect Array.isArray(config.defaultMappings) in readGlobalConfig() in cli/src/lib/config/store.ts
-- [ ] T038 Emit console.warn() deprecation message when legacy format detected in cli/src/lib/config/store.ts
-- [ ] T039 Convert legacy array to map in-memory using targetPath as key in cli/src/lib/config/store.ts
-- [ ] T040 Update writeProjectConfig() to remove mappings field and use volumeMappings in cli/src/lib/config/store.ts
-- [ ] T041 [P] Update writeGlobalConfig() to remove defaultMappings field and use volumeMappings in cli/src/lib/config/store.ts
+- [X] T035 [P] Create migrateLegacyMappings() function in cli/src/lib/config/store.ts
+- [X] T036 Detect Array.isArray(config.mappings) in readProjectConfig() in cli/src/lib/config/store.ts
+- [X] T037 [P] Detect Array.isArray(config.defaultMappings) in readGlobalConfig() in cli/src/lib/config/store.ts
+- [X] T038 Emit console.warn() deprecation message when legacy format detected in cli/src/lib/config/store.ts
+- [X] T039 Convert legacy array to map in-memory using targetPath as key in cli/src/lib/config/store.ts
+- [X] T040 Update writeProjectConfig() to remove mappings field and use volumeMappings in cli/src/lib/config/store.ts
+- [X] T041 [P] Update writeGlobalConfig() to remove defaultMappings field and use volumeMappings in cli/src/lib/config/store.ts
 
 **Checkpoint**: Legacy migration working - backward compatibility maintained with clear upgrade path
 

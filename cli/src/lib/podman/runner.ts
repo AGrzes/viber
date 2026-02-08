@@ -48,7 +48,7 @@ export function buildPodmanArgs(options: PodmanRunOptions): string[] {
   for (const mapping of mounts) {
     const target = mapping.targetPath ?? mapping.sourcePath
     const mode = mapping.mode
-    
+
     // sourcePath contains either:
     // - Named volume: "volumeName" (no leading /)
     // - Bind mount: "/host/path" (absolute path)

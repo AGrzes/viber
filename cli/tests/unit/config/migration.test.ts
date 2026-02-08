@@ -74,9 +74,7 @@ describe('Legacy Mappings Migration', () => {
   })
 
   it('T034: write migrated config should use volumeMappings format', () => {
-    const legacyMappings: FolderMapping[] = [
-      { sourcePath: '/host/path', targetPath: '/container/path', mode: 'rw' },
-    ]
+    const legacyMappings: FolderMapping[] = [{ sourcePath: '/host/path', targetPath: '/container/path', mode: 'rw' }]
 
     const volumeMappings = migrateLegacyMappings(legacyMappings)
 

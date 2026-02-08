@@ -3,12 +3,7 @@ import fs from 'node:fs'
 import { Command } from 'commander'
 import { findProjectConfig } from '../../lib/config/discovery.js'
 import { PROJECT_CONFIG_NAME } from '../../lib/config/schema.js'
-import {
-  getGlobalConfigPath,
-  readGlobalConfig,
-  writeGlobalConfig,
-  writeProjectConfig,
-} from '../../lib/config/store.js'
+import { getGlobalConfigPath, readGlobalConfig, writeGlobalConfig, writeProjectConfig } from '../../lib/config/store.js'
 import { CliError, getErrorMessage } from '../../lib/utils/errors.js'
 
 export function registerConfigCommand(program: Command): void {

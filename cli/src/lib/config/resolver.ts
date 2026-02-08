@@ -53,11 +53,7 @@ function stripInherit(profile: ProfileInput): Omit<ProfileInput, 'inherit'> {
   return rest
 }
 
-function resolveInheritList(
-  profile: ProfileInput,
-  hasDefault: boolean,
-  isDefaultProfile: boolean
-): string[] {
+function resolveInheritList(profile: ProfileInput, hasDefault: boolean, isDefaultProfile: boolean): string[] {
   if (Array.isArray(profile.inherit)) {
     return profile.inherit
   }
@@ -126,9 +122,7 @@ function pruneNullEntries<T extends Record<string, unknown>>(input: T | undefine
 function normalizeProfile(profile: ProfileInput): Profile {
   return {
     image: profile.image,
-    env: pruneNullEntries(profile.env as Record<string, unknown> | undefined) as
-      | Record<string, string>
-      | undefined,
+    env: pruneNullEntries(profile.env as Record<string, unknown> | undefined) as Record<string, string> | undefined,
     volumes: pruneNullEntries(profile.volumes as VolumeMap | undefined),
     templates: pruneNullEntries(profile.templates as TemplateMapInput | undefined),
   }
@@ -150,10 +144,7 @@ export type ResolveConfigOptions = {
   profileOverrides?: string[]
 }
 
-export async function resolveConfig(
-  cwd: string,
-  options: ResolveConfigOptions = {}
-): Promise<ResolvedConfig> {
+export async function resolveConfig(cwd: string, options: ResolveConfigOptions = {}): Promise<ResolvedConfig> {
   const absoluteCwd = path.resolve(cwd)
   const projectConfigPath = findProjectConfig(absoluteCwd)
   const project = projectConfigPath ? await readProjectConfig(projectConfigPath) : undefined
@@ -165,7 +156,7 @@ export async function resolveConfig(
 
   const hasOverrides = Boolean(options.profileOverrides && options.profileOverrides.length > 0)
   const inheritList = hasOverrides
-    ? options.profileOverrides ?? []
+    ? (options.profileOverrides ?? [])
     : resolveInheritList(project ?? {}, hasDefault, false)
 
   const baseProfile = project ?? {}

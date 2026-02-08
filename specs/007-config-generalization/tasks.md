@@ -4,7 +4,7 @@
 - [x] Phase 3: Update CLI commands and flags
 - [x] Phase 4: Refactor runtime integration and template handling
 - [x] Phase 5: Remove deprecated features and special cases
-- [ ] Phase 6: Update tests and documentation
+- [x] Phase 6: Update tests and documentation
 
 # Phase Dependencies
 Phase 2 depends on Phase 1.
@@ -56,5 +56,5 @@ Phase 6 depends on Phases 3, 4, and 5.
 # Phase 6 Tasks
 - [x] Update unit tests to validate template-based AGENTS.md generation
 - [x] Remove or adjust tests that reference removed features or old config shapes
-- [ ] Update README with new config format, migration notes, and examples
-- [ ] Document how to recreate prior behavior using `volumes`, `env`, and `templates`
+- [x] Update README with new config format, migration notes, and examples
+- [x] Document how to recreate prior behavior using `volumes`, `env`, and `templates`

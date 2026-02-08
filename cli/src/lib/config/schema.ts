@@ -14,10 +14,7 @@ export const FolderMappingSchema = z.object({
   label: z.string().optional(),
 })
 
-export const EnvMapInputSchema = z.record(
-  z.string().regex(ENV_KEY_PATTERN),
-  z.union([z.string(), z.null()])
-)
+export const EnvMapInputSchema = z.record(z.string().regex(ENV_KEY_PATTERN), z.union([z.string(), z.null()]))
 
 export const EnvMapSchema = z.record(z.string().regex(ENV_KEY_PATTERN), z.string())
 
@@ -31,10 +28,7 @@ const TemplateEntryInputSchema = z.object({
   parameters: z.record(z.unknown()).optional(),
 })
 
-export const TemplateMapInputSchema = z.record(
-  z.string().min(1),
-  z.union([TemplateEntryInputSchema, z.null()])
-)
+export const TemplateMapInputSchema = z.record(z.string().min(1), z.union([TemplateEntryInputSchema, z.null()]))
 
 export const TemplateMapSchema = z.record(z.string().min(1), TemplateDefinitionSchema)
 

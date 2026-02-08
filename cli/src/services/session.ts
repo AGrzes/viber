@@ -67,9 +67,7 @@ function pruneNullEntries<T extends Record<string, unknown>>(input?: T): T | und
 function normalizeProfile(profile: Profile): Profile {
   return {
     image: profile.image,
-    env: pruneNullEntries(profile.env as Record<string, unknown> | undefined) as
-      | Record<string, string>
-      | undefined,
+    env: pruneNullEntries(profile.env as Record<string, unknown> | undefined) as Record<string, string> | undefined,
     volumes: pruneNullEntries(profile.volumes as Record<string, unknown> | undefined) as
       | Record<string, string>
       | undefined,

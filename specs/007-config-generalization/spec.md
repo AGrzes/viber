@@ -62,4 +62,5 @@ Clarifications (iterative)
 - Only the final resolved templates must be valid; intermediate inherited shapes may be partial.
 - `env` values are strings only.
 - `image` must be a non-empty string; empty values are invalid.
+- No new env substitution behavior is added beyond existing template path handling.
 - `volumes` keeps the current simple map shape: `sourceOrVolumeName -> "target[:mode]"`.

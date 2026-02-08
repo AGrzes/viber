@@ -74,4 +74,5 @@ Clarifications (iterative)
 - Keep `viber run --image` override.
 - `viber run --profile <name>` is repeatable and replaces the project config `inherit` list for that run.
 - Missing profiles passed to `viber run --profile` are a hard error.
+- `viber run --image` overrides the merged profile `image` value.
 - `volumes` keeps the current simple map shape: `sourceOrVolumeName -> "target[:mode]"`.

@@ -14,6 +14,7 @@
 - Q: Should named volumes be a separate config section or extend the existing mappings structure? → A: New unified volumeMappings section replaces mappings for volume-backed paths, with migration from old mappings format and warnings for legacy usage
 - Q: Should volume configurations be part of existing imageProfiles or a separate profile system? → A: Volume configs only at global/project level - no profile-specific volumes (profile generalization deferred to future work)
 - Q: How should global and project volumeMappings be merged? → A: Use map/object storage keyed by target path for simple merge - project entries override global entries with matching target paths
+- Q: What is the default behavior when no volumeMappings config exists? → A: Preserve existing behavior - mount workdir and configured mapping paths (defaultMappings)
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -59,9 +60,9 @@ A developer using viber-cli for the first time without any configuration should 
 
 **Acceptance Scenarios**:
 
-1. **Given** no configuration files exist, **When** a developer starts a container, **Then** the system uses default volume behavior as documented
-2. **Given** default behavior is documented, **When** a developer reads the documentation, **Then** they understand what volumes (if any) are created by default
-3. **Given** default volume behavior, **When** a developer later adds custom configuration, **Then** their custom config overrides defaults as expected
+1. **Given** no configuration files exist, **When** a developer starts a container, **Then** the system mounts the working directory and any system-default paths as it currently does
+2. **Given** default behavior mounts workdir, **When** a developer reads the documentation, **Then** they understand the default mounting behavior is unchanged from current viber-cli
+3. **Given** default workdir mounting, **When** a developer later adds volumeMappings config, **Then** their volumeMappings are merged with (not replacing) the default workdir mount behavior
 
 ---
 
@@ -97,8 +98,9 @@ A developer using viber-cli for the first time without any configuration should 
 - **FR-005**: System MUST create and mount volumes automatically when a container starts based on merged configuration
 - **FR-006**: System MUST persist data in named volumes across container restarts and deletions
 - **FR-007**: System MUST validate volume configuration syntax before applying it and provide clear error messages for invalid configurations
-- **FR-008**: System MUST document the default volume behavior when no configuration is provided
-- **FR-009**: System MUST support standard path formats for volume names, source paths, and target paths
+- **FR-008**: System MUST preserve existing default behavior: mounting working directory and configured mapping paths (defaultMappings) when no volumeMappings are defined
+- **FR-009**: System MUST document how volumeMappings interact with existing workdir mounting and defaultMappings behavior
+- **FR-010**: System MUST support standard path formats for volume names, source paths, and target paths
 - **FR-010**: System MUST provide commands or options to view active volume configuration for the current context
 - **FR-011**: Developers MAY manually scope volume names (e.g., "projectA-cache") to achieve isolation between projects; identical volume names across projects share the same underlying volume
 - **FR-012**: System MUST detect legacy "mappings" array format and automatically migrate to new map-based "volumeMappings" format when writing configuration
@@ -134,13 +136,14 @@ A developer using viber-cli for the first time without any configuration should 
 - Volume names follow container runtime naming conventions (alphanumeric, hyphens, underscores)
 - Developers have appropriate permissions to create and manage volumes in their container environment
 - Volume names are globally shared - identical volume names across projects refer to the same underlying volume (developers must manually add project identifiers if isolation is needed)
-- Default behavior (when no config exists) uses the existing defaultMappings behavior from global config
+- Default behavior (when no volumeMappings config exists) preserves existing viber-cli functionality: mounting working directory and configured paths via defaultMappings
 - Volume data lifecycle is managed by the user through container runtime tools (not auto-deleted by viber-cli)
 - Configuration changes require container restart to take effect
 - Legacy "mappings" array field will be supported indefinitely for reading, but new configs use "volumeMappings" object
 - Migration from array "mappings" to object "volumeMappings" preserves all existing bind mount functionality
-- Profile-level volume configuration is out of scope for this feature (deferred to future profile generalization work)
 - Merge conflicts (same target path in global and project) are resolved by project config taking precedence
+- The feature extends existing mounting capabilities rather than replacing them
+- volumeMappings and existing workdir/defaultMappings mounting behavior coexist (volumeMappings do not replace automatic workdir mounting)
 
 ## Out of Scope
 

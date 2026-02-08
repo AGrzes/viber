@@ -61,4 +61,5 @@ Clarifications (iterative)
 - Setting a template entry to `null` deletes/suppresses that template.
 - Only the final resolved templates must be valid; intermediate inherited shapes may be partial.
 - `env` values are strings only.
+- `image` must be a non-empty string; empty values are invalid.
 - `volumes` keeps the current simple map shape: `sourceOrVolumeName -> "target[:mode]"`.

@@ -40,6 +40,7 @@ Clarifications (iterative)
 - `viber config` creates the config file if missing; if it exists, it is a no-op.
 - Add `viber config path [-g, --global]` to print the local/global config path for manual editing.
 - `viber config path` (local) errors if no project config exists (so scripts can detect absence).
+- `viber config path --global` errors if the global config does not exist.
 - `viber config` creates only a project config as an empty JSON object by default.
 - `viber config --profile <name>` creates/updates the project config to set `inherit: [<name>]`.
 - `viber config --profile <name>` validates that the named global profile exists.

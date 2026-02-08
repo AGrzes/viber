@@ -31,3 +31,4 @@ Clarifications (iterative)
 - Image profile is removed. Image selection is via `imageReference` in profiles, and normal deep-merge override semantics apply (child overrides parent).
 - `agentsRef` is removed. Agent selection is handled via profile content and inheritance; profiles carry `agents` map entries (e.g., `agents: { default: "..." }`).
 - `agents` uses the same map model in both global and project profiles; it participates in deep-merge with null deletions.
+- CLI-level agent selection flags are removed; agent behavior is handled via profiles.

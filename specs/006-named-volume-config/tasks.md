@@ -55,14 +55,14 @@
 
 ### Tests for User Story 3 (REQUIRED) ⚠️
 
-- [ ] T010 [P] [US3] Unit test: Default behavior preserves workdir mount in cli/tests/unit/config/volumeMappings.test.ts
-- [ ] T011 [P] [US3] Unit test: volumeMappings extend (not replace) defaultMappings in cli/tests/unit/config/volumeMappings.test.ts
+- [X] T010 [P] [US3] Unit test: Default behavior preserves workdir mount in cli/tests/unit/config/volumeMappings.test.ts
+- [X] T011 [P] [US3] Unit test: volumeMappings extend (not replace) defaultMappings in cli/tests/unit/config/volumeMappings.test.ts
 
 ### Implementation for User Story 3
 
-- [ ] T012 [US3] Update resolver logic in cli/src/lib/config/resolver.ts to merge workdir + defaultMappings + volumeMappings
-- [ ] T013 [US3] Convert volumeMappings map to array format for effectiveMappings in cli/src/lib/config/resolver.ts
-- [ ] T014 [US3] Document that volumeMappings coexist with workdir mounting (in-code JSDoc comments)
+- [X] T012 [US3] Update resolver logic in cli/src/lib/config/resolver.ts to merge workdir + defaultMappings + volumeMappings
+- [X] T013 [US3] Convert volumeMappings map to array format for effectiveMappings in cli/src/lib/config/resolver.ts
+- [X] T014 [US3] Document that volumeMappings coexist with workdir mounting (in-code JSDoc comments)
 
 **Checkpoint**: Default behavior preserved - backward compatibility maintained
 
@@ -78,10 +78,10 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T015 [P] [US1] Unit test: Parse volumeMappings from project config in cli/tests/unit/config/volumeMappings.test.ts
-- [ ] T016 [P] [US1] Unit test: Validate volumeName XOR sourcePath constraint in cli/tests/unit/config/volumeMappings.test.ts
-- [ ] T017 [P] [US1] Unit test: Reject empty targetPath in cli/tests/unit/config/volumeMappings.test.ts
-- [ ] T018 [P] [US1] Unit test: Validate mode enum (rw/ro) in cli/tests/unit/config/volumeMappings.test.ts
+- [X] T015 [P] [US1] Unit test: Parse volumeMappings from project config in cli/tests/unit/config/volumeMappings.test.ts
+- [X] T016 [P] [US1] Unit test: Validate volumeName XOR sourcePath constraint in cli/tests/unit/config/volumeMappings.test.ts
+- [X] T017 [P] [US1] Unit test: Reject empty targetPath in cli/tests/unit/config/volumeMappings.test.ts
+- [X] T018 [P] [US1] Unit test: Validate mode enum (rw/ro) in cli/tests/unit/config/volumeMappings.test.ts
 
 ### Implementation for User Story 1
 

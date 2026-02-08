@@ -39,6 +39,8 @@ Clarifications (iterative)
 - Keep only `viber config` for configuration management.
 - `viber config` creates the config file if missing; if it exists, it is a no-op.
 - Add `viber config path [-g, --global]` to print the local/global config path for manual editing.
+- `viber config` creates only a project config as an empty JSON object by default.
+- `viber config --profile <name>` creates/updates the project config to set `inherit: [<name>]`.
 - Field renames for profile-shaped config:
   - `imageReference` -> `image`
   - `envMappings` -> `env`

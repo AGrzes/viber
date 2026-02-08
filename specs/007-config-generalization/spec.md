@@ -14,6 +14,7 @@ Project configuration shape: the project config file itself is the current profi
 
 Clarifications (iterative)
 - The default workdir mount is applied in post-processing and is not expressed in profiles.
+- Workdir mapping is always applied and cannot be disabled via profiles.
 - There is no separate "image profile" concept. A profile that defines an image reference is the image selection.
 - If inheritance is explicitly disabled (empty list), then all mandatory configuration (including image reference) must be defined locally; otherwise configuration is invalid.
 - If `inherit` is omitted in a project config, it defaults to `[default]`. Explicit no-inheritance is `inherit: []`.

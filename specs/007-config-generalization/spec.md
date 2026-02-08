@@ -40,5 +40,6 @@ Clarifications (iterative)
   - `volumeMappings` -> `volumes`
 - `templates` becomes a map keyed by template name (name moves to key)
 - Template `parameters` remain objects and are deep-merged across inheritance.
+- Setting a template entry to `null` deletes/suppresses that template.
 - `env` values are strings only.
 - `volumes` keeps the current simple map shape: `sourceOrVolumeName -> "target[:mode]"`.

@@ -73,4 +73,5 @@ Clarifications (iterative)
 - Remove special-case `/codex` handling; document in README how to achieve equivalent behavior via `volumes`, `env`, and `templates` in global profiles.
 - Keep `viber run --image` override.
 - `viber run --profile <name>` is repeatable and replaces the project config `inherit` list for that run.
+- Missing profiles passed to `viber run --profile` are a hard error.
 - `volumes` keeps the current simple map shape: `sourceOrVolumeName -> "target[:mode]"`.

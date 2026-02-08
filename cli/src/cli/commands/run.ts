@@ -8,15 +8,16 @@ export function registerRunCommand(program: Command): void {
     .description('Run a one-off AGENTS session')
     .option('--cwd <path>', 'Working directory to resolve config', process.cwd())
     .option('--image <ref>', 'Direct image reference to use')
-    .option('--profile <name>', 'Image profile name to use')
-    .option('--agents <name>', 'Named global agents entry to use')
-    .option('--agents-no-global', 'Disable global agents for this session')
     .option(
-      '--suppress <template>',
-      'Template name to skip rendering/mounting for this run (can be repeated)',
-      (value: string, previous: string[] = []) => {
-        return [...previous, value]
-      },
+      '--profile <name>',
+      'Profile name to inherit for this run (can be repeated)',
+      (value: string, previous: string[] = []) => [...previous, value],
+      [] as string[]
+    )
+    .option(
+      '--suppress <path>',
+      'Dot-path in config to null for this run (can be repeated)',
+      (value: string, previous: string[] = []) => [...previous, value],
       [] as string[]
     )
     .option('--dry-run', 'Print podman command without running')
@@ -28,13 +29,11 @@ export function registerRunCommand(program: Command): void {
 
         const exitCode = await runSession({
           cwd: options.cwd,
-          imageReference: options.image,
-          imageProfile: options.profile,
+          image: options.image,
+          profiles: options.profile,
           dryRun: Boolean(options.dryRun),
           command: passthrough.length > 0 ? passthrough : undefined,
-          agents: options.agents,
-          agentsNoGlobal: Boolean(options.agentsNoGlobal),
-          templateSuppressions: options.suppress ?? [],
+          suppressions: options.suppress ?? [],
         })
         process.exitCode = exitCode
       } catch (err) {

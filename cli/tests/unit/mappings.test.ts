@@ -10,7 +10,7 @@ function makeTempDir(): string {
 }
 
 describe('resolveConfig', () => {
-  it('mounts current directory to /workdir when no mappings provided', async () => {
+  it('mounts current directory to /workdir when no volumes provided', async () => {
     const tempDir = makeTempDir()
     const resolved = await resolveConfig(tempDir)
 

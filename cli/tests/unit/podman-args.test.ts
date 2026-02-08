@@ -1,18 +1,11 @@
 import { describe, expect, it, vi } from 'vitest'
 import { buildPodmanArgs, formatPodmanCommand, runPodman } from '../../src/lib/podman/runner.js'
-import { WORKDIR, CODEX_DIR, CODEX_AUTH_TARGET } from '../../src/lib/utils/paths.js'
-import { ENV_CODEX_HOME } from '../../src/lib/utils/env.js'
+import { WORKDIR } from '../../src/lib/utils/paths.js'
 
 const baseMapping = {
   sourcePath: '/host/project',
   targetPath: WORKDIR,
   mode: 'rw',
-}
-
-const authMapping = {
-  sourcePath: '/home/user/.codex/auth.json',
-  targetPath: CODEX_AUTH_TARGET,
-  mode: 'ro',
 }
 
 describe('buildPodmanArgs', () => {
@@ -31,36 +24,20 @@ describe('buildPodmanArgs', () => {
     expect(args).toContain('1000:1001')
   })
 
-  it('includes workdir and CODEX_HOME when auth mount is present', () => {
+  it('includes workdir and env entries when set', () => {
     const args = buildPodmanArgs({
       imageRef: 'example:latest',
       interactive: true,
       mappings: [baseMapping],
-      extraMounts: [authMapping],
       workdir: WORKDIR,
       env: {
-        [ENV_CODEX_HOME]: CODEX_DIR,
+        FOO: 'bar',
       },
     })
 
     expect(args).toContain('-w')
     expect(args).toContain(WORKDIR)
     expect(args).toContain('-e')
-    expect(args).toContain(`${ENV_CODEX_HOME}=${CODEX_DIR}`)
-    expect(args).toContain(`-v`)
-    expect(args).toContain(`${authMapping.sourcePath}:${authMapping.targetPath}:${authMapping.mode}`)
-  })
-
-  it('accepts explicit env entries', () => {
-    const args = buildPodmanArgs({
-      imageRef: 'example:latest',
-      interactive: false,
-      mappings: [baseMapping],
-      env: {
-        FOO: 'bar',
-      },
-    })
-
     expect(args).toContain('FOO=bar')
   })
 })

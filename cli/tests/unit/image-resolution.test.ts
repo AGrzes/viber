@@ -1,33 +1,59 @@
-import fs from 'node:fs'
-import os from 'node:os'
-import path from 'node:path'
 import { describe, expect, it, vi } from 'vitest'
-import { resolveConfig } from '../../src/lib/config/resolver.js'
 import { runSession } from '../../src/services/session.js'
+import { WORKDIR } from '../../src/lib/utils/paths.js'
+import type { ResolvedConfig } from '../../src/lib/config/schema.js'
 
-vi.mock('../../src/lib/podman/runner.js', () => ({
-  runPodman: vi.fn().mockResolvedValue(0),
+const mockResolveConfig = vi.fn()
+const mockRunPodman = vi.fn().mockResolvedValue(0)
+
+vi.mock('../../src/lib/config/resolver.js', () => ({
+  resolveConfig: mockResolveConfig,
 }))
 
-function makeTempDir(): string {
-  return fs.mkdtempSync(path.join(os.tmpdir(), 'viber-image-'))
+vi.mock('../../src/lib/podman/runner.js', () => ({
+  runPodman: mockRunPodman,
+}))
+
+function makeResolved(profileOverrides: Partial<ResolvedConfig['profile']>): ResolvedConfig {
+  return {
+    profile: {
+      ...profileOverrides,
+    },
+    effectiveMappings: [
+      {
+        sourcePath: '/tmp/project',
+        targetPath: WORKDIR,
+        mode: 'rw',
+      },
+    ],
+    projectConfigPath: undefined,
+    globalConfigPath: undefined,
+  }
 }
 
 describe('image resolution', () => {
-  it('uses default profile when none specified', async () => {
-    const tempDir = makeTempDir()
-    const resolved = await resolveConfig(tempDir)
-    expect(resolved.imageProfile).toBe('default')
-  })
+  it('fails when no image is set', async () => {
+    mockResolveConfig.mockResolvedValueOnce(makeResolved({}))
 
-  it('rejects imageProfile + imageReference override', async () => {
     await expect(
       runSession({
         cwd: process.cwd(),
-        mode: 'one-off',
-        imageProfile: 'default',
-        imageReference: 'example:latest',
       })
-    ).rejects.toThrow(/image profile.*image reference/i)
+    ).rejects.toThrow(/no image selected/i)
+  })
+
+  it('overrides image when --image is provided', async () => {
+    mockResolveConfig.mockResolvedValueOnce(makeResolved({ image: 'base:latest' }))
+
+    await runSession({
+      cwd: process.cwd(),
+      image: 'override:latest',
+    })
+
+    expect(mockRunPodman).toHaveBeenCalledWith(
+      expect.objectContaining({
+        imageRef: 'override:latest',
+      })
+    )
   })
 })

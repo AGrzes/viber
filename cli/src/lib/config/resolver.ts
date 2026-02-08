@@ -1,16 +1,19 @@
 import path from 'node:path'
 import { findProjectConfig } from './discovery.js'
 import {
-  DEFAULT_PROFILE_NAME,
   FolderMappingSchema,
   ResolvedConfigSchema,
   type FolderMapping,
+  type GlobalConfig,
+  type Profile,
+  type ProfileInput,
   type ResolvedConfig,
-  type VolumeMappingsCollection,
+  type TemplateMapInput,
+  type VolumeMap,
 } from './schema.js'
 import { readGlobalConfig, readProjectConfig, getGlobalConfigPath } from './store.js'
 import { WORKDIR } from '../utils/paths.js'
-import { mergeTemplateDefinitions } from '../templates/merge.js'
+import { CliError } from '../utils/errors.js'
 
 function implicitMapping(cwd: string): FolderMapping {
   return FolderMappingSchema.parse({
@@ -20,98 +23,164 @@ function implicitMapping(cwd: string): FolderMapping {
   })
 }
 
-/**
- * Merge global and project volume mappings
- * Project mappings override global for matching keys
- */
-function mergeVolumeMappings(
-  globalMappings: VolumeMappingsCollection | undefined,
-  projectMappings: VolumeMappingsCollection | undefined
-): VolumeMappingsCollection {
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return Boolean(value && typeof value === 'object' && !Array.isArray(value))
+}
+
+function mergeObjects<T extends Record<string, unknown>>(base: T, override: Record<string, unknown>): T {
+  const result: Record<string, unknown> = { ...base }
+
+  for (const [key, value] of Object.entries(override)) {
+    if (value === null) {
+      delete result[key]
+      continue
+    }
+
+    const existing = result[key]
+    if (isPlainObject(existing) && isPlainObject(value)) {
+      result[key] = mergeObjects(existing, value)
+      continue
+    }
+
+    result[key] = value
+  }
+
+  return result as T
+}
+
+function stripInherit(profile: ProfileInput): Omit<ProfileInput, 'inherit'> {
+  const { inherit: _inherit, ...rest } = profile
+  return rest
+}
+
+function resolveInheritList(
+  profile: ProfileInput,
+  hasDefault: boolean,
+  isDefaultProfile: boolean
+): string[] {
+  if (Array.isArray(profile.inherit)) {
+    return profile.inherit
+  }
+  if (hasDefault && !isDefaultProfile) {
+    return ['default']
+  }
+  return []
+}
+
+function resolveGlobalProfile(
+  name: string,
+  profiles: Record<string, ProfileInput>,
+  stack: string[] = []
+): ProfileInput {
+  const profile = profiles[name]
+  if (!profile) {
+    throw new CliError(`Profile not found: ${name}`)
+  }
+
+  if (stack.includes(name)) {
+    throw new CliError(`Profile inheritance cycle detected: ${[...stack, name].join(' -> ')}`)
+  }
+
+  const hasDefault = Object.prototype.hasOwnProperty.call(profiles, 'default')
+  const inheritList = resolveInheritList(profile, hasDefault, name === 'default')
+
+  const nextStack = [...stack, name]
+  let merged: Record<string, unknown> = {}
+
+  for (const inheritName of inheritList) {
+    const resolved = resolveGlobalProfile(inheritName, profiles, nextStack)
+    merged = mergeObjects(merged, stripInherit(resolved))
+  }
+
+  merged = mergeObjects(merged, stripInherit(profile))
+
+  return merged as ProfileInput
+}
+
+function resolveProfileFromList(
+  inheritList: string[],
+  profiles: Record<string, ProfileInput>,
+  baseProfile: ProfileInput
+): ProfileInput {
+  let merged: Record<string, unknown> = {}
+
+  for (const inheritName of inheritList) {
+    const resolved = resolveGlobalProfile(inheritName, profiles)
+    merged = mergeObjects(merged, stripInherit(resolved))
+  }
+
+  merged = mergeObjects(merged, stripInherit(baseProfile))
+  return merged as ProfileInput
+}
+
+function pruneNullEntries<T extends Record<string, unknown>>(input: T | undefined): T | undefined {
+  if (!input) return undefined
+  const result: Record<string, unknown> = {}
+  for (const [key, value] of Object.entries(input)) {
+    if (value === null) continue
+    result[key] = value
+  }
+  return Object.keys(result).length > 0 ? (result as T) : undefined
+}
+
+function normalizeProfile(profile: ProfileInput): Profile {
   return {
-    ...(globalMappings ?? {}),
-    ...(projectMappings ?? {}),
+    image: profile.image,
+    env: pruneNullEntries(profile.env as Record<string, unknown> | undefined) as
+      | Record<string, string>
+      | undefined,
+    volumes: pruneNullEntries(profile.volumes as VolumeMap | undefined),
+    templates: pruneNullEntries(profile.templates as TemplateMapInput | undefined),
   }
 }
 
-/**
- * Convert volumeMappings map to FolderMapping array
- *
- * Format: { "volumeName": "/target" } or { "volumeName": "/target:ro" }
- *         { "/source": "/target" } for bind mounts
- *
- * Key: volumeName (no /) OR sourcePath (starts with /)
- * Value: targetPath OR targetPath:mode
- */
-function volumeMappingsToArray(mappings: VolumeMappingsCollection): FolderMapping[] {
+function volumeMappingsToArray(mappings: VolumeMap): FolderMapping[] {
   return Object.entries(mappings).map(([key, value]) => {
-    // Parse value: "targetPath" or "targetPath:mode"
     const [targetPath, mode = 'rw'] = value.split(':') as [string, 'rw' | 'ro' | undefined]
 
-    // Key starts with / = bind mount, otherwise = named volume
-    const sourcePath = key
-
     return {
-      sourcePath,
-      targetPath: targetPath || sourcePath,
+      sourcePath: key,
+      targetPath: targetPath || key,
       mode: mode || 'rw',
     }
   })
 }
 
-export async function resolveConfig(cwd: string): Promise<ResolvedConfig> {
+export type ResolveConfigOptions = {
+  profileOverrides?: string[]
+}
+
+export async function resolveConfig(
+  cwd: string,
+  options: ResolveConfigOptions = {}
+): Promise<ResolvedConfig> {
   const absoluteCwd = path.resolve(cwd)
   const projectConfigPath = findProjectConfig(absoluteCwd)
   const project = projectConfigPath ? await readProjectConfig(projectConfigPath) : undefined
-  const global = await readGlobalConfig()
-  const globalConfig = global ?? undefined
+  const global = (await readGlobalConfig()) ?? ({ profiles: {} } as GlobalConfig)
   const globalConfigPath = getGlobalConfigPath()
-  const projectEnvMappings = project?.envMappings
-  const globalEnvMappings = globalConfig?.envMappings
 
-  // Legacy mappings: preserve existing behavior
-  // If project.mappings exists, use it; else use defaultMappings; else use implicit workdir
-  const legacyMappings =
-    project?.mappings && project.mappings.length > 0
-      ? project.mappings
-      : globalConfig?.defaultMappings && globalConfig.defaultMappings.length > 0
-        ? globalConfig.defaultMappings
-        : [implicitMapping(absoluteCwd)]
+  const profiles = global.profiles ?? {}
+  const hasDefault = Object.prototype.hasOwnProperty.call(profiles, 'default')
 
-  // New volumeMappings: merge global and project, convert to array
-  const mergedVolumeMappings = mergeVolumeMappings(globalConfig?.volumeMappings, project?.volumeMappings)
-  const volumeMappingsArray =
-    Object.keys(mergedVolumeMappings).length > 0 ? volumeMappingsToArray(mergedVolumeMappings) : []
+  const hasOverrides = Boolean(options.profileOverrides && options.profileOverrides.length > 0)
+  const inheritList = hasOverrides
+    ? options.profileOverrides ?? []
+    : resolveInheritList(project ?? {}, hasDefault, false)
 
-  // Combine: legacy mappings (or workdir) + volumeMappings
-  // volumeMappings extend (don't replace) default behavior
-  const effectiveMappings = [...legacyMappings, ...volumeMappingsArray]
+  const baseProfile = project ?? {}
+  const mergedProfileInput = resolveProfileFromList(inheritList, profiles, baseProfile)
+  const mergedProfile = normalizeProfile(mergedProfileInput)
 
-  const defaultProfileName = globalConfig?.defaultImageProfile ?? DEFAULT_PROFILE_NAME
-  let imageProfile: string | undefined = project?.imageProfile
-  let imageReference: string | undefined = project?.imageReference
-
-  if (!imageProfile && !imageReference) {
-    imageProfile = defaultProfileName
+  const effectiveMappings: FolderMapping[] = [implicitMapping(absoluteCwd)]
+  if (mergedProfile.volumes) {
+    effectiveMappings.push(...volumeMappingsToArray(mergedProfile.volumes))
   }
 
-  const projectTemplates = project?.templates ?? []
-  const globalTemplates = globalConfig?.templates ?? []
-  const templateSet = mergeTemplateDefinitions(globalTemplates, projectTemplates)
-
   return ResolvedConfigSchema.parse({
-    project,
-    global: globalConfig,
+    profile: mergedProfile,
+    effectiveMappings,
     projectConfigPath: projectConfigPath ?? undefined,
     globalConfigPath,
-    projectEnvMappings,
-    globalEnvMappings,
-    effectiveMappings,
-    imageProfile,
-    imageReference,
-    defaultProfileName,
-    projectTemplates,
-    globalTemplates,
-    templateSet,
   })
 }

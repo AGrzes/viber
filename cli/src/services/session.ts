@@ -4,57 +4,85 @@ import { runPodman } from '../lib/podman/runner.js'
 import { CliError } from '../lib/utils/errors.js'
 import { log } from '../lib/utils/log.js'
 import { getHostIdentity } from '../lib/utils/identity.js'
-import { WORKDIR, CODEX_AGENTS_TARGET, CODEX_DIR } from '../lib/utils/paths.js'
-import { ENV_CODEX_HOME } from '../lib/utils/env.js'
+import { WORKDIR } from '../lib/utils/paths.js'
 import { buildSessionEnv } from './sessionEnv.js'
-import { type FolderMapping } from '../lib/config/schema.js'
-import { getProfileOrThrow } from './profiles.js'
-import { resolveAgentsSelection } from './agents-selection.js'
-import { buildAgentsContent, writeAgentsFile } from './agents-file.js'
+import { ProfileSchema, type FolderMapping, type Profile } from '../lib/config/schema.js'
 import { processTemplates } from '../lib/templates/processor.js'
 
 export type SessionOptions = {
   cwd: string
   command?: string[]
-  imageProfile?: string
-  imageReference?: string
+  image?: string
+  profiles?: string[]
   dryRun?: boolean
-  agents?: string
-  agentsNoGlobal?: boolean
-  templateSuppressions?: string[]
+  suppressions?: string[]
 }
 
-async function resolveImageRef(
-  resolved: Awaited<ReturnType<typeof resolveConfig>>,
-  overrides: Pick<SessionOptions, 'imageProfile' | 'imageReference'>
-): Promise<string> {
-  if (overrides.imageReference) {
-    return overrides.imageReference
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return Boolean(value && typeof value === 'object' && !Array.isArray(value))
+}
+
+function applySuppressions(profile: Profile, suppressions: string[] = []): Profile {
+  if (suppressions.length === 0) return profile
+
+  const next = structuredClone(profile) as Record<string, unknown>
+
+  for (const path of suppressions) {
+    const parts = path.split('.').filter(Boolean)
+    if (parts.length === 0) {
+      throw new CliError('Invalid suppression path.')
+    }
+
+    let current: Record<string, unknown> = next
+    for (let i = 0; i < parts.length - 1; i += 1) {
+      const key = parts[i]
+      const value = current[key]
+      if (!isPlainObject(value)) {
+        throw new CliError(`Suppression path not found: ${path}`)
+      }
+      current = value
+    }
+
+    const lastKey = parts[parts.length - 1]
+    if (!(lastKey in current)) {
+      throw new CliError(`Suppression path not found: ${path}`)
+    }
+
+    current[lastKey] = null
   }
 
-  if (overrides.imageProfile) {
-    const profile = await getProfileOrThrow(overrides.imageProfile)
-    return profile.baseImageRef
-  }
+  return next as Profile
+}
 
-  if (resolved.imageReference) {
-    return resolved.imageReference
+function pruneNullEntries<T extends Record<string, unknown>>(input?: T): T | undefined {
+  if (!input) return undefined
+  const result: Record<string, unknown> = {}
+  for (const [key, value] of Object.entries(input)) {
+    if (value === null) continue
+    result[key] = value
   }
+  return Object.keys(result).length > 0 ? (result as T) : undefined
+}
 
-  if (resolved.imageProfile) {
-    const profile = await getProfileOrThrow(resolved.imageProfile)
-    return profile.baseImageRef
+function normalizeProfile(profile: Profile): Profile {
+  return {
+    image: profile.image,
+    env: pruneNullEntries(profile.env as Record<string, unknown> | undefined) as
+      | Record<string, string>
+      | undefined,
+    volumes: pruneNullEntries(profile.volumes as Record<string, unknown> | undefined) as
+      | Record<string, string>
+      | undefined,
+    templates: pruneNullEntries(profile.templates as Record<string, unknown> | undefined) as
+      | Record<string, { path: string; template: string; parameters?: Record<string, unknown> }>
+      | undefined,
   }
-
-  throw new CliError('No image selected. Set imageProfile, imageReference, or a default profile.')
 }
 
 export async function runSession(options: SessionOptions): Promise<number> {
-  if (options.imageProfile && options.imageReference) {
-    throw new CliError('image profile and image reference cannot both be set.')
-  }
-
-  const resolved = await resolveConfig(options.cwd)
+  const resolved = await resolveConfig(options.cwd, {
+    profileOverrides: options.profiles && options.profiles.length > 0 ? options.profiles : undefined,
+  })
   log.config('resolved config', resolved)
 
   const issues = validateMappings(resolved.effectiveMappings)
@@ -63,39 +91,29 @@ export async function runSession(options: SessionOptions): Promise<number> {
     throw new CliError(`Invalid mappings: ${details}`)
   }
 
-  const selection = resolveAgentsSelection(resolved, {
-    selectedName: options.agents,
-    noGlobal: options.agentsNoGlobal,
-  })
-  const agentsContent = buildAgentsContent(selection.globalContent, selection.projectContent)
-  const agentsFilePath = agentsContent ? await writeAgentsFile(agentsContent) : null
+  let profile = resolved.profile
+  if (options.image) {
+    profile = { ...profile, image: options.image }
+  }
 
-  const imageRef = await resolveImageRef(resolved, {
-    imageProfile: options.imageProfile,
-    imageReference: options.imageReference,
-  })
-  log.podman('using image', imageRef)
+  profile = applySuppressions(profile, options.suppressions)
+  profile = normalizeProfile(profile)
+  const validatedProfile = ProfileSchema.parse(profile)
+
+  if (!validatedProfile.image) {
+    throw new CliError('No image selected. Set image in profile or use --image.')
+  }
 
   const identity = getHostIdentity()
   if (!identity) {
     throw new CliError('Host identity is unavailable; cannot determine UID/GID.')
   }
 
-  const { env, extraMounts } = buildSessionEnv(resolved, process.env)
-
-  if (agentsFilePath) {
-    extraMounts.push({
-      sourcePath: agentsFilePath,
-      targetPath: CODEX_AGENTS_TARGET,
-      mode: 'ro',
-    })
-    env[ENV_CODEX_HOME] = CODEX_DIR
-  }
+  const { env, extraMounts } = buildSessionEnv(validatedProfile, process.env)
 
   const templateFiles = await processTemplates({
-    templateSet: resolved.templateSet,
+    templateSet: validatedProfile.templates ?? {},
     env,
-    suppressionList: options.templateSuppressions ?? [],
   })
   for (const file of templateFiles) {
     extraMounts.push({
@@ -105,18 +123,13 @@ export async function runSession(options: SessionOptions): Promise<number> {
     })
   }
 
-  const fallbackMapping: FolderMapping = {
-    sourcePath: options.cwd,
-    targetPath: WORKDIR,
-    mode: 'rw',
-  }
-  const mappings = resolved.effectiveMappings.length > 0 ? resolved.effectiveMappings : [fallbackMapping]
+  const mappings: FolderMapping[] = resolved.effectiveMappings
 
   log.session('workdir', WORKDIR)
   log.env('env', env)
 
   return runPodman({
-    imageRef,
+    imageRef: validatedProfile.image,
     interactive: true,
     mappings,
     extraMounts,

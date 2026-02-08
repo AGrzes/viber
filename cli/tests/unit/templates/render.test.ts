@@ -7,7 +7,6 @@ describe('template processor', () => {
   it('renders templates with parameters and env placeholders', async () => {
     const templateSet = {
       'agent-config': {
-        name: 'agent-config',
         path: '/app/config/${ENV}.json',
         template: '{"env":"{{env}}","count":{{count}}\n}',
         parameters: { env: 'staging', count: 3 },

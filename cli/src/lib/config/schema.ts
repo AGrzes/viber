@@ -5,7 +5,6 @@ import { TemplateDefinitionSchema } from '../templates/types.js'
 
 export const PROJECT_CONFIG_NAME = '.viber.json'
 export const GLOBAL_CONFIG_PATH = path.join(os.homedir(), '.viber', 'config.json')
-export const DEFAULT_PROFILE_NAME = 'default'
 export const ENV_KEY_PATTERN = /^[A-Za-z_][A-Za-z0-9_]*$/
 
 export const FolderMappingSchema = z.object({
@@ -15,83 +14,73 @@ export const FolderMappingSchema = z.object({
   label: z.string().optional(),
 })
 
-/**
- * VolumeMappingsCollection: Simple map of volume/path to target
- * Format: { "volumeName": "/target/path" } or { "volumeName": "/target:ro" }
- *         { "/source/path": "/target/path" } for bind mounts
- *
- * Key: volumeName (no leading /) OR sourcePath (starts with /)
- * Value: targetPath OR targetPath:mode (mode = rw|ro, default: rw)
- */
-export const VolumeMappingsCollectionSchema = z.record(z.string().min(1), z.string().min(1))
+export const EnvMapInputSchema = z.record(
+  z.string().regex(ENV_KEY_PATTERN),
+  z.union([z.string(), z.null()])
+)
 
-export const ImageProfileSchema = z.object({
-  name: z.string().min(1),
-  baseImageRef: z.string().min(1),
-  notes: z.string().optional(),
-  buildSteps: z.array(z.string()).optional(),
+export const EnvMapSchema = z.record(z.string().regex(ENV_KEY_PATTERN), z.string())
+
+export const VolumeMapInputSchema = z.record(z.string().min(1), z.union([z.string().min(1), z.null()]))
+
+export const VolumeMapSchema = z.record(z.string().min(1), z.string().min(1))
+
+const TemplateEntryInputSchema = z.object({
+  path: z.string().min(1).optional(),
+  template: z.string().min(1).optional(),
+  parameters: z.record(z.unknown()).optional(),
 })
 
-export const SkillsPaletteSchema = z.object({
-  name: z.string().min(1),
-  entries: z.array(z.string()).default([]),
-})
+export const TemplateMapInputSchema = z.record(
+  z.string().min(1),
+  z.union([TemplateEntryInputSchema, z.null()])
+)
 
-export const EnvMappingEntrySchema = z.object({
-  key: z.string().regex(ENV_KEY_PATTERN),
-  value: z.string(),
-})
+export const TemplateMapSchema = z.record(z.string().min(1), TemplateDefinitionSchema)
 
-export const ProjectConfigSchema = z
+export const ProfileInputSchema = z
   .object({
-    templates: z.array(TemplateDefinitionSchema).optional(),
-    agents: z.string().nullable().optional(),
-    agentsRef: z.string().optional(),
-    envMappings: z.array(EnvMappingEntrySchema).optional(),
-    mappings: z.array(FolderMappingSchema).optional(), // @deprecated - use volumeMappings
-    volumeMappings: VolumeMappingsCollectionSchema.optional(),
-    imageProfile: z.string().optional(),
-    imageReference: z.string().optional(),
-    skillsPalette: z.string().optional(),
-    networkPolicy: z.string().optional(),
+    inherit: z.array(z.string().min(1)).optional(),
+    image: z.string().min(1).optional(),
+    env: EnvMapInputSchema.optional(),
+    volumes: VolumeMapInputSchema.optional(),
+    templates: TemplateMapInputSchema.optional(),
   })
-  .refine(
-    (value) => !(value.imageProfile && value.imageReference),
-    'imageProfile and imageReference are mutually exclusive'
-  )
+  .strict()
 
-export const GlobalConfigSchema = z.object({
-  templates: z.array(TemplateDefinitionSchema).optional(),
-  agents: z.record(z.string()).optional(),
-  envMappings: z.array(EnvMappingEntrySchema).optional(),
-  defaultImageProfile: z.string().optional(),
-  defaultMappings: z.array(FolderMappingSchema).optional(), // @deprecated - use volumeMappings
-  volumeMappings: VolumeMappingsCollectionSchema.optional(),
-  imageProfiles: z.array(ImageProfileSchema).optional(),
-  skillsPalettes: z.array(SkillsPaletteSchema).optional(),
-})
+export const ProfileSchema = z
+  .object({
+    image: z.string().min(1).optional(),
+    env: EnvMapSchema.optional(),
+    volumes: VolumeMapSchema.optional(),
+    templates: TemplateMapSchema.optional(),
+  })
+  .strict()
+
+export const ProjectConfigSchema = ProfileInputSchema
+
+export const GlobalConfigSchema = z
+  .object({
+    profiles: z.record(z.string().min(1), ProfileInputSchema),
+  })
+  .strict()
 
 export const ResolvedConfigSchema = z.object({
-  project: ProjectConfigSchema.optional(),
-  global: GlobalConfigSchema.optional(),
+  profile: ProfileSchema,
+  effectiveMappings: z.array(FolderMappingSchema),
   projectConfigPath: z.string().optional(),
   globalConfigPath: z.string().optional(),
-  projectEnvMappings: z.array(EnvMappingEntrySchema).optional(),
-  globalEnvMappings: z.array(EnvMappingEntrySchema).optional(),
-  effectiveMappings: z.array(FolderMappingSchema),
-  imageProfile: z.string().optional(),
-  imageReference: z.string().optional(),
-  defaultProfileName: z.string().optional(),
-  projectTemplates: z.array(TemplateDefinitionSchema).optional(),
-  globalTemplates: z.array(TemplateDefinitionSchema).optional(),
-  templateSet: z.record(TemplateDefinitionSchema).default({}),
 })
 
 export type FolderMapping = z.infer<typeof FolderMappingSchema>
-export type VolumeMappingsCollection = z.infer<typeof VolumeMappingsCollectionSchema>
-export type EnvMappingEntry = z.infer<typeof EnvMappingEntrySchema>
-export type ImageProfile = z.infer<typeof ImageProfileSchema>
-export type SkillsPalette = z.infer<typeof SkillsPaletteSchema>
+export type EnvMapInput = z.infer<typeof EnvMapInputSchema>
+export type EnvMap = z.infer<typeof EnvMapSchema>
+export type VolumeMapInput = z.infer<typeof VolumeMapInputSchema>
+export type VolumeMap = z.infer<typeof VolumeMapSchema>
+export type TemplateMapInput = z.infer<typeof TemplateMapInputSchema>
+export type TemplateMap = z.infer<typeof TemplateMapSchema>
+export type ProfileInput = z.infer<typeof ProfileInputSchema>
+export type Profile = z.infer<typeof ProfileSchema>
 export type ProjectConfig = z.infer<typeof ProjectConfigSchema>
 export type GlobalConfig = z.infer<typeof GlobalConfigSchema>
 export type ResolvedConfig = z.infer<typeof ResolvedConfigSchema>

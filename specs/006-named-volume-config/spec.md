@@ -6,6 +6,12 @@
 **Input**: User description: "Add option to store selected directories in container in named volume it should have default global config profile config and project config in form of set volumeName: path pairs to viber-cli"
 **Constitution Guardrails**: Keep scope to primary use cases; reuse proven OSS; define clear module contracts; include minimal unit tests that prove core behavior works; prefer deterministic tools over LLM transformations.
 
+## Clarifications
+
+### Session 2026-02-08
+
+- Q: How should the system ensure volume isolation when multiple projects use the same volume name? → A: Volume names are user-defined with manual scoping - developers must add project identifiers themselves if they want isolation
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Configure Project-Level Named Volumes (Priority: P1)
@@ -20,7 +26,7 @@ A developer wants to persist specific directories (like node_modules, build cach
 
 1. **Given** a project with a viber-cli configuration file, **When** a developer defines a volume mapping (volumeName: path), **Then** the named volume is created and mounted to the specified path in the container
 2. **Given** a container running with configured named volumes, **When** the container is stopped and restarted, **Then** all data in the named volumes persists across restarts
-3. **Given** multiple projects with different named volumes, **When** each project is run, **Then** each project uses its own isolated named volumes without conflicts
+3. **Given** multiple projects using the same volume name, **When** each project is run, **Then** they share the same named volume data (developers must manually scope names for isolation)
 
 ---
 
@@ -86,7 +92,7 @@ A developer using viber-cli for the first time without any configuration should 
 
 - **Test 1: Basic Volume Persistence** - Create a project config with one named volume, write data to the mounted path, restart the container, verify data persists
 - **Test 2: Configuration Hierarchy** - Set up default, global, profile, and project configs with overlapping volume definitions, verify project config takes precedence
-- **Test 3: Volume Isolation** - Create two projects with different volume names pointing to similar paths, verify data doesn't leak between projects
+- **Test 3: Volume Sharing** - Create two projects using the same volume name, verify they share data; create another project with a manually scoped name (e.g., "projectA-cache"), verify it has isolated data
 - **Test 4: Invalid Configuration Handling** - Provide malformed volume configurations (invalid paths, duplicate mappings, missing names), verify clear error messages
 - **Test 5: Profile Switching** - Create two profiles with different volume configs, switch between them, verify correct volumes are mounted for each profile
 
@@ -98,15 +104,15 @@ A developer using viber-cli for the first time without any configuration should 
 - **FR-002**: System MUST support four configuration levels: default, global, profile, and project, with clear precedence rules (project > profile > global > default)
 - **FR-003**: System MUST create and mount named volumes automatically when a container starts based on active configuration
 - **FR-004**: System MUST persist data in named volumes across container restarts and deletions
-- **FR-005**: System MUST isolate named volumes between different projects to prevent data conflicts
-- **FR-006**: System MUST validate volume configuration syntax before applying it and provide clear error messages for invalid configurations
-- **FR-007**: System MUST allow users to specify multiple volume mappings at each configuration level
-- **FR-008**: System MUST merge volume configurations from multiple levels, with project-level taking highest precedence
-- **FR-009**: System MUST document the default volume behavior when no configuration is provided
-- **FR-010**: System MUST allow profile switching without requiring manual volume reconfiguration
-- **FR-011**: System MUST handle path conflicts gracefully when the same container path is specified multiple times
-- **FR-012**: System MUST support standard path formats for both volume names and container paths
-- **FR-013**: System MUST provide commands or options to view active volume configuration for the current context
+- **FR-005**: System MUST validate volume configuration syntax before applying it and provide clear error messages for invalid configurations
+- **FR-006**: System MUST allow users to specify multiple volume mappings at each configuration level
+- **FR-007**: System MUST merge volume configurations from multiple levels, with project-level taking highest precedence
+- **FR-008**: System MUST document the default volume behavior when no configuration is provided
+- **FR-009**: System MUST allow profile switching without requiring manual volume reconfiguration
+- **FR-010**: System MUST handle path conflicts gracefully when the same container path is specified multiple times
+- **FR-011**: System MUST support standard path formats for both volume names and container paths
+- **FR-012**: System MUST provide commands or options to view active volume configuration for the current context
+- **FR-013**: Developers MAY manually scope volume names (e.g., "projectA-cache") to achieve isolation between projects; identical volume names across projects share the same underlying volume
 
 ### Key Entities
 
@@ -122,7 +128,7 @@ A developer using viber-cli for the first time without any configuration should 
 - **SC-002**: Data persists in named volumes across 100% of container restarts and recreations
 - **SC-003**: Configuration hierarchy (project > profile > global > default) resolves correctly in 100% of test cases with overlapping definitions
 - **SC-004**: Container startup time with configured volumes completes within 5 seconds of baseline startup time (minimal overhead)
-- **SC-005**: Volume isolation prevents data leakage between projects in 100% of tested scenarios
+- **SC-005**: Volume sharing behavior is correctly implemented - projects using identical volume names share data in 100% of tested scenarios
 - **SC-006**: Invalid configuration produces clear, actionable error messages that developers can resolve without consulting documentation in 90% of cases
 - **SC-007**: Developers can successfully switch between profiles and have correct volumes mounted without manual intervention in 100% of profile switches
 - **SC-008**: System handles at least 20 named volume mappings per project without performance degradation
@@ -136,7 +142,7 @@ A developer using viber-cli for the first time without any configuration should 
 - Named volumes are created using the container runtime's standard volume management system
 - Volume names follow container runtime naming conventions (alphanumeric, hyphens, underscores)
 - Developers have appropriate permissions to create and manage volumes in their container environment
-- The same volume name can be reused across projects but will be treated as separate volumes (project isolation)
+- Volume names are globally shared - identical volume names across projects refer to the same underlying volume (developers must manually add project identifiers if isolation is needed)
 - Default behavior (when no config exists) is to not create any automatic named volumes, requiring explicit opt-in
 - Volume data lifecycle is managed by the user through container runtime tools (not auto-deleted by viber-cli)
 - Configuration changes require container restart to take effect

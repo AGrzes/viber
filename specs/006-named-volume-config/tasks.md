@@ -149,14 +149,14 @@
 
 **Purpose**: Documentation, error handling, validation improvements
 
-- [ ] T042 [P] Add JSDoc comments to VolumeMappingSchema in cli/src/lib/config/schema.ts
-- [ ] T043 [P] Add JSDoc @deprecated tags to mappings/defaultMappings fields in cli/src/lib/config/schema.ts
-- [ ] T044 [P] Improve validation error messages in cli/src/lib/config/validation.ts
-- [ ] T045 [P] Add logging for volume creation in cli/src/lib/podman/runner.ts
-- [ ] T046 Verify quickstart.md examples match implementation
-- [ ] T047 Run `pnpm -C cli format` to apply Prettier formatting
-- [ ] T048 Run `pnpm -C cli test` to verify all tests pass
-- [ ] T049 Run `pnpm -C cli build` to verify TypeScript compilation
+- [X] T042 [P] Add JSDoc comments to VolumeMappingSchema in cli/src/lib/config/schema.ts
+- [X] T043 [P] Add JSDoc @deprecated tags to mappings/defaultMappings fields in cli/src/lib/config/schema.ts
+- [X] T044 [P] Improve validation error messages in cli/src/lib/config/validation.ts
+- [X] T045 [P] Add logging for volume creation in cli/src/lib/podman/runner.ts
+- [X] T046 Verify quickstart.md examples match implementation
+- [X] T047 Run `pnpm -C cli format` to apply Prettier formatting
+- [X] T048 Run `pnpm -C cli test` to verify all tests pass
+- [X] T049 Run `pnpm -C cli build` to verify TypeScript compilation
 
 ---
 

@@ -36,6 +36,7 @@ Clarifications (iterative)
 - Keep a unit test that validates AGENTS.md generation via templates.
 - CLI suppression changes: `--suppress` accepts dot-paths like `templates.<name>` and nulls the targeted config key for that run.
 - `--suppress` can be repeated. Suppressing a missing path is a command parsing error.
+- Remove the config wizard; `viber config` should only set profiles, and advanced edits are done by opening the config file in an editor.
 - Field renames for profile-shaped config:
   - `imageReference` -> `image`
   - `envMappings` -> `env`

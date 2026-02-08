@@ -7,6 +7,7 @@ Assume
 - Global configuration defines a profiles object with a special `default` profile plus zero or more named profiles
 - Project configuration may either inherit from default profile, a list of profiles (including default) or empty list (no inheritance)
 Express all configuration in terms of profiles
+Project configuration shape: the project config file itself is the current profile object with an optional `inherit` field.
 
 Clarifications (iterative)
 - The default workdir mount is applied in post-processing and is not expressed in profiles.

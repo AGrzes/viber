@@ -68,4 +68,5 @@ Clarifications (iterative)
 - For `volumes`, keep current behavior: no extra validation. Relative paths like `./something` are allowed; absolute paths like `/something` are allowed; bare names like `something` are treated as named volumes. Ambiguous values like `something/else` are passed through to Podman (let it decide).
 - `--dry-run` continues to output the full `podman ...` command (so resolution and command preparation are exercised).
 - The auto-mount of `~/.codex/auth.json` should be removed; document in README how to implement it via `volumes` instead (no templates needed).
+- Remove special-case `CODEX_HOME` handling; document in README how to set it via `env` if needed.
 - `volumes` keeps the current simple map shape: `sourceOrVolumeName -> "target[:mode]"`.

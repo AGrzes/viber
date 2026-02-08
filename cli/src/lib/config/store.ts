@@ -6,6 +6,8 @@ import {
   ProjectConfigSchema,
   type GlobalConfig,
   type ProjectConfig,
+  type FolderMapping,
+  type VolumeMappingsCollection,
 } from './schema.js'
 import { findProjectConfig } from './discovery.js'
 
@@ -19,25 +21,73 @@ async function writeJson(filePath: string, data: unknown): Promise<void> {
   await fs.writeFile(filePath, JSON.stringify(data, null, 2))
 }
 
+/**
+ * Migrate legacy mappings array to volumeMappings map format
+ * @param legacyMappings - Array of FolderMapping (old format)
+ * @returns VolumeMappingsCollection (new simple format)
+ */
+function migrateLegacyMappings(legacyMappings: FolderMapping[]): VolumeMappingsCollection {
+  const result: VolumeMappingsCollection = {}
+
+  for (const mapping of legacyMappings) {
+    const targetPath = mapping.targetPath ?? mapping.sourcePath
+    const mode = mapping.mode !== 'rw' ? `:${mapping.mode}` : ''
+    result[mapping.sourcePath] = `${targetPath}${mode}`
+  }
+
+  return result
+}
+
+/**
+ * Emit deprecation warning for legacy mappings format
+ * @param configPath - Path to config file using legacy format
+ */
+function warnLegacyMappings(configPath: string): void {
+  console.warn(
+    `DEPRECATION: ${configPath} uses legacy "mappings" array format. ` +
+      `Please migrate to "volumeMappings" object format. ` +
+      `Auto-migration will occur on next config write.`
+  )
+}
+
 export async function readProjectConfig(configPath: string): Promise<ProjectConfig> {
   const data = await readJson(configPath)
-  return ProjectConfigSchema.parse(data)
+  const config = ProjectConfigSchema.parse(data)
+
+  // Detect legacy format and warn
+  if (config.mappings && Array.isArray(config.mappings)) {
+    warnLegacyMappings(configPath)
+  }
+
+  return config
 }
 
 export async function writeProjectConfig(configPath: string, config: ProjectConfig): Promise<void> {
+  let finalConfig = { ...config }
+
+  // Migration: Convert legacy mappings to volumeMappings on write
+  if (finalConfig.mappings && Array.isArray(finalConfig.mappings)) {
+    const migratedMappings = migrateLegacyMappings(finalConfig.mappings)
+
+    // Merge with existing volumeMappings (if any)
+    finalConfig.volumeMappings = {
+      ...migratedMappings,
+      ...(finalConfig.volumeMappings ?? {}),
+    }
+
+    // Remove legacy field
+    delete finalConfig.mappings
+  }
+
   const normalized: ProjectConfig = {
-    ...config,
-    imageProfile: config.imageProfile || undefined,
-    imageReference: config.imageReference || undefined,
-    envMappings: config.envMappings?.map((entry) => ({
+    ...finalConfig,
+    imageProfile: finalConfig.imageProfile || undefined,
+    imageReference: finalConfig.imageReference || undefined,
+    envMappings: finalConfig.envMappings?.map((entry) => ({
       key: entry.key,
       value: entry.value,
     })),
-    mappings: config.mappings?.map((mapping) => ({
-      ...mapping,
-      targetPath: mapping.targetPath || mapping.sourcePath,
-      label: mapping.label || undefined,
-    })),
+    volumeMappings: finalConfig.volumeMappings,
   }
 
   await writeJson(configPath, ProjectConfigSchema.parse(normalized))
@@ -46,7 +96,14 @@ export async function writeProjectConfig(configPath: string, config: ProjectConf
 export async function readGlobalConfig(): Promise<GlobalConfig | null> {
   try {
     const data = await readJson(GLOBAL_CONFIG_PATH)
-    return GlobalConfigSchema.parse(data)
+    const config = GlobalConfigSchema.parse(data)
+
+    // Detect legacy format and warn
+    if (config.defaultMappings && Array.isArray(config.defaultMappings)) {
+      warnLegacyMappings(GLOBAL_CONFIG_PATH)
+    }
+
+    return config
   } catch (err) {
     if ((err as NodeJS.ErrnoException).code === 'ENOENT') return null
     throw err
@@ -54,13 +111,31 @@ export async function readGlobalConfig(): Promise<GlobalConfig | null> {
 }
 
 export async function writeGlobalConfig(config: GlobalConfig): Promise<void> {
+  let finalConfig = { ...config }
+
+  // Migration: Convert legacy defaultMappings to volumeMappings on write
+  if (finalConfig.defaultMappings && Array.isArray(finalConfig.defaultMappings)) {
+    const migratedMappings = migrateLegacyMappings(finalConfig.defaultMappings)
+
+    // Merge with existing volumeMappings (if any)
+    finalConfig.volumeMappings = {
+      ...migratedMappings,
+      ...(finalConfig.volumeMappings ?? {}),
+    }
+
+    // Remove legacy field
+    delete finalConfig.defaultMappings
+  }
+
   const normalized: GlobalConfig = {
-    ...config,
-    envMappings: config.envMappings?.map((entry) => ({
+    ...finalConfig,
+    envMappings: finalConfig.envMappings?.map((entry) => ({
       key: entry.key,
       value: entry.value,
     })),
+    volumeMappings: finalConfig.volumeMappings,
   }
+
   await writeJson(GLOBAL_CONFIG_PATH, GlobalConfigSchema.parse(normalized))
 }
 

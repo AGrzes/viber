@@ -6,6 +6,7 @@ import {
   ResolvedConfigSchema,
   type FolderMapping,
   type ResolvedConfig,
+  type VolumeMappingsCollection,
 } from './schema.js'
 import { readGlobalConfig, readProjectConfig, getGlobalConfigPath } from './store.js'
 import { WORKDIR } from '../utils/paths.js'
@@ -19,6 +20,45 @@ function implicitMapping(cwd: string): FolderMapping {
   })
 }
 
+/**
+ * Merge global and project volume mappings
+ * Project mappings override global for matching keys
+ */
+function mergeVolumeMappings(
+  globalMappings: VolumeMappingsCollection | undefined,
+  projectMappings: VolumeMappingsCollection | undefined
+): VolumeMappingsCollection {
+  return {
+    ...(globalMappings ?? {}),
+    ...(projectMappings ?? {}),
+  }
+}
+
+/**
+ * Convert volumeMappings map to FolderMapping array
+ *
+ * Format: { "volumeName": "/target" } or { "volumeName": "/target:ro" }
+ *         { "/source": "/target" } for bind mounts
+ *
+ * Key: volumeName (no /) OR sourcePath (starts with /)
+ * Value: targetPath OR targetPath:mode
+ */
+function volumeMappingsToArray(mappings: VolumeMappingsCollection): FolderMapping[] {
+  return Object.entries(mappings).map(([key, value]) => {
+    // Parse value: "targetPath" or "targetPath:mode"
+    const [targetPath, mode = 'rw'] = value.split(':') as [string, 'rw' | 'ro' | undefined]
+
+    // Key starts with / = bind mount, otherwise = named volume
+    const sourcePath = key
+
+    return {
+      sourcePath,
+      targetPath: targetPath || sourcePath,
+      mode: mode || 'rw',
+    }
+  })
+}
+
 export async function resolveConfig(cwd: string): Promise<ResolvedConfig> {
   const absoluteCwd = path.resolve(cwd)
   const projectConfigPath = findProjectConfig(absoluteCwd)
@@ -29,12 +69,23 @@ export async function resolveConfig(cwd: string): Promise<ResolvedConfig> {
   const projectEnvMappings = project?.envMappings
   const globalEnvMappings = globalConfig?.envMappings
 
-  const effectiveMappings =
+  // Legacy mappings: preserve existing behavior
+  // If project.mappings exists, use it; else use defaultMappings; else use implicit workdir
+  const legacyMappings =
     project?.mappings && project.mappings.length > 0
       ? project.mappings
       : globalConfig?.defaultMappings && globalConfig.defaultMappings.length > 0
         ? globalConfig.defaultMappings
         : [implicitMapping(absoluteCwd)]
+
+  // New volumeMappings: merge global and project, convert to array
+  const mergedVolumeMappings = mergeVolumeMappings(globalConfig?.volumeMappings, project?.volumeMappings)
+  const volumeMappingsArray =
+    Object.keys(mergedVolumeMappings).length > 0 ? volumeMappingsToArray(mergedVolumeMappings) : []
+
+  // Combine: legacy mappings (or workdir) + volumeMappings
+  // volumeMappings extend (don't replace) default behavior
+  const effectiveMappings = [...legacyMappings, ...volumeMappingsArray]
 
   const defaultProfileName = globalConfig?.defaultImageProfile ?? DEFAULT_PROFILE_NAME
   let imageProfile: string | undefined = project?.imageProfile

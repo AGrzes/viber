@@ -15,6 +15,16 @@ export const FolderMappingSchema = z.object({
   label: z.string().optional(),
 })
 
+/**
+ * VolumeMappingsCollection: Simple map of volume/path to target
+ * Format: { "volumeName": "/target/path" } or { "volumeName": "/target:ro" }
+ *         { "/source/path": "/target/path" } for bind mounts
+ *
+ * Key: volumeName (no leading /) OR sourcePath (starts with /)
+ * Value: targetPath OR targetPath:mode (mode = rw|ro, default: rw)
+ */
+export const VolumeMappingsCollectionSchema = z.record(z.string().min(1), z.string().min(1))
+
 export const ImageProfileSchema = z.object({
   name: z.string().min(1),
   baseImageRef: z.string().min(1),
@@ -38,7 +48,8 @@ export const ProjectConfigSchema = z
     agents: z.string().nullable().optional(),
     agentsRef: z.string().optional(),
     envMappings: z.array(EnvMappingEntrySchema).optional(),
-    mappings: z.array(FolderMappingSchema).optional(),
+    mappings: z.array(FolderMappingSchema).optional(), // @deprecated - use volumeMappings
+    volumeMappings: VolumeMappingsCollectionSchema.optional(),
     imageProfile: z.string().optional(),
     imageReference: z.string().optional(),
     skillsPalette: z.string().optional(),
@@ -54,7 +65,8 @@ export const GlobalConfigSchema = z.object({
   agents: z.record(z.string()).optional(),
   envMappings: z.array(EnvMappingEntrySchema).optional(),
   defaultImageProfile: z.string().optional(),
-  defaultMappings: z.array(FolderMappingSchema).optional(),
+  defaultMappings: z.array(FolderMappingSchema).optional(), // @deprecated - use volumeMappings
+  volumeMappings: VolumeMappingsCollectionSchema.optional(),
   imageProfiles: z.array(ImageProfileSchema).optional(),
   skillsPalettes: z.array(SkillsPaletteSchema).optional(),
 })
@@ -76,6 +88,7 @@ export const ResolvedConfigSchema = z.object({
 })
 
 export type FolderMapping = z.infer<typeof FolderMappingSchema>
+export type VolumeMappingsCollection = z.infer<typeof VolumeMappingsCollectionSchema>
 export type EnvMappingEntry = z.infer<typeof EnvMappingEntrySchema>
 export type ImageProfile = z.infer<typeof ImageProfileSchema>
 export type SkillsPalette = z.infer<typeof SkillsPaletteSchema>

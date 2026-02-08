@@ -4,7 +4,7 @@ Use concept of profile
 - May inherit from other profiles
 - Inheritance is done by deep merge in order of inherited profiles then current profile configuration
 Assume
-- Global configuration defines default profile and zero or more named profiles
+- Global configuration defines a profiles object with a special `default` profile plus zero or more named profiles
 - Project configuration may either inherit from default profile, a list of profiles (including default) or empty list (no inheritance)
 Express all configuration in terms of profiles
 

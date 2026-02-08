@@ -15,6 +15,40 @@ export const FolderMappingSchema = z.object({
   label: z.string().optional(),
 })
 
+/**
+ * VolumeMapping: Represents a single mount configuration
+ * Can be either a named volume (volumeName) or bind mount (sourcePath)
+ * @property volumeName - Named volume identifier (managed by container runtime)
+ * @property sourcePath - Host path for bind mounts
+ * @property targetPath - Container mount point (serves as unique key)
+ * @property mode - Read-write ('rw') or read-only ('ro')
+ * @property label - Optional human-readable description
+ */
+export const VolumeMappingSchema = z
+  .object({
+    volumeName: z.string().min(1).optional(),
+    sourcePath: z.string().min(1).optional(),
+    targetPath: z.string().min(1),
+    mode: z.enum(['rw', 'ro']),
+    label: z.string().optional(),
+  })
+  .refine(
+    (data) =>
+      (data.volumeName && !data.sourcePath) || (!data.volumeName && data.sourcePath),
+    {
+      message: 'Must specify either volumeName or sourcePath, not both',
+    }
+  )
+
+/**
+ * VolumeMappingsCollection: Map of volume mappings keyed by target path
+ * Enables simple merge strategy: { ...global, ...project }
+ */
+export const VolumeMappingsCollectionSchema = z.record(
+  z.string().min(1),
+  VolumeMappingSchema
+)
+
 export const ImageProfileSchema = z.object({
   name: z.string().min(1),
   baseImageRef: z.string().min(1),
@@ -38,7 +72,8 @@ export const ProjectConfigSchema = z
     agents: z.string().nullable().optional(),
     agentsRef: z.string().optional(),
     envMappings: z.array(EnvMappingEntrySchema).optional(),
-    mappings: z.array(FolderMappingSchema).optional(),
+    mappings: z.array(FolderMappingSchema).optional(), // @deprecated - use volumeMappings
+    volumeMappings: VolumeMappingsCollectionSchema.optional(),
     imageProfile: z.string().optional(),
     imageReference: z.string().optional(),
     skillsPalette: z.string().optional(),
@@ -54,7 +89,8 @@ export const GlobalConfigSchema = z.object({
   agents: z.record(z.string()).optional(),
   envMappings: z.array(EnvMappingEntrySchema).optional(),
   defaultImageProfile: z.string().optional(),
-  defaultMappings: z.array(FolderMappingSchema).optional(),
+  defaultMappings: z.array(FolderMappingSchema).optional(), // @deprecated - use volumeMappings
+  volumeMappings: VolumeMappingsCollectionSchema.optional(),
   imageProfiles: z.array(ImageProfileSchema).optional(),
   skillsPalettes: z.array(SkillsPaletteSchema).optional(),
 })
@@ -76,6 +112,8 @@ export const ResolvedConfigSchema = z.object({
 })
 
 export type FolderMapping = z.infer<typeof FolderMappingSchema>
+export type VolumeMapping = z.infer<typeof VolumeMappingSchema>
+export type VolumeMappingsCollection = z.infer<typeof VolumeMappingsCollectionSchema>
 export type EnvMappingEntry = z.infer<typeof EnvMappingEntrySchema>
 export type ImageProfile = z.infer<typeof ImageProfileSchema>
 export type SkillsPalette = z.infer<typeof SkillsPaletteSchema>

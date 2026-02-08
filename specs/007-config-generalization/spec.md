@@ -65,4 +65,5 @@ Clarifications (iterative)
 - No new env substitution behavior is added beyond existing template path handling.
 - Keep resolved-config debug logging (only when debug logging is enabled).
 - `env` values support host-env interpolation after config merge/resolution (same behavior as prior env mappings).
+- For `volumes`, keep current behavior: no extra validation. Relative paths like `./something` are allowed; absolute paths like `/something` are allowed; bare names like `something` are treated as named volumes. Ambiguous values like `something/else` are passed through to Podman (let it decide).
 - `volumes` keeps the current simple map shape: `sourceOrVolumeName -> "target[:mode]"`.

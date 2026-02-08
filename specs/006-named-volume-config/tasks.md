@@ -24,10 +24,10 @@
 
 **Purpose**: Project initialization and basic structure (already complete - TypeScript project exists)
 
-- [ ] T001 Verify TypeScript and Node.js 20 environment ready in cli/
-- [ ] T002 Verify Zod dependency available in cli/package.json
-- [ ] T003 [P] Verify Vitest test framework configured in cli/package.json
-- [ ] T004 Create test directory structure: cli/tests/unit/config/
+- [X] T001 Verify TypeScript and Node.js 20 environment ready in cli/
+- [X] T002 Verify Zod dependency available in cli/package.json
+- [X] T003 [P] Verify Vitest test framework configured in cli/package.json
+- [X] T004 Create test directory structure: cli/tests/unit/config/
 
 ---
 
@@ -37,11 +37,11 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T005 Create VolumeMappingSchema in cli/src/lib/config/schema.ts with volumeName/sourcePath/targetPath/mode fields
-- [ ] T006 [P] Create VolumeMappingsCollectionSchema (Record<string, VolumeMapping>) in cli/src/lib/config/schema.ts
-- [ ] T007 Add optional volumeMappings field to ProjectConfigSchema in cli/src/lib/config/schema.ts
-- [ ] T008 [P] Add optional volumeMappings field to GlobalConfigSchema in cli/src/lib/config/schema.ts
-- [ ] T009 Keep legacy mappings/defaultMappings fields as optional (deprecated) in schemas
+- [X] T005 Create VolumeMappingSchema in cli/src/lib/config/schema.ts with volumeName/sourcePath/targetPath/mode fields
+- [X] T006 [P] Create VolumeMappingsCollectionSchema (Record<string, VolumeMapping>) in cli/src/lib/config/schema.ts
+- [X] T007 Add optional volumeMappings field to ProjectConfigSchema in cli/src/lib/config/schema.ts
+- [X] T008 [P] Add optional volumeMappings field to GlobalConfigSchema in cli/src/lib/config/schema.ts
+- [X] T009 Keep legacy mappings/defaultMappings fields as optional (deprecated) in schemas
 
 **Checkpoint**: Foundation ready - schemas defined, all user stories can now begin implementation
 

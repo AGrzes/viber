@@ -39,3 +39,4 @@ Clarifications (iterative)
   - `envMappings` -> `env`
   - `volumeMappings` -> `volumes`
   - `templates` remains `templates`
+- `env` values are strings only.

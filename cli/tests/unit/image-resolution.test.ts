@@ -1,18 +1,18 @@
 import { describe, expect, it, vi } from 'vitest'
-import { runSession } from '../../src/services/session.js'
-import { WORKDIR } from '../../src/lib/utils/paths.js'
-import type { ResolvedConfig } from '../../src/lib/config/schema.js'
-
-const mockResolveConfig = vi.fn()
-const mockRunPodman = vi.fn().mockResolvedValue(0)
 
 vi.mock('../../src/lib/config/resolver.js', () => ({
-  resolveConfig: mockResolveConfig,
+  resolveConfig: vi.fn(),
 }))
 
 vi.mock('../../src/lib/podman/runner.js', () => ({
-  runPodman: mockRunPodman,
+  runPodman: vi.fn().mockResolvedValue(0),
 }))
+
+import { resolveConfig } from '../../src/lib/config/resolver.js'
+import { runPodman } from '../../src/lib/podman/runner.js'
+import { runSession } from '../../src/services/session.js'
+import { WORKDIR } from '../../src/lib/utils/paths.js'
+import type { ResolvedConfig } from '../../src/lib/config/schema.js'
 
 function makeResolved(profileOverrides: Partial<ResolvedConfig['profile']>): ResolvedConfig {
   return {
@@ -33,7 +33,7 @@ function makeResolved(profileOverrides: Partial<ResolvedConfig['profile']>): Res
 
 describe('image resolution', () => {
   it('fails when no image is set', async () => {
-    mockResolveConfig.mockResolvedValueOnce(makeResolved({}))
+    vi.mocked(resolveConfig).mockResolvedValueOnce(makeResolved({}))
 
     await expect(
       runSession({
@@ -43,14 +43,14 @@ describe('image resolution', () => {
   })
 
   it('overrides image when --image is provided', async () => {
-    mockResolveConfig.mockResolvedValueOnce(makeResolved({ image: 'base:latest' }))
+    vi.mocked(resolveConfig).mockResolvedValueOnce(makeResolved({ image: 'base:latest' }))
 
     await runSession({
       cwd: process.cwd(),
       image: 'override:latest',
     })
 
-    expect(mockRunPodman).toHaveBeenCalledWith(
+    expect(runPodman).toHaveBeenCalledWith(
       expect.objectContaining({
         imageRef: 'override:latest',
       })

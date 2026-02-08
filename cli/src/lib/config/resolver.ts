@@ -8,9 +8,11 @@ import {
   type Profile,
   type ProfileInput,
   type ResolvedConfig,
+  type TemplateMap,
   type TemplateMapInput,
   type VolumeMap,
 } from './schema.js'
+import { TemplateDefinitionSchema } from '../templates/types.js'
 import { readGlobalConfig, readProjectConfig, getGlobalConfigPath } from './store.js'
 import { WORKDIR } from '../utils/paths.js'
 import { CliError } from '../utils/errors.js'
@@ -119,12 +121,22 @@ function pruneNullEntries<T extends Record<string, unknown>>(input: T | undefine
   return Object.keys(result).length > 0 ? (result as T) : undefined
 }
 
+function normalizeTemplates(templates: TemplateMapInput | undefined): TemplateMap | undefined {
+  const pruned = pruneNullEntries(templates as Record<string, unknown> | undefined)
+  if (!pruned) return undefined
+  const normalized: TemplateMap = {}
+  for (const [name, definition] of Object.entries(pruned)) {
+    normalized[name] = TemplateDefinitionSchema.parse(definition)
+  }
+  return normalized
+}
+
 function normalizeProfile(profile: ProfileInput): Profile {
   return {
     image: profile.image,
     env: pruneNullEntries(profile.env as Record<string, unknown> | undefined) as Record<string, string> | undefined,
     volumes: pruneNullEntries(profile.volumes as VolumeMap | undefined),
-    templates: pruneNullEntries(profile.templates as TemplateMapInput | undefined),
+    templates: normalizeTemplates(profile.templates),
   }
 }
 

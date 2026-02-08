@@ -7,6 +7,7 @@ import { getHostIdentity } from '../lib/utils/identity.js'
 import { WORKDIR } from '../lib/utils/paths.js'
 import { buildSessionEnv } from './sessionEnv.js'
 import { ProfileSchema, type FolderMapping, type Profile } from '../lib/config/schema.js'
+import { TemplateDefinitionSchema } from '../lib/templates/types.js'
 import { processTemplates } from '../lib/templates/processor.js'
 
 export type SessionOptions = {
@@ -65,14 +66,21 @@ function pruneNullEntries<T extends Record<string, unknown>>(input?: T): T | und
 }
 
 function normalizeProfile(profile: Profile): Profile {
+  const templates = pruneNullEntries(profile.templates as Record<string, unknown> | undefined)
+  const normalizedTemplates: Record<string, unknown> | undefined = templates
+    ? Object.fromEntries(
+        Object.entries(templates).map(([name, definition]) => [name, TemplateDefinitionSchema.parse(definition)])
+      )
+    : undefined
+
   return {
     image: profile.image,
     env: pruneNullEntries(profile.env as Record<string, unknown> | undefined) as Record<string, string> | undefined,
     volumes: pruneNullEntries(profile.volumes as Record<string, unknown> | undefined) as
       | Record<string, string>
       | undefined,
-    templates: pruneNullEntries(profile.templates as Record<string, unknown> | undefined) as
-      | Record<string, { path: string; template: string; parameters?: Record<string, unknown> }>
+    templates: normalizedTemplates as
+      | Record<string, { path: string; template: string; parameters: Record<string, unknown> }>
       | undefined,
   }
 }

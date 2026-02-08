@@ -46,6 +46,7 @@ Clarifications (iterative)
 - The final resolved config is a single merged object; source provenance is not preserved.
 - `skillsPalette` / `skillsPalettes` are dropped; note in README that this can be implemented via templates (skills as files).
 - This is a hard break: no backward-compatibility or auto-migration. Invalid configs fail loudly.
+- `networkPolicy` is dropped.
 - `viber config` creates only a project config as an empty JSON object by default.
 - `viber config --profile <name>` creates/updates the project config to set `inherit: [<name>]`.
 - `viber config --profile <name>` validates that the named global profile exists.

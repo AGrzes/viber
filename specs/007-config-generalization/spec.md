@@ -63,4 +63,5 @@ Clarifications (iterative)
 - `env` values are strings only.
 - `image` must be a non-empty string; empty values are invalid.
 - No new env substitution behavior is added beyond existing template path handling.
+- Keep resolved-config debug logging (only when debug logging is enabled).
 - `volumes` keeps the current simple map shape: `sourceOrVolumeName -> "target[:mode]"`.

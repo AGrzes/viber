@@ -38,6 +38,6 @@ Clarifications (iterative)
   - `imageReference` -> `image`
   - `envMappings` -> `env`
   - `volumeMappings` -> `volumes`
-  - `templates` remains `templates`
+  - `templates` becomes a map keyed by template name (name moves to key)
 - `env` values are strings only.
 - `volumes` keeps the current simple map shape: `sourceOrVolumeName -> "target[:mode]"`.

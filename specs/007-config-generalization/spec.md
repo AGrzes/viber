@@ -13,6 +13,7 @@ Project configuration shape: the project config file itself is the current profi
 - Inheritance cycles are not allowed; detect and throw a hard error during config load/merge.
 - Referencing a non-existent global profile name in `inherit` is a hard error.
 - `inherit` is a control field and is stripped before merge; it does not appear in resolved profiles.
+- No special interpolation or project-specific substitution occurs during profile merge; resolve the final config first, then pass to runtime.
 
 Clarifications (iterative)
 - The default workdir mount is applied in post-processing and is not expressed in profiles.

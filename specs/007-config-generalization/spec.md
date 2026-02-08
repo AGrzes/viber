@@ -18,6 +18,7 @@ Clarifications (iterative)
 - If inheritance is explicitly disabled (empty list), then all mandatory configuration (including image reference) must be defined locally; otherwise configuration is invalid.
 - If `inherit` is omitted in a project config, it defaults to `[default]`. Explicit no-inheritance is `inherit: []`.
 - If `inherit` is omitted and no global `default` profile exists, treat it as no inheritance (no error).
+- Global profiles support the same inheritance behavior as project profiles, including defaulting to `[default]` when `inherit` is omitted (unless no `default` exists).
 - Arrays are not merged. The most specific profile overrides inherited arrays.
 - When merge semantics are desired, prefer associative maps/objects instead of arrays (e.g., `env: { A: B }` rather than `env: [{ key: "A", value: "B" }]`).
 - Deletions in inherited maps use explicit `null` values (e.g., `env: { B: null }` removes `B`).

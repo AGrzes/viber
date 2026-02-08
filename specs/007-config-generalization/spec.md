@@ -71,4 +71,6 @@ Clarifications (iterative)
 - Remove special-case `CODEX_HOME` handling; document in README how to set it via `env` if needed.
 - Do not add config path env vars; this is not present in current implementation.
 - Remove special-case `/codex` handling; document in README how to achieve equivalent behavior via `volumes`, `env`, and `templates` in global profiles.
+- Keep `viber run --image` override.
+- `viber run --profile <name>` is repeatable and replaces the project config `inherit` list for that run.
 - `volumes` keeps the current simple map shape: `sourceOrVolumeName -> "target[:mode]"`.

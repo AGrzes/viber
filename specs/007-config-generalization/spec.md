@@ -12,3 +12,5 @@ Clarifications (iterative)
 - The default workdir mount is applied in post-processing and is not expressed in profiles.
 - There is no separate "image profile" concept. A profile that defines an image reference is the image selection.
 - If inheritance is explicitly disabled (empty list), then all mandatory configuration (including image reference) must be defined locally; otherwise configuration is invalid.
+- Arrays are not merged. The most specific profile overrides inherited arrays.
+- When merge semantics are desired, prefer associative maps/objects instead of arrays (e.g., `env: { A: B }` rather than `env: [{ key: "A", value: "B" }]`).

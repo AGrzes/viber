@@ -40,3 +40,4 @@ Clarifications (iterative)
   - `volumeMappings` -> `volumes`
   - `templates` remains `templates`
 - `env` values are strings only.
+- `volumes` keeps the current simple map shape: `sourceOrVolumeName -> "target[:mode]"`.

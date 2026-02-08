@@ -35,6 +35,7 @@ Clarifications (iterative)
 - Document in README how to configure AGENTS.md using templates.
 - Keep a unit test that validates AGENTS.md generation via templates.
 - CLI suppression changes: `--suppress` accepts dot-paths like `templates.<name>` and nulls the targeted config key for that run.
+- `--suppress` can be repeated. Suppressing a missing path is a command parsing error.
 - Field renames for profile-shaped config:
   - `imageReference` -> `image`
   - `envMappings` -> `env`

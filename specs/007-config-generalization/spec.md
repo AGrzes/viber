@@ -41,5 +41,6 @@ Clarifications (iterative)
 - `templates` becomes a map keyed by template name (name moves to key)
 - Template `parameters` remain objects and are deep-merged across inheritance.
 - Setting a template entry to `null` deletes/suppresses that template.
+- Only the final resolved templates must be valid; intermediate inherited shapes may be partial.
 - `env` values are strings only.
 - `volumes` keeps the current simple map shape: `sourceOrVolumeName -> "target[:mode]"`.

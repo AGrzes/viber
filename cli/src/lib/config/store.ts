@@ -24,19 +24,15 @@ async function writeJson(filePath: string, data: unknown): Promise<void> {
 /**
  * Migrate legacy mappings array to volumeMappings map format
  * @param legacyMappings - Array of FolderMapping (old format)
- * @returns VolumeMappingsCollection (new map format)
+ * @returns VolumeMappingsCollection (new simple format)
  */
 function migrateLegacyMappings(legacyMappings: FolderMapping[]): VolumeMappingsCollection {
   const result: VolumeMappingsCollection = {}
 
   for (const mapping of legacyMappings) {
     const targetPath = mapping.targetPath ?? mapping.sourcePath
-    result[targetPath] = {
-      sourcePath: mapping.sourcePath,
-      targetPath,
-      mode: mapping.mode,
-      label: mapping.label,
-    }
+    const mode = mapping.mode !== 'rw' ? `:${mapping.mode}` : ''
+    result[mapping.sourcePath] = `${targetPath}${mode}`
   }
 
   return result

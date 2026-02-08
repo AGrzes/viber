@@ -22,7 +22,7 @@ function implicitMapping(cwd: string): FolderMapping {
 
 /**
  * Merge global and project volume mappings
- * Project mappings override global for matching target paths
+ * Project mappings override global for matching keys
  */
 function mergeVolumeMappings(
   globalMappings: VolumeMappingsCollection | undefined,
@@ -36,15 +36,27 @@ function mergeVolumeMappings(
 
 /**
  * Convert volumeMappings map to FolderMapping array
- * Named volumes use volumeName, bind mounts use sourcePath
+ *
+ * Format: { "volumeName": "/target" } or { "volumeName": "/target:ro" }
+ *         { "/source": "/target" } for bind mounts
+ *
+ * Key: volumeName (no /) OR sourcePath (starts with /)
+ * Value: targetPath OR targetPath:mode
  */
 function volumeMappingsToArray(mappings: VolumeMappingsCollection): FolderMapping[] {
-  return Object.values(mappings).map((m) => ({
-    sourcePath: m.volumeName ?? m.sourcePath!,
-    targetPath: m.targetPath,
-    mode: m.mode,
-    label: m.label,
-  }))
+  return Object.entries(mappings).map(([key, value]) => {
+    // Parse value: "targetPath" or "targetPath:mode"
+    const [targetPath, mode = 'rw'] = value.split(':') as [string, 'rw' | 'ro' | undefined]
+
+    // Key starts with / = bind mount, otherwise = named volume
+    const sourcePath = key
+
+    return {
+      sourcePath,
+      targetPath: targetPath || sourcePath,
+      mode: mode || 'rw',
+    }
+  })
 }
 
 export async function resolveConfig(cwd: string): Promise<ResolvedConfig> {

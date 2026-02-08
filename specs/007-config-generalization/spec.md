@@ -9,6 +9,7 @@ Assume
 Express all configuration in terms of profiles
 Project configuration shape: the project config file itself is the current profile object with an optional `inherit` field.
 `inherit` supports only global profile names. Project configs do not define inline inherited profiles.
+- Inheritance cycles are not allowed; detect and throw a hard error during config load/merge.
 
 Clarifications (iterative)
 - The default workdir mount is applied in post-processing and is not expressed in profiles.

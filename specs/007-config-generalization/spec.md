@@ -41,6 +41,7 @@ Clarifications (iterative)
 - Add `viber config path [-g, --global]` to print the local/global config path for manual editing.
 - `viber config` creates only a project config as an empty JSON object by default.
 - `viber config --profile <name>` creates/updates the project config to set `inherit: [<name>]`.
+- `viber config --profile <name>` validates that the named global profile exists.
 - Field renames for profile-shaped config:
   - `imageReference` -> `image`
   - `envMappings` -> `env`

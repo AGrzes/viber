@@ -14,6 +14,7 @@ import { TemplateDefinitionSchema } from '../templates/types.js'
 import { readGlobalConfig, readProjectConfig, getGlobalConfigPath } from './store.js'
 import { CliError } from '../utils/errors.js'
 import { mergeObjects, pruneNullEntries } from '../utils/objects.js'
+import { findProfileByName } from './profiles.js'
 
 function stripInherit(profile: ProfileInput): Omit<ProfileInput, 'inherit'> {
   const { inherit: _inherit, ...rest } = profile
@@ -30,15 +31,12 @@ function resolveInheritList(profile: ProfileInput, hasDefault: boolean, isDefaul
   return []
 }
 
-function resolveGlobalProfile(
+async function resolveGlobalProfile(
   name: string,
   profiles: Record<string, ProfileInput>,
   stack: string[] = []
-): ProfileInput {
-  const profile = profiles[name]
-  if (!profile) {
-    throw new CliError(`Profile not found: ${name}`)
-  }
+): Promise<ProfileInput> {
+  const profile = await findProfileByName(name, profiles)
 
   if (stack.includes(name)) {
     throw new CliError(`Profile inheritance cycle detected: ${[...stack, name].join(' -> ')}`)
@@ -51,7 +49,7 @@ function resolveGlobalProfile(
   let merged: Record<string, unknown> = {}
 
   for (const inheritName of inheritList) {
-    const resolved = resolveGlobalProfile(inheritName, profiles, nextStack)
+    const resolved = await resolveGlobalProfile(inheritName, profiles, nextStack)
     merged = mergeObjects(merged, stripInherit(resolved))
   }
 
@@ -60,15 +58,15 @@ function resolveGlobalProfile(
   return merged as ProfileInput
 }
 
-function resolveProfileFromList(
+async function resolveProfileFromList(
   inheritList: string[],
   profiles: Record<string, ProfileInput>,
   baseProfile: ProfileInput
-): ProfileInput {
+): Promise<ProfileInput> {
   let merged: Record<string, unknown> = {}
 
   for (const inheritName of inheritList) {
-    const resolved = resolveGlobalProfile(inheritName, profiles)
+    const resolved = await resolveGlobalProfile(inheritName, profiles)
     merged = mergeObjects(merged, stripInherit(resolved))
   }
 
@@ -115,7 +113,7 @@ export async function resolveConfig(cwd: string, options: ResolveConfigOptions =
     : resolveInheritList(project ?? {}, hasDefault, false)
 
   const baseProfile = project ?? {}
-  const mergedProfileInput = resolveProfileFromList(inheritList, profiles, baseProfile)
+  const mergedProfileInput = await resolveProfileFromList(inheritList, profiles, baseProfile)
   const mergedProfile = normalizeProfile(mergedProfileInput)
 
   return ResolvedConfigSchema.parse({

@@ -1,0 +1,6 @@
+{
+  "image": "codex:latest",
+  "env": {
+    "FROM": "provided"
+  }
+}

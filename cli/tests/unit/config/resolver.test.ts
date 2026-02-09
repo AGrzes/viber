@@ -133,6 +133,38 @@ describe('resolveConfig', () => {
     await expect(resolveConfig(cwd)).rejects.toThrow(/profile not found/i)
   })
 
+  it('loads provided profiles via schema references', async () => {
+    vi.mocked(findProjectConfig).mockReturnValue('/tmp/project/.viber.json')
+    vi.mocked(getGlobalConfigPath).mockReturnValue('/home/user/.viber/config.json')
+
+    mockProject({ inherit: ['provided:codex'] })
+    mockGlobal({ profiles: {} })
+
+    const resolved = await resolveConfig(cwd)
+    expect(resolved.profile.image).toBe('codex:latest')
+    expect(resolved.profile.env).toEqual({ FROM: 'provided' })
+  })
+
+  it('errors on unknown profile schemas', async () => {
+    vi.mocked(findProjectConfig).mockReturnValue('/tmp/project/.viber.json')
+    vi.mocked(getGlobalConfigPath).mockReturnValue('/home/user/.viber/config.json')
+
+    mockProject({ inherit: ['unknown:thing'] })
+    mockGlobal({ profiles: {} })
+
+    await expect(resolveConfig(cwd)).rejects.toThrow(/unknown profile schema/i)
+  })
+
+  it('errors when provided profile files are missing', async () => {
+    vi.mocked(findProjectConfig).mockReturnValue('/tmp/project/.viber.json')
+    vi.mocked(getGlobalConfigPath).mockReturnValue('/home/user/.viber/config.json')
+
+    mockProject({ inherit: ['provided:missing-profile'] })
+    mockGlobal({ profiles: {} })
+
+    await expect(resolveConfig(cwd)).rejects.toThrow(/failed to load provided profile/i)
+  })
+
   it('errors on inheritance cycles', async () => {
     vi.mocked(findProjectConfig).mockReturnValue('/tmp/project/.viber.json')
     vi.mocked(getGlobalConfigPath).mockReturnValue('/home/user/.viber/config.json')

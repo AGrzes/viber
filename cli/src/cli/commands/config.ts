@@ -3,6 +3,7 @@ import fs from 'node:fs'
 import { Command } from 'commander'
 import { findProjectConfig } from '../../lib/config/discovery.js'
 import { PROJECT_CONFIG_NAME } from '../../lib/config/schema.js'
+import { findProfileByName } from '../../lib/config/profiles.js'
 import { getGlobalConfigPath, readGlobalConfig, writeGlobalConfig, writeProjectConfig } from '../../lib/config/store.js'
 import { CliError, getErrorMessage } from '../../lib/utils/errors.js'
 
@@ -60,9 +61,8 @@ export function registerConfigCommand(program: Command): void {
 
       if (options.profile) {
         const global = await readGlobalConfig()
-        if (!global || !global.profiles?.[options.profile]) {
-          throw new CliError(`Profile not found: ${options.profile}`)
-        }
+        const profiles = global?.profiles ?? {}
+        await findProfileByName(options.profile, profiles)
         await writeProjectConfig(configPath, { inherit: [options.profile] })
         return
       }

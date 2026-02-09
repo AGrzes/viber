@@ -145,8 +145,12 @@ describe('resolveConfig', () => {
     mockGlobal({ profiles: {} })
 
     const resolved = await resolveConfig(cwd)
-    expect(resolved.profile.image).toBe('codex:latest')
-    expect(resolved.profile.env).toEqual({ FROM: 'provided' })
+    expect(resolved.profile.env).toEqual({
+      CODEX_HOME: '/codex',
+    })
+    expect(resolved.profile.volumes).toEqual({
+      "{{env 'HOME'}}/.codex/auth.json": '/codex/auth.json:ro',
+    })
   })
 
   it('errors on unknown profile schemas', async () => {

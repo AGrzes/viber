@@ -76,6 +76,8 @@ Templating is applied after profile resolution and before validation. Use the he
 
 The helper reads from `process.env`. If `NAME` is unset, the optional default value is used (otherwise empty string).
 
+Use `{{json value}}` to emit JSON-encoded literals (strings quoted, numbers/booleans unquoted).
+
 ## Templates
 
 `templates` is a map keyed by template name.

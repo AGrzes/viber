@@ -51,6 +51,7 @@ function buildHandlebars(): typeof Handlebars {
     const value = name ? process.env[name] : undefined
     return value ?? fallback ?? ''
   })
+  instance.registerHelper('json', (value: unknown) => new Handlebars.SafeString(JSON.stringify(value)))
   return instance
 }
 

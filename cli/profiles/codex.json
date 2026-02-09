@@ -9,7 +9,7 @@
   "templates": {
     "config": {
       "path": "/codex/config.toml",
-      "template": "{{#if global}}\n{{#each global}}\n{{@key}} = \"{{this}}\"\n{{/each}}\n{{/if}}\n\n{{#if section}}\n{{#each section}}\n[{{@key}}]\n{{#each this}}\n{{@key}} = \"{{this}}\"\n{{/each}}\n\n{{/each}}\n{{/if}}\n",
+      "template": "{{#if global}}\n{{#each global}}\n{{@key}} = {{json this}}\n{{/each}}\n{{/if}}\n\n{{#if section}}\n{{#each section}}\n[{{@key}}]\n{{#each this}}\n{{@key}} = {{json this}}\n{{/each}}\n\n{{/each}}\n{{/if}}\n",
       "parameters": {
         "global": {
           "sandbox_mode": "danger-full-access",

@@ -13,8 +13,12 @@ export function detectConfigFormat(filePath: string): ConfigFormat {
 
 export function parseConfigContent(filePath: string, raw: string): unknown {
   const format = detectConfigFormat(filePath)
-  if (format === 'json') return JSON.parse(raw)
-  return YAML.parse(raw)
+  switch (format) {
+    case 'json':
+      return JSON.parse(raw)
+    case 'yaml':
+      return YAML.parse(raw)
+  }
 }
 
 export async function readConfigFile(filePath: string): Promise<unknown> {
@@ -24,7 +28,15 @@ export async function readConfigFile(filePath: string): Promise<unknown> {
 
 export async function writeConfigFile(filePath: string, data: unknown): Promise<void> {
   const format = detectConfigFormat(filePath)
-  const content = format === 'json' ? JSON.stringify(data, null, 2) : YAML.stringify(data)
+  let content = ''
+  switch (format) {
+    case 'json':
+      content = JSON.stringify(data, null, 2)
+      break
+    case 'yaml':
+      content = YAML.stringify(data)
+      break
+  }
   await fs.mkdir(path.dirname(filePath), { recursive: true })
   await fs.writeFile(filePath, content)
 }

@@ -21,22 +21,17 @@ export async function writeProjectConfig(configPath: string, config: ProjectConf
 }
 
 export async function readGlobalConfig(): Promise<GlobalConfig | null> {
-  try {
-    const data = await readConfigFile(GLOBAL_CONFIG_YAML_PATH)
-    return GlobalConfigSchema.parse(data)
-  } catch (err) {
-    if ((err as NodeJS.ErrnoException).code !== 'ENOENT') {
+  const candidates = [GLOBAL_CONFIG_YAML_PATH, GLOBAL_CONFIG_JSON_PATH]
+  for (const candidate of candidates) {
+    try {
+      const data = await readConfigFile(candidate)
+      return GlobalConfigSchema.parse(data)
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code === 'ENOENT') continue
       throw err
     }
   }
-
-  try {
-    const data = await readConfigFile(GLOBAL_CONFIG_JSON_PATH)
-    return GlobalConfigSchema.parse(data)
-  } catch (err) {
-    if ((err as NodeJS.ErrnoException).code === 'ENOENT') return null
-    throw err
-  }
+  return null
 }
 
 export async function writeGlobalConfig(config: GlobalConfig): Promise<void> {
@@ -45,8 +40,10 @@ export async function writeGlobalConfig(config: GlobalConfig): Promise<void> {
 }
 
 export function getGlobalConfigPath(): string {
-  if (fs.existsSync(GLOBAL_CONFIG_YAML_PATH)) return GLOBAL_CONFIG_YAML_PATH
-  if (fs.existsSync(GLOBAL_CONFIG_JSON_PATH)) return GLOBAL_CONFIG_JSON_PATH
+  const candidates = [GLOBAL_CONFIG_YAML_PATH, GLOBAL_CONFIG_JSON_PATH]
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) return candidate
+  }
   return GLOBAL_CONFIG_YAML_PATH
 }
 

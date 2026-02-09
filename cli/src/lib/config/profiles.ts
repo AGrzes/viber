@@ -70,19 +70,14 @@ export async function findProfileByName(
 
 registerProfileSchemaHandler('provided', async (reference) => {
   const root = getPackageRoot()
-  const yamlPath = path.resolve(root, 'profiles', `${reference}.yaml`)
-  const jsonPath = path.resolve(root, 'profiles', `${reference}.json`)
+  const extensions = ['.yaml', '.json']
   let filePath: string | null = null
-  try {
-    await fs.access(yamlPath)
-    filePath = yamlPath
-  } catch {
-    // ignore
-  }
-  if (!filePath) {
+  for (const ext of extensions) {
+    const candidate = path.resolve(root, 'profiles', `${reference}${ext}`)
     try {
-      await fs.access(jsonPath)
-      filePath = jsonPath
+      await fs.access(candidate)
+      filePath = candidate
+      break
     } catch {
       // ignore
     }

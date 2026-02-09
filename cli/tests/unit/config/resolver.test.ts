@@ -1,8 +1,12 @@
 import { describe, expect, it, vi } from 'vitest'
 
-vi.mock('../../../src/lib/config/discovery.js', () => ({
-  findProjectConfig: vi.fn(),
-}))
+vi.mock('../../../src/lib/config/discovery.js', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../../src/lib/config/discovery.js')>()
+  return {
+    ...actual,
+    findProjectConfig: vi.fn(),
+  }
+})
 
 vi.mock('../../../src/lib/config/store.js', () => ({
   readGlobalConfig: vi.fn(),

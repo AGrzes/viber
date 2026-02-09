@@ -3,6 +3,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { ProfileInputSchema, type ProfileInput } from './schema.js'
 import { CliError } from '../utils/errors.js'
+import { findUp } from './discovery.js'
 
 export type ProfileSchemaHandler = (reference: string, profiles: Record<string, ProfileInput>) => Promise<ProfileInput>
 
@@ -24,29 +25,14 @@ function parseProfileReference(reference: string): { schema?: string; name: stri
   return { schema, name }
 }
 
-async function findPackageRoot(startDir: string): Promise<string> {
-  let current = path.resolve(startDir)
-  const root = path.parse(current).root
-
-  while (true) {
-    const candidate = path.join(current, 'package.json')
-    try {
-      await fs.access(candidate)
-      return current
-    } catch {
-      // continue searching upwards
-    }
-    if (current === root) break
-    current = path.dirname(current)
-  }
-
-  throw new CliError('Could not locate package root for provided profiles.')
-}
-
-async function getPackageRoot(): Promise<string> {
+function getPackageRoot(): string {
   if (packageRootCache) return packageRootCache
   const currentDir = path.dirname(fileURLToPath(import.meta.url))
-  const root = await findPackageRoot(currentDir)
+  const packagePath = findUp(currentDir, 'package.json')
+  if (!packagePath) {
+    throw new CliError('Could not locate package root for provided profiles.')
+  }
+  const root = path.dirname(packagePath)
   packageRootCache = root
   return root
 }
@@ -82,7 +68,7 @@ export async function findProfileByName(
 }
 
 registerProfileSchemaHandler('provided', async (reference) => {
-  const root = await getPackageRoot()
+  const root = getPackageRoot()
   const filePath = path.resolve(root, 'profiles', `${reference}.json`)
   try {
     const raw = await fs.readFile(filePath, 'utf-8')

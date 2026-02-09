@@ -1,6 +1,15 @@
 {
-  "image": "codex:latest",
+  "inherit": [],
   "env": {
-    "FROM": "provided"
+    "CODEX_HOME": "/codex"
+  },
+  "volumes": {
+    "{{env 'HOME'}}/.codex/auth.json": "/codex/auth.json:ro"
+  },
+  "templates": {
+    "agents": {
+      "path": "/codex/AGENTS.md",
+      "template": "{{#each this}}{{this}}\n{{/each}}\n"
+    }
   }
 }

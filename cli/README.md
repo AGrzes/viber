@@ -13,7 +13,7 @@ This is a hard-breaking config refactor. Old config shapes are not supported.
 
 All configuration is expressed as profiles. A profile is a JSON object with optional fields:
 
-- `inherit`: array of global profile names
+- `inherit`: array of profile references (global profile names or schema references like `provided:codex`)
 - `image`: non-empty string image reference (required after merge)
 - `env`: map of string -> string (values support host env interpolation)
 - `volumes`: map of `sourceOrVolumeName` -> `"target[:mode]"`
@@ -26,6 +26,7 @@ Inheritance rules:
 - Omitted `inherit` defaults to `["default"]` if a global `default` profile exists.
 - Explicit `inherit: []` means no inheritance.
 - Cycles or missing profiles are hard errors.
+- Schema references use the format `schema:name`. For `provided:NAME`, Viber loads `profiles/NAME.json` from the CLI package directory.
 - Map entries can be deleted by setting the entry to `null`.
 - Arrays are not merged (avoid arrays when merge is desired).
 
@@ -74,6 +75,8 @@ Templating is applied after profile resolution and before validation. Use the he
 ```
 
 The helper reads from `process.env`. If `NAME` is unset, the optional default value is used (otherwise empty string).
+
+Use `{{json value}}` to emit JSON-encoded literals (strings quoted, numbers/booleans unquoted).
 
 ## Templates
 
@@ -132,7 +135,7 @@ AGENTS are generated via templates. Example template entry writes `/codex/AGENTS
 
 - `viber config`: create `.viber.json` if missing (no-op if present).
 - `viber config --global`: create global config scaffold `{"profiles": {}}`.
-- `viber config --profile <name>`: set project `inherit` to `[<name>]`.
+- `viber config --profile <name>`: set project `inherit` to `[<name>]` (supports `schema:name` references).
 - `viber config path`: print project config path (errors if missing).
 - `viber config path --global`: print global config path (errors if missing).
 - `viber run`: start a session.
@@ -141,7 +144,7 @@ AGENTS are generated via templates. Example template entry writes `/codex/AGENTS
 
 - `--cwd <path>`: starting directory for config discovery.
 - `--image <ref>`: override merged profile `image`.
-- `--profile <name>`: replace project `inherit` list for this run (repeatable).
+- `--profile <name>`: replace project `inherit` list for this run (repeatable, supports `schema:name`).
 - `--suppress <path>`: dot-path to null for this run (repeatable). Errors on missing path.
 - `--dry-run`: print podman command instead of running.
 

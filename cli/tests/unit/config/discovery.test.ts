@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { findProjectConfig } from '../../../src/lib/config/discovery.js'
+import { findProjectConfig, findUp } from '../../../src/lib/config/discovery.js'
 import { PROJECT_CONFIG_NAME } from '../../../src/lib/config/schema.js'
 
 function makeTempDir(): string {
@@ -48,6 +48,23 @@ describe('findProjectConfig', () => {
       fs.mkdirSync(childDir, { recursive: true })
 
       expect(findProjectConfig(childDir)).toBeNull()
+    } finally {
+      cleanupTempDir(tempDir)
+    }
+  })
+})
+
+describe('findUp', () => {
+  it('finds an arbitrary filename in ancestor directories', () => {
+    const tempDir = makeTempDir()
+    try {
+      const marker = path.join(tempDir, 'package.json')
+      fs.writeFileSync(marker, JSON.stringify({ name: 'viber-test' }))
+
+      const childDir = path.join(tempDir, 'nested')
+      fs.mkdirSync(childDir, { recursive: true })
+
+      expect(findUp(childDir, 'package.json')).toBe(marker)
     } finally {
       cleanupTempDir(tempDir)
     }

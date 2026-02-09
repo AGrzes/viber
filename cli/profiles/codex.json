@@ -1,0 +1,38 @@
+{
+  "inherit": [],
+  "env": {
+    "CODEX_HOME": "/codex"
+  },
+  "volumes": {
+    "{{env 'HOME'}}/.codex/auth.json": "/codex/auth.json:ro",
+    "viber-codex": "/codex"
+  },
+  "templates": {
+    "config": {
+      "path": "/codex/config.toml",
+      "template": "{{#if global}}\n{{#each global}}\n{{{@key}}} = {{json this}}\n{{/each}}\n{{/if}}\n\n{{#if section}}\n{{#each section}}\n[{{{@key}}}]\n{{#each this}}\n{{{@key}}} = {{json this}}\n{{/each}}\n\n{{/each}}\n{{/if}}\n",
+      "parameters": {
+        "global": {
+          "sandbox_mode": "danger-full-access",
+          "approval_policy": "never",
+          "web_search": "live",
+          "check_for_update_on_startup": false,
+          "suppress_unstable_features_warning": true
+        },
+        "section": {
+          "features": {
+            "unified_exec": true,
+            "apply_patch_freeform": true
+          },
+          "projects.\"/workdir\"": {
+            "trust_level": "trusted"
+          }
+        }
+      }
+    },
+    "agents": {
+      "path": "/codex/AGENTS.md",
+      "template": "{{#each this}}{{this}}\n{{/each}}\n"
+    }
+  }
+}

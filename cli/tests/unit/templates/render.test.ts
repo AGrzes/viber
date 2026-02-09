@@ -59,4 +59,26 @@ describe('template processor', () => {
       }
     }
   })
+
+  it('supports json helper for primitive values', async () => {
+    const templateSet = {
+      config: {
+        path: '/app/config.txt',
+        template: 'enabled={{json enabled}},count={{json count}},name={{json name}}',
+        parameters: { enabled: true, count: 5, name: 'alpha' },
+      },
+    }
+
+    const rendered = await processTemplates({
+      templateSet,
+      env: {},
+    })
+
+    const content = await fs.readFile(rendered[0].tempPath, 'utf8')
+    expect(content).toContain('enabled=true')
+    expect(content).toContain('count=5')
+    expect(content).toContain('name="alpha"')
+
+    await fs.rm(path.dirname(rendered[0].tempPath), { recursive: true, force: true })
+  })
 })

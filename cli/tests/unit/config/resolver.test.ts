@@ -1,8 +1,12 @@
 import { describe, expect, it, vi } from 'vitest'
 
-vi.mock('../../../src/lib/config/discovery.js', () => ({
-  findProjectConfig: vi.fn(),
-}))
+vi.mock('../../../src/lib/config/discovery.js', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../../src/lib/config/discovery.js')>()
+  return {
+    ...actual,
+    findProjectConfig: vi.fn(),
+  }
+})
 
 vi.mock('../../../src/lib/config/store.js', () => ({
   readGlobalConfig: vi.fn(),
@@ -131,6 +135,42 @@ describe('resolveConfig', () => {
     mockGlobal({ profiles: {} })
 
     await expect(resolveConfig(cwd)).rejects.toThrow(/profile not found/i)
+  })
+
+  it('loads provided profiles via schema references', async () => {
+    vi.mocked(findProjectConfig).mockReturnValue('/tmp/project/.viber.json')
+    vi.mocked(getGlobalConfigPath).mockReturnValue('/home/user/.viber/config.json')
+
+    mockProject({ inherit: ['provided:codex'] })
+    mockGlobal({ profiles: {} })
+
+    const resolved = await resolveConfig(cwd)
+    expect(resolved.profile.env).toEqual({
+      CODEX_HOME: '/codex',
+    })
+    expect(resolved.profile.volumes).toEqual({
+      "{{env 'HOME'}}/.codex/auth.json": '/codex/auth.json:ro',
+    })
+  })
+
+  it('errors on unknown profile schemas', async () => {
+    vi.mocked(findProjectConfig).mockReturnValue('/tmp/project/.viber.json')
+    vi.mocked(getGlobalConfigPath).mockReturnValue('/home/user/.viber/config.json')
+
+    mockProject({ inherit: ['unknown:thing'] })
+    mockGlobal({ profiles: {} })
+
+    await expect(resolveConfig(cwd)).rejects.toThrow(/unknown profile schema/i)
+  })
+
+  it('errors when provided profile files are missing', async () => {
+    vi.mocked(findProjectConfig).mockReturnValue('/tmp/project/.viber.json')
+    vi.mocked(getGlobalConfigPath).mockReturnValue('/home/user/.viber/config.json')
+
+    mockProject({ inherit: ['provided:missing-profile'] })
+    mockGlobal({ profiles: {} })
+
+    await expect(resolveConfig(cwd)).rejects.toThrow(/failed to load provided profile/i)
   })
 
   it('errors on inheritance cycles', async () => {

@@ -54,12 +54,7 @@ function buildHandlebars(): typeof Handlebars {
   return instance
 }
 
-function renderTemplate(template: string, parameters: TemplateDefinition['parameters']): string {
+export function renderTemplate(template: string, parameters?: Record<string, unknown>): string {
   const compiled = buildHandlebars().compile(template)
-  return compiled(parameters)
-}
-
-export function renderTemplateString(template: string): string {
-  const compiled = buildHandlebars().compile(template)
-  return compiled({})
+  return compiled(parameters ?? {})
 }

@@ -10,7 +10,7 @@ import { buildSessionEnv } from './sessionEnv.js'
 import { ProfileSchema, type FolderMapping, type Profile } from '../lib/config/schema.js'
 import { TemplateDefinitionSchema } from '../lib/templates/types.js'
 import { isPlainObject, pruneNullEntries } from '../lib/utils/objects.js'
-import { processTemplates, renderTemplateString } from '../lib/templates/processor.js'
+import { processTemplates, renderTemplate } from '../lib/templates/processor.js'
 import { volumeMappingsToArray } from '../lib/utils/volumes.js'
 
 export type SessionOptions = {
@@ -76,18 +76,18 @@ function normalizeProfile(profile: Profile): Profile {
 
 function applyRuntimeTemplating(profile: Profile): Profile {
   const templatedEnv: Record<string, string> | undefined = profile.env
-    ? Object.fromEntries(Object.entries(profile.env).map(([key, value]) => [key, renderTemplateString(value)]))
+    ? Object.fromEntries(Object.entries(profile.env).map(([key, value]) => [key, renderTemplate(value)]))
     : undefined
 
   const templatedVolumes: Record<string, string> | undefined = profile.volumes
     ? Object.fromEntries(
-        Object.entries(profile.volumes).map(([key, value]) => [renderTemplateString(key), renderTemplateString(value)])
+        Object.entries(profile.volumes).map(([key, value]) => [renderTemplate(key), renderTemplate(value)])
       )
     : undefined
 
   return {
     ...profile,
-    image: profile.image ? renderTemplateString(profile.image) : profile.image,
+    image: profile.image ? renderTemplate(profile.image) : profile.image,
     env: templatedEnv,
     volumes: templatedVolumes,
   }

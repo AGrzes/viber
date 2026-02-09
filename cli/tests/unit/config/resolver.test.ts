@@ -96,7 +96,7 @@ describe('resolveConfig', () => {
       FOO: 'two',
       PROJECT: 'demo',
     })
-    expect(resolved.profile.templates?.agents.parameters).toEqual({})
+    expect(resolved.profile.templates?.agents.parameters).toBeUndefined()
     expect(resolved.effectiveMappings[0].targetPath).toBe(WORKDIR)
     expect(resolved.effectiveMappings[1]).toEqual({
       sourcePath: 'cache',

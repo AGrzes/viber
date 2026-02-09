@@ -3,8 +3,10 @@ import path from 'node:path'
 import { z } from 'zod'
 import { TemplateDefinitionSchema } from '../templates/types.js'
 
-export const PROJECT_CONFIG_NAME = '.viber.json'
-export const GLOBAL_CONFIG_PATH = path.join(os.homedir(), '.viber', 'config.json')
+export const PROJECT_CONFIG_JSON_NAME = '.viber.json'
+export const PROJECT_CONFIG_YAML_NAME = '.viber.yaml'
+export const GLOBAL_CONFIG_JSON_PATH = path.join(os.homedir(), '.viber', 'config.json')
+export const GLOBAL_CONFIG_YAML_PATH = path.join(os.homedir(), '.viber', 'config.yaml')
 export const ENV_KEY_PATTERN = /^[A-Za-z_][A-Za-z0-9_]*$/
 
 export const FolderMappingSchema = z.object({

@@ -2,7 +2,7 @@ import path from 'node:path'
 import fs from 'node:fs'
 import { Command } from 'commander'
 import { findProjectConfig } from '../../lib/config/discovery.js'
-import { PROJECT_CONFIG_NAME } from '../../lib/config/schema.js'
+import { PROJECT_CONFIG_YAML_NAME } from '../../lib/config/schema.js'
 import { findProfileByName } from '../../lib/config/profiles.js'
 import { getGlobalConfigPath, readGlobalConfig, writeGlobalConfig, writeProjectConfig } from '../../lib/config/store.js'
 import { CliError, getErrorMessage } from '../../lib/utils/errors.js'
@@ -57,7 +57,7 @@ export function registerConfigCommand(program: Command): void {
 
       const cwd = options.cwd as string
       const existing = findProjectConfig(cwd)
-      const configPath = existing ?? path.join(cwd, PROJECT_CONFIG_NAME)
+      const configPath = existing ?? path.join(cwd, PROJECT_CONFIG_YAML_NAME)
 
       if (options.profile) {
         const global = await readGlobalConfig()

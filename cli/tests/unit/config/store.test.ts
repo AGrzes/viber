@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('node:fs/promises', () => ({
   default: {
@@ -11,11 +11,24 @@ vi.mock('node:fs/promises', () => ({
   mkdir: vi.fn(),
 }))
 
+vi.mock('node:fs', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('node:fs')>()
+  return {
+    default: {
+      ...actual,
+      existsSync: vi.fn(),
+    },
+    ...actual,
+    existsSync: vi.fn(),
+  }
+})
+
 vi.mock('../../../src/lib/config/discovery.js', () => ({
   findProjectConfig: vi.fn(),
 }))
 
 import fs from 'node:fs/promises'
+import * as fsSync from 'node:fs'
 import {
   getGlobalConfigPath,
   getProjectConfigPath,
@@ -25,7 +38,7 @@ import {
   writeProjectConfig,
 } from '../../../src/lib/config/store.js'
 import { findProjectConfig } from '../../../src/lib/config/discovery.js'
-import { GLOBAL_CONFIG_PATH } from '../../../src/lib/config/schema.js'
+import { GLOBAL_CONFIG_JSON_PATH, GLOBAL_CONFIG_YAML_PATH } from '../../../src/lib/config/schema.js'
 
 const mockedFs = fs as unknown as {
   readFile: ReturnType<typeof vi.fn>
@@ -33,8 +46,17 @@ const mockedFs = fs as unknown as {
   mkdir: ReturnType<typeof vi.fn>
 }
 
+const mockedFsSync = fsSync as unknown as {
+  existsSync: ReturnType<typeof vi.fn>
+}
+
 describe('config store', () => {
+  beforeEach(() => {
+    mockedFsSync.existsSync.mockReset()
+  })
+
   it('returns null when global config is missing', async () => {
+    mockedFs.readFile.mockRejectedValueOnce(Object.assign(new Error('missing'), { code: 'ENOENT' }))
     mockedFs.readFile.mockRejectedValueOnce(Object.assign(new Error('missing'), { code: 'ENOENT' }))
 
     const result = await readGlobalConfig()
@@ -46,6 +68,13 @@ describe('config store', () => {
 
     const result = await readProjectConfig('/tmp/project/.viber.json')
     expect(result.image).toBe('example:latest')
+  })
+
+  it('reads and parses global config from yaml when present', async () => {
+    mockedFs.readFile.mockResolvedValueOnce('profiles:\n  default:\n    image: example:latest\n')
+
+    const result = await readGlobalConfig()
+    expect(result?.profiles.default.image).toBe('example:latest')
   })
 
   it('rethrows unexpected read errors for global config', async () => {
@@ -60,7 +89,7 @@ describe('config store', () => {
 
     await writeGlobalConfig({ profiles: {} })
 
-    expect(mockedFs.writeFile).toHaveBeenCalledWith(GLOBAL_CONFIG_PATH, expect.stringContaining('"profiles"'))
+    expect(mockedFs.writeFile).toHaveBeenCalledWith(GLOBAL_CONFIG_YAML_PATH, expect.stringContaining('profiles:'))
   })
 
   it('writes project config after validation', async () => {
@@ -76,7 +105,15 @@ describe('config store', () => {
   })
 
   it('returns the global config path', () => {
-    expect(getGlobalConfigPath()).toBe(GLOBAL_CONFIG_PATH)
+    mockedFsSync.existsSync.mockImplementation((value: string) => value === GLOBAL_CONFIG_YAML_PATH)
+
+    expect(getGlobalConfigPath()).toBe(GLOBAL_CONFIG_YAML_PATH)
+  })
+
+  it('returns json global config path when yaml missing', () => {
+    mockedFsSync.existsSync.mockImplementation((value: string) => value === GLOBAL_CONFIG_JSON_PATH)
+
+    expect(getGlobalConfigPath()).toBe(GLOBAL_CONFIG_JSON_PATH)
   })
 
   it('delegates project config lookup to discovery', () => {

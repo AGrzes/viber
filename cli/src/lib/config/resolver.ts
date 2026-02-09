@@ -17,6 +17,7 @@ import { readGlobalConfig, readProjectConfig, getGlobalConfigPath } from './stor
 import { WORKDIR } from '../utils/paths.js'
 import { CliError } from '../utils/errors.js'
 import { isPlainObject, mergeObjects, pruneNullEntries } from '../utils/objects.js'
+import { volumeMappingsToArray } from '../utils/volumes.js'
 
 function implicitMapping(cwd: string): FolderMapping {
   return FolderMappingSchema.parse({
@@ -104,18 +105,6 @@ function normalizeProfile(profile: ProfileInput): Profile {
     volumes: pruneNullEntries(profile.volumes as VolumeMap | undefined),
     templates: normalizeTemplates(profile.templates),
   }
-}
-
-function volumeMappingsToArray(mappings: VolumeMap): FolderMapping[] {
-  return Object.entries(mappings).map(([key, value]) => {
-    const [targetPath, mode = 'rw'] = value.split(':') as [string, 'rw' | 'ro' | undefined]
-
-    return {
-      sourcePath: key,
-      targetPath: targetPath || key,
-      mode: mode || 'rw',
-    }
-  })
 }
 
 export type ResolveConfigOptions = {

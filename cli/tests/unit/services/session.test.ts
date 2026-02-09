@@ -12,9 +12,15 @@ vi.mock('../../../src/lib/utils/identity.js', () => ({
   getHostIdentity: vi.fn(),
 }))
 
-vi.mock('../../../src/lib/templates/processor.js', () => ({
-  processTemplates: vi.fn().mockResolvedValue([]),
-}))
+vi.mock('../../../src/lib/templates/processor.js', async () => {
+  const actual = await vi.importActual<typeof import('../../../src/lib/templates/processor.js')>(
+    '../../../src/lib/templates/processor.js'
+  )
+  return {
+    ...actual,
+    processTemplates: vi.fn().mockResolvedValue([]),
+  }
+})
 
 vi.mock('../../../src/lib/config/validation.js', () => ({
   validateMappings: vi.fn().mockReturnValue([]),
@@ -43,6 +49,18 @@ function makeResolved(profileOverrides: Partial<ResolvedConfig['profile']>): Res
     ],
     projectConfigPath: undefined,
     globalConfigPath: undefined,
+  }
+}
+
+function restoreEnv(original: NodeJS.ProcessEnv): void {
+  for (const key of Object.keys(process.env)) {
+    if (!(key in original)) {
+      delete process.env[key]
+    }
+  }
+  for (const [key, value] of Object.entries(original)) {
+    if (value === undefined) continue
+    process.env[key] = value
   }
 }
 
@@ -110,6 +128,49 @@ describe('runSession', () => {
       })
     )
     expect(runPodman).toHaveBeenCalled()
+  })
+
+  it('applies runtime templating for image, env, and volumes', async () => {
+    const originalEnv = { ...process.env }
+    process.env.TAG = 'dev'
+    process.env.SUF = 'z'
+
+    try {
+      vi.mocked(resolveConfig).mockResolvedValueOnce(
+        makeResolved({
+          image: 'img:{{env "TAG" "latest"}}',
+          env: {
+            FOO: '{{env "FOO" "bar"}}',
+          },
+          volumes: {
+            './cache-{{env "SUF" "x"}}': '/data/{{env "SUF" "x"}}:ro',
+          },
+        })
+      )
+      vi.mocked(getHostIdentity).mockReturnValue({ uid: 1, gid: 2 })
+
+      await runSession({
+        cwd: '/tmp/project',
+      })
+
+      expect(runPodman).toHaveBeenCalledWith(
+        expect.objectContaining({
+          imageRef: 'img:dev',
+          env: expect.objectContaining({
+            FOO: 'bar',
+          }),
+          mappings: expect.arrayContaining([
+            expect.objectContaining({
+              sourcePath: './cache-z',
+              targetPath: '/data/z',
+              mode: 'ro',
+            }),
+          ]),
+        })
+      )
+    } finally {
+      restoreEnv(originalEnv)
+    }
   })
 
   it('errors when host identity is missing', async () => {

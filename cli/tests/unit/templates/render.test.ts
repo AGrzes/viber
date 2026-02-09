@@ -8,8 +8,8 @@ describe('template processor', () => {
     const templateSet = {
       'agent-config': {
         path: '/app/config/${ENV}.json',
-        template: '{"env":"{{env}}","count":{{count}}\n}',
-        parameters: { env: 'staging', count: 3 },
+        template: '{"env":"{{value}}","count":{{count}}\n}',
+        parameters: { value: 'staging', count: 3 },
       },
     }
 
@@ -27,5 +27,36 @@ describe('template processor', () => {
     expect(content).toContain('"count":3')
 
     await fs.rm(path.dirname(file.tempPath), { recursive: true, force: true })
+  })
+
+  it('supports env helper with default values', async () => {
+    const original = process.env.MODE
+    delete process.env.MODE
+
+    try {
+      const templateSet = {
+        config: {
+          path: '/app/config.txt',
+          template: 'mode={{env "MODE" "default"}}',
+          parameters: {},
+        },
+      }
+
+      const rendered = await processTemplates({
+        templateSet,
+        env: {},
+      })
+
+      const content = await fs.readFile(rendered[0].tempPath, 'utf8')
+      expect(content).toContain('mode=default')
+
+      await fs.rm(path.dirname(rendered[0].tempPath), { recursive: true, force: true })
+    } finally {
+      if (original === undefined) {
+        delete process.env.MODE
+      } else {
+        process.env.MODE = original
+      }
+    }
   })
 })

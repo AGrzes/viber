@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url'
 import { ProfileInputSchema, type ProfileInput } from './schema.js'
 import { CliError } from '../utils/errors.js'
 import { findUp } from './discovery.js'
+import { readConfigFile } from './format.js'
 
 export type ProfileSchemaHandler = (reference: string, profiles: Record<string, ProfileInput>) => Promise<ProfileInput>
 
@@ -69,11 +70,30 @@ export async function findProfileByName(
 
 registerProfileSchemaHandler('provided', async (reference) => {
   const root = getPackageRoot()
-  const filePath = path.resolve(root, 'profiles', `${reference}.json`)
+  const yamlPath = path.resolve(root, 'profiles', `${reference}.yaml`)
+  const jsonPath = path.resolve(root, 'profiles', `${reference}.json`)
+  let filePath: string | null = null
   try {
-    const raw = await fs.readFile(filePath, 'utf-8')
-    const parsed = JSON.parse(raw) as unknown
-    return ProfileInputSchema.parse(parsed)
+    await fs.access(yamlPath)
+    filePath = yamlPath
+  } catch {
+    // ignore
+  }
+  if (!filePath) {
+    try {
+      await fs.access(jsonPath)
+      filePath = jsonPath
+    } catch {
+      // ignore
+    }
+  }
+
+  if (!filePath) {
+    throw new CliError(`Failed to load provided profile "${reference}": file not found`)
+  }
+  try {
+    const parsed = await readConfigFile(filePath)
+    return ProfileInputSchema.parse(parsed as unknown)
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
     throw new CliError(`Failed to load provided profile "${reference}": ${message}`)

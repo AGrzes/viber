@@ -3,7 +3,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { findProjectConfig, findUp } from '../../../src/lib/config/discovery.js'
-import { PROJECT_CONFIG_NAME } from '../../../src/lib/config/schema.js'
+import { PROJECT_CONFIG_JSON_NAME, PROJECT_CONFIG_YAML_NAME } from '../../../src/lib/config/schema.js'
 
 function makeTempDir(): string {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'viber-discovery-'))
@@ -17,7 +17,7 @@ describe('findProjectConfig', () => {
   it('finds config in the starting directory', () => {
     const tempDir = makeTempDir()
     try {
-      const configPath = path.join(tempDir, PROJECT_CONFIG_NAME)
+      const configPath = path.join(tempDir, PROJECT_CONFIG_YAML_NAME)
       fs.writeFileSync(configPath, JSON.stringify({ image: 'example:latest' }))
 
       expect(findProjectConfig(tempDir)).toBe(configPath)
@@ -29,7 +29,7 @@ describe('findProjectConfig', () => {
   it('walks up to find a parent config', () => {
     const tempDir = makeTempDir()
     try {
-      const parentConfig = path.join(tempDir, PROJECT_CONFIG_NAME)
+      const parentConfig = path.join(tempDir, PROJECT_CONFIG_YAML_NAME)
       fs.writeFileSync(parentConfig, JSON.stringify({ image: 'example:latest' }))
 
       const childDir = path.join(tempDir, 'nested', 'child')
@@ -48,6 +48,18 @@ describe('findProjectConfig', () => {
       fs.mkdirSync(childDir, { recursive: true })
 
       expect(findProjectConfig(childDir)).toBeNull()
+    } finally {
+      cleanupTempDir(tempDir)
+    }
+  })
+
+  it('falls back to json when yaml is missing', () => {
+    const tempDir = makeTempDir()
+    try {
+      const configPath = path.join(tempDir, PROJECT_CONFIG_JSON_NAME)
+      fs.writeFileSync(configPath, JSON.stringify({ image: 'example:latest' }))
+
+      expect(findProjectConfig(tempDir)).toBe(configPath)
     } finally {
       cleanupTempDir(tempDir)
     }

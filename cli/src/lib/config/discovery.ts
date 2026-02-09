@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { PROJECT_CONFIG_NAME } from './schema.js'
+import { PROJECT_CONFIG_JSON_NAME, PROJECT_CONFIG_YAML_NAME } from './schema.js'
 
 export function findUp(startDir: string, fileName: string): string | null {
   let current = path.resolve(startDir)
@@ -17,5 +17,5 @@ export function findUp(startDir: string, fileName: string): string | null {
 }
 
 export function findProjectConfig(startDir: string): string | null {
-  return findUp(startDir, PROJECT_CONFIG_NAME)
+  return findUp(startDir, PROJECT_CONFIG_YAML_NAME) ?? findUp(startDir, PROJECT_CONFIG_JSON_NAME)
 }

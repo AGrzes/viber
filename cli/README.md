@@ -4,8 +4,8 @@ Viber is a private orchestration CLI for launching containerized coding sessions
 
 ## Configuration Files
 
-- Project: `.viber.json` (searched upward from `--cwd` or current directory)
-- Global: `~/.viber/config.json`
+- Project: `.viber.yaml` (searched upward from `--cwd` or current directory; `.viber.json` is still accepted)
+- Global: `~/.viber/config.yaml` (fallback to `config.json` if present)
 
 This is a hard-breaking config refactor. Old config shapes are not supported.
 
@@ -26,7 +26,7 @@ Inheritance rules:
 - Omitted `inherit` defaults to `["default"]` if a global `default` profile exists.
 - Explicit `inherit: []` means no inheritance.
 - Cycles or missing profiles are hard errors.
-- Schema references use the format `schema:name`. For `provided:NAME`, Viber loads `profiles/NAME.json` from the CLI package directory.
+- Schema references use the format `schema:name`. For `provided:NAME`, Viber loads `profiles/NAME.yaml` (or `profiles/NAME.json`) from the CLI package directory.
 - Map entries can be deleted by setting the entry to `null`.
 - Arrays are not merged (avoid arrays when merge is desired).
 
@@ -133,7 +133,7 @@ AGENTS are generated via templates. Example template entry writes `/codex/AGENTS
 
 ## CLI Commands
 
-- `viber config`: create `.viber.json` if missing (no-op if present).
+- `viber config`: create `.viber.yaml` if missing (no-op if present).
 - `viber config --global`: create global config scaffold `{"profiles": {}}`.
 - `viber config --profile <name>`: set project `inherit` to `[<name>]` (supports `schema:name` references).
 - `viber config path`: print project config path (errors if missing).

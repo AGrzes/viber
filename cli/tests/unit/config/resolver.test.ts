@@ -150,6 +150,7 @@ describe('resolveConfig', () => {
     })
     expect(resolved.profile.volumes).toEqual({
       "{{env 'HOME'}}/.codex/auth.json": '/codex/auth.json:ro',
+      'viber-codex': '/codex',
     })
   })
 

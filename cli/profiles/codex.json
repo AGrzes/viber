@@ -7,6 +7,10 @@
     "{{env 'HOME'}}/.codex/auth.json": "/codex/auth.json:ro"
   },
   "templates": {
+    "config": {
+      "path": "/codex/config.toml",
+      "template": "{{#if global}}\n{{#each global}}\n{{@key}} = \"{{this}}\"\n{{/each}}\n{{/if}}\n\n{{#if section}}\n{{#each section}}\n[{{@key}}]\n{{#each this}}\n{{@key}} = \"{{this}}\"\n{{/each}}\n\n{{/each}}\n{{/if}}\n"
+    },
     "agents": {
       "path": "/codex/AGENTS.md",
       "template": "{{#each this}}{{this}}\n{{/each}}\n"

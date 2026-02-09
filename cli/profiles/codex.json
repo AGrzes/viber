@@ -9,7 +9,21 @@
   "templates": {
     "config": {
       "path": "/codex/config.toml",
-      "template": "{{#if global}}\n{{#each global}}\n{{@key}} = \"{{this}}\"\n{{/each}}\n{{/if}}\n\n{{#if section}}\n{{#each section}}\n[{{@key}}]\n{{#each this}}\n{{@key}} = \"{{this}}\"\n{{/each}}\n\n{{/each}}\n{{/if}}\n"
+      "template": "{{#if global}}\n{{#each global}}\n{{@key}} = \"{{this}}\"\n{{/each}}\n{{/if}}\n\n{{#if section}}\n{{#each section}}\n[{{@key}}]\n{{#each this}}\n{{@key}} = \"{{this}}\"\n{{/each}}\n\n{{/each}}\n{{/if}}\n",
+      "parameters": {
+        "global": {
+          "sandbox_mode": "danger-full-access",
+          "approval_policy": "never",
+          "web_search": "live",
+          "check_for_update_on_startup": false
+        },
+        "section": {
+          "features": {
+            "unified_exec": true,
+            "apply_patch_freeform": true
+          }
+        }
+      }
     },
     "agents": {
       "path": "/codex/AGENTS.md",

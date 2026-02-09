@@ -60,6 +60,21 @@ The project config file itself is the current profile object:
 }
 ```
 
+## Templating
+
+Viber uses Handlebars for templating in two places:
+
+- `templates` (file generation)
+- Runtime fields: `image`, `env` values, and `volumes` keys/values
+
+Templating is applied after profile resolution and before validation. Use the helper:
+
+```
+{{env "NAME" "default"}}
+```
+
+The helper reads from `process.env`. If `NAME` is unset, the optional default value is used (otherwise empty string).
+
 ## Templates
 
 `templates` is a map keyed by template name.

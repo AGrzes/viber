@@ -43,7 +43,18 @@ function sanitizeTemplateName(name: string): string {
   return name.replace(/[^a-zA-Z0-9-_]/g, '_')
 }
 
-function renderTemplate(template: string, parameters: TemplateDefinition['parameters']): string {
-  const compiled = Handlebars.compile(template)
-  return compiled(parameters)
+function buildHandlebars(): typeof Handlebars {
+  const instance = Handlebars.create()
+  instance.registerHelper('env', (...args: unknown[]) => {
+    const name = typeof args[0] === 'string' ? args[0] : ''
+    const fallback = typeof args[1] === 'string' ? args[1] : ''
+    const value = name ? process.env[name] : undefined
+    return value ?? fallback ?? ''
+  })
+  return instance
+}
+
+export function renderTemplate(template: string, parameters?: Record<string, unknown>): string {
+  const compiled = buildHandlebars().compile(template)
+  return compiled(parameters ?? {})
 }

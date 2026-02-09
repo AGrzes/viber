@@ -11,13 +11,20 @@ vi.mock('node:fs/promises', () => ({
   mkdir: vi.fn(),
 }))
 
+vi.mock('../../../src/lib/config/discovery.js', () => ({
+  findProjectConfig: vi.fn(),
+}))
+
 import fs from 'node:fs/promises'
 import {
+  getGlobalConfigPath,
+  getProjectConfigPath,
   readGlobalConfig,
   readProjectConfig,
   writeGlobalConfig,
   writeProjectConfig,
 } from '../../../src/lib/config/store.js'
+import { findProjectConfig } from '../../../src/lib/config/discovery.js'
 import { GLOBAL_CONFIG_PATH } from '../../../src/lib/config/schema.js'
 
 const mockedFs = fs as unknown as {
@@ -41,6 +48,12 @@ describe('config store', () => {
     expect(result.image).toBe('example:latest')
   })
 
+  it('rethrows unexpected read errors for global config', async () => {
+    mockedFs.readFile.mockRejectedValueOnce(Object.assign(new Error('boom'), { code: 'EACCES' }))
+
+    await expect(readGlobalConfig()).rejects.toThrow('boom')
+  })
+
   it('writes global config after validation', async () => {
     mockedFs.mkdir.mockResolvedValueOnce(undefined)
     mockedFs.writeFile.mockResolvedValueOnce(undefined)
@@ -60,5 +73,15 @@ describe('config store', () => {
       '/tmp/project/.viber.json',
       expect.stringContaining('"example:latest"')
     )
+  })
+
+  it('returns the global config path', () => {
+    expect(getGlobalConfigPath()).toBe(GLOBAL_CONFIG_PATH)
+  })
+
+  it('delegates project config lookup to discovery', () => {
+    vi.mocked(findProjectConfig).mockReturnValue('/tmp/project/.viber.json')
+
+    expect(getProjectConfigPath('/tmp/project')).toBe('/tmp/project/.viber.json')
   })
 })

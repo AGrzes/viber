@@ -1,3 +1,4 @@
+import path from 'node:path'
 import { resolveConfig } from '../lib/config/resolver.js'
 import { validateMappings } from '../lib/config/validation.js'
 import { runPodman } from '../lib/podman/runner.js'
@@ -9,7 +10,8 @@ import { buildSessionEnv } from './sessionEnv.js'
 import { ProfileSchema, type FolderMapping, type Profile } from '../lib/config/schema.js'
 import { TemplateDefinitionSchema } from '../lib/templates/types.js'
 import { isPlainObject, pruneNullEntries } from '../lib/utils/objects.js'
-import { processTemplates } from '../lib/templates/processor.js'
+import { processTemplates, renderTemplate } from '../lib/templates/processor.js'
+import { volumeMappingsToArray } from '../lib/utils/volumes.js'
 
 export type SessionOptions = {
   cwd: string
@@ -72,17 +74,30 @@ function normalizeProfile(profile: Profile): Profile {
   }
 }
 
+function applyRuntimeTemplating(profile: Profile): Profile {
+  const templatedEnv: Record<string, string> | undefined = profile.env
+    ? Object.fromEntries(Object.entries(profile.env).map(([key, value]) => [key, renderTemplate(value)]))
+    : undefined
+
+  const templatedVolumes: Record<string, string> | undefined = profile.volumes
+    ? Object.fromEntries(
+        Object.entries(profile.volumes).map(([key, value]) => [renderTemplate(key), renderTemplate(value)])
+      )
+    : undefined
+
+  return {
+    ...profile,
+    image: profile.image ? renderTemplate(profile.image) : profile.image,
+    env: templatedEnv,
+    volumes: templatedVolumes,
+  }
+}
+
 export async function runSession(options: SessionOptions): Promise<number> {
   const resolved = await resolveConfig(options.cwd, {
     profileOverrides: options.profiles && options.profiles.length > 0 ? options.profiles : undefined,
   })
   log.config('resolved config', resolved)
-
-  const issues = validateMappings(resolved.effectiveMappings)
-  if (issues.length > 0) {
-    const details = issues.map((issue) => `${issue.field}: ${issue.message}`).join('; ')
-    throw new CliError(`Invalid mappings: ${details}`)
-  }
 
   let profile = resolved.profile
   if (options.image) {
@@ -91,6 +106,7 @@ export async function runSession(options: SessionOptions): Promise<number> {
 
   profile = applySuppressions(profile, options.suppressions)
   profile = normalizeProfile(profile)
+  profile = applyRuntimeTemplating(profile)
   const validatedProfile = ProfileSchema.parse(profile)
 
   if (!validatedProfile.image) {
@@ -116,7 +132,21 @@ export async function runSession(options: SessionOptions): Promise<number> {
     })
   }
 
-  const mappings: FolderMapping[] = resolved.effectiveMappings
+  const cwd = path.resolve(options.cwd)
+  const mappings: FolderMapping[] = [
+    {
+      sourcePath: cwd,
+      targetPath: WORKDIR,
+      mode: 'rw',
+    },
+    ...(validatedProfile.volumes ? volumeMappingsToArray(validatedProfile.volumes) : []),
+  ]
+
+  const issues = validateMappings(mappings)
+  if (issues.length > 0) {
+    const details = issues.map((issue) => `${issue.field}: ${issue.message}`).join('; ')
+    throw new CliError(`Invalid mappings: ${details}`)
+  }
 
   log.session('workdir', WORKDIR)
   log.env('env', env)

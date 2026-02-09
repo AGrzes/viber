@@ -61,7 +61,6 @@ export const GlobalConfigSchema = z
 
 export const ResolvedConfigSchema = z.object({
   profile: ProfileSchema,
-  effectiveMappings: z.array(FolderMappingSchema),
   projectConfigPath: z.string().optional(),
   globalConfigPath: z.string().optional(),
 })

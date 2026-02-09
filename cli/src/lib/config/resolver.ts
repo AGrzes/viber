@@ -1,9 +1,7 @@
 import path from 'node:path'
 import { findProjectConfig } from './discovery.js'
 import {
-  FolderMappingSchema,
   ResolvedConfigSchema,
-  type FolderMapping,
   type GlobalConfig,
   type Profile,
   type ProfileInput,
@@ -14,17 +12,8 @@ import {
 } from './schema.js'
 import { TemplateDefinitionSchema } from '../templates/types.js'
 import { readGlobalConfig, readProjectConfig, getGlobalConfigPath } from './store.js'
-import { WORKDIR } from '../utils/paths.js'
 import { CliError } from '../utils/errors.js'
-import { isPlainObject, mergeObjects, pruneNullEntries } from '../utils/objects.js'
-
-function implicitMapping(cwd: string): FolderMapping {
-  return FolderMappingSchema.parse({
-    sourcePath: cwd,
-    targetPath: WORKDIR,
-    mode: 'rw',
-  })
-}
+import { mergeObjects, pruneNullEntries } from '../utils/objects.js'
 
 function stripInherit(profile: ProfileInput): Omit<ProfileInput, 'inherit'> {
   const { inherit: _inherit, ...rest } = profile
@@ -106,18 +95,6 @@ function normalizeProfile(profile: ProfileInput): Profile {
   }
 }
 
-function volumeMappingsToArray(mappings: VolumeMap): FolderMapping[] {
-  return Object.entries(mappings).map(([key, value]) => {
-    const [targetPath, mode = 'rw'] = value.split(':') as [string, 'rw' | 'ro' | undefined]
-
-    return {
-      sourcePath: key,
-      targetPath: targetPath || key,
-      mode: mode || 'rw',
-    }
-  })
-}
-
 export type ResolveConfigOptions = {
   profileOverrides?: string[]
 }
@@ -141,14 +118,8 @@ export async function resolveConfig(cwd: string, options: ResolveConfigOptions =
   const mergedProfileInput = resolveProfileFromList(inheritList, profiles, baseProfile)
   const mergedProfile = normalizeProfile(mergedProfileInput)
 
-  const effectiveMappings: FolderMapping[] = [implicitMapping(absoluteCwd)]
-  if (mergedProfile.volumes) {
-    effectiveMappings.push(...volumeMappingsToArray(mergedProfile.volumes))
-  }
-
   return ResolvedConfigSchema.parse({
     profile: mergedProfile,
-    effectiveMappings,
     projectConfigPath: projectConfigPath ?? undefined,
     globalConfigPath,
   })

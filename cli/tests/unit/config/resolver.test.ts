@@ -13,7 +13,6 @@ vi.mock('../../../src/lib/config/store.js', () => ({
 import { resolveConfig } from '../../../src/lib/config/resolver.js'
 import { findProjectConfig } from '../../../src/lib/config/discovery.js'
 import { getGlobalConfigPath, readGlobalConfig, readProjectConfig } from '../../../src/lib/config/store.js'
-import { WORKDIR } from '../../../src/lib/utils/paths.js'
 
 const cwd = '/tmp/project'
 
@@ -97,12 +96,6 @@ describe('resolveConfig', () => {
       PROJECT: 'demo',
     })
     expect(resolved.profile.templates?.agents.parameters).toBeUndefined()
-    expect(resolved.effectiveMappings[0].targetPath).toBe(WORKDIR)
-    expect(resolved.effectiveMappings[1]).toEqual({
-      sourcePath: 'cache',
-      targetPath: '/cache',
-      mode: 'ro',
-    })
   })
 
   it('removes entries when null is provided', async () => {

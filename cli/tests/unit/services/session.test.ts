@@ -1,3 +1,4 @@
+import path from 'node:path'
 import { describe, expect, it, vi } from 'vitest'
 
 vi.mock('../../../src/lib/config/resolver.js', () => ({
@@ -40,13 +41,6 @@ function makeResolved(profileOverrides: Partial<ResolvedConfig['profile']>): Res
     profile: {
       ...profileOverrides,
     },
-    effectiveMappings: [
-      {
-        sourcePath: '/tmp/project',
-        targetPath: WORKDIR,
-        mode: 'rw',
-      },
-    ],
     projectConfigPath: undefined,
     globalConfigPath: undefined,
   }
@@ -171,6 +165,31 @@ describe('runSession', () => {
     } finally {
       restoreEnv(originalEnv)
     }
+  })
+
+  it('adds the workdir mapping even when no volumes are provided', async () => {
+    vi.mocked(resolveConfig).mockResolvedValueOnce(
+      makeResolved({
+        image: 'example:latest',
+      })
+    )
+    vi.mocked(getHostIdentity).mockReturnValue({ uid: 1, gid: 2 })
+
+    await runSession({
+      cwd: '/tmp/project',
+    })
+
+    expect(runPodman).toHaveBeenCalledWith(
+      expect.objectContaining({
+        mappings: expect.arrayContaining([
+          {
+            sourcePath: path.resolve('/tmp/project'),
+            targetPath: WORKDIR,
+            mode: 'rw',
+          },
+        ]),
+      })
+    )
   })
 
   it('errors when host identity is missing', async () => {

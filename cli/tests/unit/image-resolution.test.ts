@@ -11,7 +11,6 @@ vi.mock('../../src/lib/podman/runner.js', () => ({
 import { resolveConfig } from '../../src/lib/config/resolver.js'
 import { runPodman } from '../../src/lib/podman/runner.js'
 import { runSession } from '../../src/services/session.js'
-import { WORKDIR } from '../../src/lib/utils/paths.js'
 import type { ResolvedConfig } from '../../src/lib/config/schema.js'
 
 function makeResolved(profileOverrides: Partial<ResolvedConfig['profile']>): ResolvedConfig {
@@ -19,13 +18,6 @@ function makeResolved(profileOverrides: Partial<ResolvedConfig['profile']>): Res
     profile: {
       ...profileOverrides,
     },
-    effectiveMappings: [
-      {
-        sourcePath: '/tmp/project',
-        targetPath: WORKDIR,
-        mode: 'rw',
-      },
-    ],
     projectConfigPath: undefined,
     globalConfigPath: undefined,
   }
